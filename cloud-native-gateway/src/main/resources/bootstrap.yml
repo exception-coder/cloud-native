@@ -1,9 +1,10 @@
 spring:
   cloud:
     gateway:
-      filter:
-        request-rate-limiter:
-          deny-empty-key: false
+#      filter:
+#        request-rate-limiter:
+#          deny-empty-key: true
+#          empty-key-status-code: 404
       routes:
         - id: header_route
           uri: http://127.0.0.1:8081

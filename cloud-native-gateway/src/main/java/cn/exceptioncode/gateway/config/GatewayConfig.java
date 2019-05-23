@@ -24,8 +24,8 @@ public class GatewayConfig {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("proxied-route", r -> r
-                        .remoteAddr(resolver)
-                        .uri("http://httpbin.org"))
+                        .remoteAddr(resolver,"127.0.0.1")
+                        .uri("http://127.0.0.1:8081"))
                 .build();
 //        return builder.routes()
 //                .route("path_route", r -> r.path("/get")
