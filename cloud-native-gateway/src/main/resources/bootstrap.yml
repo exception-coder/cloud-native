@@ -6,12 +6,12 @@ spring:
           deny-empty-key: false
       routes:
         - id: header_route
-          uri: http://127.0.0.1:8080
+          uri: http://127.0.0.1:8081
           filters:
             - AddRequestHeader=X-Request-Foo, Bar
             - AddRequestParameter=foo, bar
             - AddResponseHeader=X-Response-Foo, Bar
-            - PrefixPath=/gateway
+            - PrefixPath=/foo
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
