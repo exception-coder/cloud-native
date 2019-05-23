@@ -1,0 +1,40 @@
+spring:
+  cloud:
+    gateway:
+      filter:
+        request-rate-limiter:
+          deny-empty-key: false
+      routes:
+        - id: header_route
+          uri: http://127.0.0.1:8080
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
+            - AddRequestParameter=foo, bar
+            - AddResponseHeader=X-Response-Foo, Bar
+            - PrefixPath=/gateway
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userKeyResolver}"
+          predicates:
+            - Header=X-Request-Id, \d+
+            # Method Route
+            - Method=GET
+        - id: host_route
+          uri: https://host-route.com
+          predicates:
+            # Host Route
+            - Host=**.somehost.org,**.anotherhost.org
+            - Path=/foo/{segment},/bar/{segment}
+        - id: cookie_route
+          uri: https://cookie-route.com
+          predicates:
+            - Cookie=chocolate, ch.p
+        - id: redirect_route
+          uri: http://127.0.0.1:8080
+          predicates:
+            - Path=/redirect/**
+          filters:
+            - StripPrefix=1
+            - RedirectTo=307,https://google.com
