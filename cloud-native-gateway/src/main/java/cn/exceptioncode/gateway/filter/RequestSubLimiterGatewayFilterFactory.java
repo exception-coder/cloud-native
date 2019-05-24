@@ -25,6 +25,10 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 		this.expireTime = expireTime;
 	}
 
+	public RateLimiter getDefaultRateLimiter() {
+		return defaultRateLimiter;
+	}
+
 	public RequestSubLimiterGatewayFilterFactory(RateLimiter defaultRateLimiter,
 												 KeyResolver defaultKeyResolver) {
 		super(Config.class);
