@@ -1,6 +1,7 @@
 package cn.exceptioncode.gateway.config;
 
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
+import org.springframework.cloud.gateway.filter.ratelimit.RateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.gateway.support.ipresolver.RemoteAddressResolver;
@@ -18,6 +19,17 @@ public class GatewayConfig {
     @Bean
     KeyResolver userKeyResolver() {
         return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("user"));
+    }
+
+
+    @Bean
+    KeyResolver subLimitKeyResolver() {
+        return exchange -> Mono.just(exchange.getRequest().getHeaders().getFirst(""));
+    }
+
+    @Bean
+    RateLimiter subLimitRateLimiter(){
+        return null;
     }
 
     @Bean

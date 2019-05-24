@@ -21,6 +21,9 @@ spring:
             - PrefixPath=/foo
             # 配置路由使用的过滤器 由上至下 越下越先执行 (当前最先执行的filter是RequestRateLimiter)
             - name: RequestSubLimiter
+              args:
+                key-resolver: "#{@subLimitKeyResolver}"
+                rate-limiter: "#{@subLimitRateLimiter}"
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
