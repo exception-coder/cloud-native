@@ -14,7 +14,7 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 
 	private final KeyResolver defaultKeyResolver;
 
-	private final RateLimiter defaultRateLimiter;
+	private final RateLimiter subLimitRateLimiter;
 
 
 	public Long getExpireTime() {
@@ -25,14 +25,14 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 		this.expireTime = expireTime;
 	}
 
-	public RateLimiter getDefaultRateLimiter() {
-		return defaultRateLimiter;
+	public RateLimiter getSubLimitRateLimiter() {
+		return subLimitRateLimiter;
 	}
 
-	public RequestSubLimiterGatewayFilterFactory(RateLimiter defaultRateLimiter,
+	public RequestSubLimiterGatewayFilterFactory(RateLimiter subLimitRateLimiter,
 												 KeyResolver defaultKeyResolver) {
 		super(Config.class);
-		this.defaultRateLimiter = defaultRateLimiter;
+		this.subLimitRateLimiter = subLimitRateLimiter;
 		this.defaultKeyResolver = defaultKeyResolver;
 	}
 
@@ -40,7 +40,7 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 	public GatewayFilter apply(Config config) {
 		KeyResolver resolver = getOrDefault(config.keyResolver, defaultKeyResolver);
 		RateLimiter<Object> limiter = getOrDefault(config.rateLimiter,
-				defaultRateLimiter);
+				subLimitRateLimiter);
 		// grab configuration from Config object
 		return (exchange, chain) -> {
             //If you want to build a "pre" filter you need to manipulate the
