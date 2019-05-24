@@ -23,7 +23,7 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("proxied-route", r -> r
+                .route("proxied-route", r -> r.path("").and().path("/route/**").and()
                         .remoteAddr(resolver,"127.0.0.1")
                         .uri("http://127.0.0.1:8081"))
                 .build();

@@ -1,11 +1,17 @@
 spring:
   cloud:
     gateway:
-#      filter:
-#        request-rate-limiter:
-#          deny-empty-key: true
-#          empty-key-status-code: 404
+      filter:
+        # 配置过滤器属性
+        request-rate-limiter:
+          deny-empty-key: true
+          empty-key-status-code: 404
+        request-sub-limiter:
+          # 重复请求限制时间 单位：s
+          expire-time: 3
+      # 路由集合
       routes:
+        # 路由实例 id
         - id: header_route
           uri: http://127.0.0.1:8081
           filters:
@@ -13,14 +19,18 @@ spring:
             - AddRequestParameter=foo, bar
             - AddResponseHeader=X-Response-Foo, Bar
             - PrefixPath=/foo
+            # 配置路由使用的过滤器 由上至下 越下越先执行 (当前最先执行的filter是RequestRateLimiter)
+            - name: RequestSubLimiter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
                 key-resolver: "#{@userKeyResolver}"
+          # 路由匹配规则
           predicates:
+            # 对于请求头包含 X-Request-Id 且符合正则表达式 \d+ 的进行匹配
             - Header=X-Request-Id, \d+
-            # Method Route
+            # 对于请求方式为 GET 的请求进行匹配
             - Method=GET
         - id: host_route
           uri: https://host-route.com
@@ -31,11 +41,16 @@ spring:
         - id: cookie_route
           uri: https://cookie-route.com
           predicates:
+            # 对于 Cookie 包含 chocolate 的并且值为 ch.p 的进行匹配
             - Cookie=chocolate, ch.p
         - id: redirect_route
           uri: http://127.0.0.1:8080
           predicates:
+            # 对于请求前缀为 /redirect 的 uri 进行匹配
             - Path=/redirect/**
           filters:
+            # 请求过滤 转发前将 uri 第一个路径过滤
+            # 即 /redirect/foo -> /foo
             - StripPrefix=1
+            # 重定向处理 响应码为：307 重定向地址为：https://google.com
             - RedirectTo=307,https://google.com
