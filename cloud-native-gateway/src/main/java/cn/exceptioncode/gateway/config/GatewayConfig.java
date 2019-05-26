@@ -21,17 +21,6 @@ public class GatewayConfig {
         return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("user"));
     }
 
-
-    @Bean
-    KeyResolver subLimitKeyResolver() {
-        return exchange -> Mono.just(exchange.getRequest().getHeaders().getFirst(""));
-    }
-
-    @Bean
-    RateLimiter subLimitRateLimiter(){
-        return null;
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()

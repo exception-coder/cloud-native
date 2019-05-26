@@ -7,6 +7,10 @@ import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.filter.ratelimit.RateLimiter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
+/**
+ *
+ * @author zhangkai
+ */
 @ConfigurationProperties("spring.cloud.gateway.filter.request-sub-limiter")
 public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestSubLimiterGatewayFilterFactory.Config> {
 
@@ -14,7 +18,6 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 
 	private final KeyResolver defaultKeyResolver;
 
-	private final RateLimiter subLimitRateLimiter;
 
 
 	public Long getExpireTime() {
@@ -25,22 +28,16 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 		this.expireTime = expireTime;
 	}
 
-	public RateLimiter getSubLimitRateLimiter() {
-		return subLimitRateLimiter;
-	}
 
-	public RequestSubLimiterGatewayFilterFactory(RateLimiter subLimitRateLimiter,
+	public RequestSubLimiterGatewayFilterFactory(
 												 KeyResolver defaultKeyResolver) {
 		super(Config.class);
-		this.subLimitRateLimiter = subLimitRateLimiter;
 		this.defaultKeyResolver = defaultKeyResolver;
 	}
 
 	@Override
 	public GatewayFilter apply(Config config) {
 		KeyResolver resolver = getOrDefault(config.keyResolver, defaultKeyResolver);
-		RateLimiter<Object> limiter = getOrDefault(config.rateLimiter,
-				subLimitRateLimiter);
 		// grab configuration from Config object
 		return (exchange, chain) -> {
             //If you want to build a "pre" filter you need to manipulate the

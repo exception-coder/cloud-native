@@ -7,6 +7,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.gateway.filter.factory.RequestRateLimiterGatewayFilterFactory;
 
 
+/**
+ *
+ * @author zhangkai
+ */
 @EnableConfigurationProperties(RequestSubLimiterGatewayFilterFactory.class)
 @SpringBootApplication
 public class CloudNativeGatewayApplication {
