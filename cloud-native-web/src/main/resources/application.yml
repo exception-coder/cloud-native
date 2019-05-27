@@ -1,2 +1,5 @@
+spring:
+  application:
+    name: cloud-service
 server:
   port: 8081

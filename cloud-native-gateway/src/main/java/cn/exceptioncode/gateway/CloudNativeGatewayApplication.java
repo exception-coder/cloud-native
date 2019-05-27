@@ -4,6 +4,7 @@ import cn.exceptioncode.gateway.filter.RequestSubLimiterGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.filter.factory.RequestRateLimiterGatewayFilterFactory;
 
 
@@ -11,6 +12,7 @@ import org.springframework.cloud.gateway.filter.factory.RequestRateLimiterGatewa
  *
  * @author zhangkai
  */
+@EnableDiscoveryClient
 @EnableConfigurationProperties(RequestSubLimiterGatewayFilterFactory.class)
 @SpringBootApplication
 public class CloudNativeGatewayApplication {

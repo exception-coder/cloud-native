@@ -1,6 +1,15 @@
 spring:
   cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
     gateway:
+      discovery:
+        locator:
+          #  be configured to create routes based on services registered with a DiscoveryClient compatible service registry.
+          enabled: true
       filter:
         # 配置过滤器属性
         request-rate-limiter:
@@ -13,12 +22,13 @@ spring:
       routes:
         # 路由实例 id
         - id: header_route
-          uri: http://127.0.0.1:8081
+          uri: lb://cloud-service
           filters:
             - AddRequestHeader=X-Request-Foo, Bar
             - AddRequestParameter=foo, bar
             - AddResponseHeader=X-Response-Foo, Bar
-            - PrefixPath=/foo
+            # 请求 uri 追加前缀 /test
+            - PrefixPath=/test
             # 配置路由使用的过滤器 由上至下 越下越先执行 (当前最先执行的filter是RequestRateLimiter)
             - name: RequestSubLimiter
             - name: RequestRateLimiter
