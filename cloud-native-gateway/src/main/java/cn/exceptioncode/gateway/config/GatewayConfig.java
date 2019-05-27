@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Mono;
 
 
+/**
+ *
+ * @author zhangkai
+ */
 @Configuration
 public class GatewayConfig {
 
