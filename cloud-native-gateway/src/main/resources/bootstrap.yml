@@ -25,6 +25,7 @@ spring:
         request-sub-limiter:
           # 重复请求限制时间 单位：s
           expire-time: 30
+          enforce: false
       # 路由集合
       routes:
         # 路由实例 id

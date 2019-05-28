@@ -1,7 +1,6 @@
 package cn.exceptioncode.gateway.controller;
 
 import cn.exceptioncode.common.dto.BaseResponse;
-import cn.exceptioncode.gateway.service.DistributedLockService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
