@@ -13,12 +13,6 @@ import reactor.core.publisher.Mono;
 public class GatewayController {
 
 
-    private final DistributedLockService distributedLockService;
-
-
-    public GatewayController(DistributedLockService distributedLockService) {
-        this.distributedLockService = distributedLockService;
-    }
 
     @GetMapping("/busy")
     public Mono<BaseResponse> busy() {

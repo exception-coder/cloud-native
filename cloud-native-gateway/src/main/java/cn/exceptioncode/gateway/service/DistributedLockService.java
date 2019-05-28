@@ -2,6 +2,7 @@ package cn.exceptioncode.gateway.service;
 
 
 import cn.exceptioncode.common.dto.BaseResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -36,7 +37,9 @@ public class DistributedLockService {
      * @return 锁是否获取成功
      */
     public Mono<BaseResponse> tryGetDistributedLock(String lockKey, String requestId, Integer expireTime) {
-
+        if (StringUtils.isAnyBlank(lockKey, requestId)) {
+            return Mono.just(BaseResponse.error("获取锁失败 lockKey and requestId  not blank"));
+        }
 
         // 如果键不存在 则设置
         return redisTemplate.opsForValue()

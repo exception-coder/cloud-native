@@ -23,7 +23,11 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
 @ConfigurationProperties("spring.cloud.gateway.filter.request-sub-limiter")
 public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestSubLimiterGatewayFilterFactory.Config> {
 
+    // 防重复请求作用时间 默认1秒
     private Integer expireTime = 1;
+
+    // 是否强制防重复 默认强制 只有作用时间结束才允许继续发起同一请求
+    private Boolean enforce = true;
 
     private final GatewayConfig.ReqSerNumKeyResolver reqSerNumKeyResolver;
 
@@ -38,6 +42,13 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
         this.expireTime = expireTime;
     }
 
+    public Boolean getEnforce() {
+        return enforce;
+    }
+
+    public void setEnforce(Boolean enforce) {
+        this.enforce = enforce;
+    }
 
     public RequestSubLimiterGatewayFilterFactory(
             GatewayConfig.ReqSerNumKeyResolver reqSerNumKeyResolver,
@@ -60,26 +71,29 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
 
             return resolver.resolve(exchange).flatMap(keyResolver ->
 
-                 distributedLockService.tryGetDistributedLock(keyResolver.get(GatewayConfig.APPID_HEADER),
-                        keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER),
-                        expireTime).flatMap(baseResponse -> {
-                    if (baseResponse.getCode() == DefaultStatusEnum.SUCCESS.code()) {
-                        return chain.filter(exchange)
-                        .then(Mono.fromRunnable(()->
-                                {
-//                                 请求处理完成 释放锁
-                                    log.info("请求处理完成 释放锁");
-                            distributedLockService.releaseDistributedLock(keyResolver.get(GatewayConfig.APPID_HEADER),
-                                    keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER)).subscribe(System.out::println);
+                    distributedLockService.tryGetDistributedLock(keyResolver.get(GatewayConfig.APPID_HEADER),
+                            keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER),
+                            expireTime).flatMap(baseResponse -> {
+                        if (baseResponse.getCode() == DefaultStatusEnum.SUCCESS.code()) {
+                            return chain.filter(exchange)
+                                    .then(Mono.fromRunnable(() ->
+                                            {
+                                                // 请求处理完成 释放锁
+                                                if (!this.enforce) {
+                                                    log.info("请求处理完成 释放锁");
+                                                    distributedLockService.releaseDistributedLock(keyResolver.get(GatewayConfig.APPID_HEADER),
+                                                            keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER)).subscribe(System.out::println);
+
+                                                }
+                                            }
+                                    ));
+                        } else {
+                            setResponseStatus(exchange, config.getStatusCode());
+                            DataBuffer buffer = exchange.getResponse().bufferFactory()
+                                    .wrap(baseResponse.getMessage().getBytes());
+                            return exchange.getResponse().writeWith(Flux.just(buffer));
                         }
-                        ));
-                    } else {
-                        setResponseStatus(exchange, config.getStatusCode());
-                        DataBuffer buffer = exchange.getResponse().bufferFactory()
-                                .wrap(baseResponse.getMessage().getBytes());
-                        return exchange.getResponse().writeWith(Flux.just(buffer));
-                    }
-                })
+                    })
 
             );
 
