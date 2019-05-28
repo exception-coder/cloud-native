@@ -2,7 +2,9 @@ package cn.exceptioncode.gateway.controller;
 
 import cn.exceptioncode.common.dto.BaseResponse;
 import cn.exceptioncode.gateway.service.DistributedLockService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 
@@ -23,10 +25,5 @@ public class GatewayController {
         return Mono.just(BaseResponse.error("系统繁忙~"));
     }
 
-    @DeleteMapping("/releaseDistributedLock")
-    public Mono<BaseResponse> releaseDistributedLock(@RequestParam("appId") String appId,
-                                             @RequestParam("reqSeriNum") String reqSeriNum) {
-        return distributedLockService.releaseDistributedLock(appId,reqSeriNum);
-    }
 
 }

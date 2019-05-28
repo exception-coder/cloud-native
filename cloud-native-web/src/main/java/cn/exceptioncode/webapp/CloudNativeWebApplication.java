@@ -56,7 +56,8 @@ public class CloudNativeWebApplication {
         @RequestMapping(value = "/test/echo/{str}", method = RequestMethod.GET,
         produces = MediaType.TEXT_XML_VALUE)
         public String echo(@PathVariable String str) {
-            return restTemplate.getForObject("http://cloud-service/echo/" + str, String.class);
+            String text = restTemplate.getForObject("http://cloud-service/echo/" + str, String.class);
+            return text;
         }
     }
 
