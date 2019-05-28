@@ -1,10 +1,17 @@
 spring:
   cloud:
+    # 使用Nacos组为服务注册发现和配置中心
     nacos:
       config:
         server-addr: 127.0.0.1:8848
       discovery:
         server-addr: 127.0.0.1:8848
+    # 使用Sentinel作为流量控制和熔断器
+    sentinel:
+      transport:
+        port: 8084
+        dashboard: localhost:8080
+    # 路由网关配置
     gateway:
       discovery:
         locator:
@@ -17,12 +24,13 @@ spring:
           empty-key-status-code: 404
         request-sub-limiter:
           # 重复请求限制时间 单位：s
-          expire-time: 3
+          expire-time: 30
       # 路由集合
       routes:
         # 路由实例 id
         - id: header_route
           uri: lb://cloud-service
+#          uri: http://127.0.0.1:8081
           filters:
             - AddRequestHeader=X-Request-Foo, Bar
             - AddRequestParameter=foo, bar
@@ -30,12 +38,21 @@ spring:
             # 请求 uri 追加前缀 /test
             - PrefixPath=/test
             # 配置路由使用的过滤器 由上至下 越下越先执行 (当前最先执行的filter是RequestRateLimiter)
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallback-uri: forward:/gateway/busy
             - name: RequestSubLimiter
             - name: RequestRateLimiter
               args:
+                # is how many requests per second do you want a user to be allowed to do, without any dropped requests. This is the rate that the token bucket is filled.
                 redis-rate-limiter.replenishRate: 10
+                # is the maximum number of requests a user is allowed to do in a single second. This is the number of tokens the token bucket can hold. Setting this value to zero will block all requests.
                 redis-rate-limiter.burstCapacity: 20
                 key-resolver: "#{@userKeyResolver}"
+            - name: RequestSize
+              args:
+                max-size: 1000000
           # 路由匹配规则
           predicates:
             # 对于请求头包含 X-Request-Id 且符合正则表达式 \d+ 的进行匹配

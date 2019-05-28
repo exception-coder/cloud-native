@@ -1,4 +1,4 @@
-package cn.exceptioncode.gateway.config;
+package com.iotechina.base.gateway.server.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,10 +57,10 @@ public class RedisConfiguration {
     /**
      * Clear database before shut down.
      */
-    public @PreDestroy
-    void flushTestDb() {
-        factory.getConnection().flushDb();
-    }
+//    public @PreDestroy
+//    void flushTestDb() {
+//        factory.getConnection().flushDb();
+//    }
 
 
     @Bean

@@ -1,5 +1,6 @@
 package cn.exceptioncode.gateway.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -18,6 +19,7 @@ import java.util.Map;
 /**
  * @author zhangkai
  */
+@Slf4j
 @Configuration
 public class GatewayConfig {
 
@@ -28,6 +30,7 @@ public class GatewayConfig {
 
 
     RemoteAddressResolver resolver = XForwardedRemoteAddressResolver.maxTrustedIndex(1);
+
 
     @Bean
     KeyResolver userKeyResolver() {

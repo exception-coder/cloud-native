@@ -1,8 +1,11 @@
 package cn.exceptioncode.gateway.filter;
 
-import cn.exceptioncode.common.enums.DefaultStatusEnum;
-import cn.exceptioncode.gateway.config.GatewayConfig;
-import cn.exceptioncode.gateway.service.DistributedLockService;
+import com.iotechina.base.common.starter.enums.DefaultStatusEnum;
+import com.iotechina.base.gateway.server.config.GatewayConfig;
+import com.iotechina.base.gateway.server.service.DistributedLockService;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -11,12 +14,16 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.io.IOException;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setResponseStatus;
 
 /**
  * @author zhangkai
  */
+@Slf4j
 @ConfigurationProperties("spring.cloud.gateway.filter.request-sub-limiter")
 public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilterFactory<RequestSubLimiterGatewayFilterFactory.Config> {
 
@@ -61,7 +68,23 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
                         keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER),
                         expireTime).flatMap(baseResponse -> {
                     if (baseResponse.getCode() == DefaultStatusEnum.SUCCESS.code()) {
-                        return chain.filter(exchange);
+                        return chain.filter(exchange)
+                        .then(Mono.fromRunnable(()->
+                                {
+//                                 请求处理完成 释放锁
+                                log.info("请求处理完成 释放锁");
+                               try{
+                                   System.out.println(new OkHttpClient().newCall(new Request.Builder()
+                                        .url("http://localhost:8080/gateway/releaseDistributedLock?appId=pay_service&reqSeriNum=20190527190423233")
+                                        .delete().build()).execute().body().string());
+                               }catch (IOException e){
+                                   e.printStackTrace();
+                               }
+
+                            distributedLockService.releaseDistributedLock(keyResolver.get(GatewayConfig.APPID_HEADER),
+                                    keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER));
+                        }
+                        ));
                     } else {
                         setResponseStatus(exchange, config.getStatusCode());
                         DataBuffer buffer = exchange.getResponse().bufferFactory()
