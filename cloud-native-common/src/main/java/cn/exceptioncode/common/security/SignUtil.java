@@ -1,6 +1,7 @@
 package cn.exceptioncode.common.security;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -29,7 +30,6 @@ public class SignUtil {
     }
 
     /**
-     *
      * md5签名
      *
      * @param str
@@ -40,6 +40,12 @@ public class SignUtil {
     }
 
 
+    public static boolean verifySign4MD5ByBase64(String sign, String message) {
+        if (!StringUtils.isAnyEmpty(sign, message)) {
+            return sign.equals(CodecUtil.BASE64Encoder(signByMD5(message)));
+        }
+        return false;
+    }
 
 
 }

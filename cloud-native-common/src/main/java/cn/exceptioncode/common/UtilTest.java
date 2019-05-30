@@ -2,10 +2,14 @@ package cn.exceptioncode.common;
 
 import cn.exceptioncode.common.security.CodecUtil;
 import cn.exceptioncode.common.security.EncryptUtil;
+import com.alibaba.fastjson.JSON;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.security.KeyPair;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 /**
@@ -34,4 +38,25 @@ public class UtilTest {
         bytes = EncryptUtil.blockDecryptByRSA2(keyPair.getPrivate(), bytes);
         System.out.println(new String(bytes, "utf-8"));
     }
+
+
+    @Test
+    public void pendingSignStrEncoderTest(){
+        A a = new A();
+        a.setA("1");
+        a.setB("b");
+        Map<String,String> map = new HashMap<>(10);
+        map.put("a","a");
+        map.put("a_", JSON.toJSONString(a));
+        log.info("待签串：{}",CodecUtil.pendingSignStrEncoder(map));
+
+    }
+
+    @Data
+    class  A{
+        private String a;
+
+        private String b;
+    }
+
 }

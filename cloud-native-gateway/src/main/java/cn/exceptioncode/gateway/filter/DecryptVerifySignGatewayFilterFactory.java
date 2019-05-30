@@ -3,6 +3,7 @@ package cn.exceptioncode.gateway.filter;
 import cn.exceptioncode.common.dto.BaseResponse;
 import cn.exceptioncode.common.security.CodecUtil;
 import cn.exceptioncode.common.security.EncryptUtil;
+import cn.exceptioncode.common.security.SignUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,6 +12,8 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
+
+import java.util.Map;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setResponseStatus;
 
@@ -56,33 +59,45 @@ public class DecryptVerifySignGatewayFilterFactory extends AbstractGatewayFilter
 
 
     public DecryptVerifySignGatewayFilterFactory() {
-        // 重要 不要漏了
-        // java.lang.ClassCastException: java.lang.Object cannot be cast to cn.exceptioncode.gateway.filter.DecryptVerifySignGatewayFilterFactory$Config
         super(Config.class);
     }
 
+    /**
+     *
+     * 成功解密 并且 验签 通过后放行
+     *
+     * @param config
+     * @return
+     */
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             try{
+                // 获取加密请求数据
                 String data =  exchange.getRequest().getQueryParams().getFirst(dataKey);
                 byte[] bytes = CodecUtil.BASE64Decoder(data);
                 // 使用私钥解码
                 bytes = EncryptUtil.blockDecryptByRSA2(EncryptUtil.getPrivateKeyByRSA2(PRIVATE_KEY), bytes);
-                log.info(new String(bytes,"utf-8"));
+                Map<String,String> map = JSON.parseObject(new String(bytes,"utf-8"), Map.class);
+                // 获取待签串
+                String pendingSignStr= CodecUtil.pendingSignStrEncoder(map);
+                // 获取请求签名
+                String sign = map.get(signKey);
+                // 验证签名
+                boolean verify = SignUtil.verifySign4MD5ByBase64(sign,pendingSignStr);
+                if(verify){
+                    return chain.filter(exchange);
+                }
             }catch (Exception e){
-                setResponseStatus(exchange, HttpStatus.BAD_REQUEST);
-                DataBuffer buffer = exchange.getResponse().bufferFactory()
-                        .wrap(JSON.toJSONString(BaseResponse.error(e.getMessage())).getBytes());
-                return exchange.getResponse().writeWith(Flux.just(buffer));
+                log.error("验签解密失败，错误信息：{}",e.getMessage());
             }
 
-           return chain.filter(exchange);
-        };
-    }
+            setResponseStatus(exchange, HttpStatus.BAD_REQUEST);
+            DataBuffer buffer = exchange.getResponse().bufferFactory()
+                    .wrap(JSON.toJSONString(BaseResponse.error("验签解密失败")).getBytes());
+            return exchange.getResponse().writeWith(Flux.just(buffer));
 
-    private <T> T getOrDefault(T configValue, T defaultValue) {
-        return (configValue != null) ? configValue : defaultValue;
+        };
     }
 
 
