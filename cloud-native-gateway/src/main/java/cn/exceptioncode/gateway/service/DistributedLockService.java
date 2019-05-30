@@ -2,6 +2,7 @@ package cn.exceptioncode.gateway.service;
 
 
 import cn.exceptioncode.common.dto.BaseResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Collections;
 
+@Slf4j
 @Service
 /**
  *
@@ -26,7 +28,7 @@ public class DistributedLockService {
 //    ReactiveRedisTemplate<String, Object> reactiveJsonObjectRedisTemplate;
 
     @Autowired
-    ReactiveRedisTemplate<String,String>  redisTemplate;
+    ReactiveRedisTemplate<String, String> redisTemplate;
 
 
     /**
@@ -36,7 +38,7 @@ public class DistributedLockService {
      * @param requestId 请求标识
      * @return 锁是否获取成功
      */
-    public Mono<BaseResponse> tryGetDistributedLock(String lockKey, String requestId, Integer expireTime) {
+    public Mono<BaseResponse<String>> tryGetDistributedLock(String lockKey, String requestId, Integer expireTime) {
         if (StringUtils.isAnyBlank(lockKey, requestId)) {
             return Mono.just(BaseResponse.error("获取锁失败 lockKey and requestId  not blank"));
         }
@@ -45,12 +47,17 @@ public class DistributedLockService {
         return redisTemplate.opsForValue()
                 .setIfAbsent(lockKey, requestId, Duration.ofSeconds(expireTime))
                 .map(el -> {
-                    if(true==el){
+                    if (true == el) {
                         return BaseResponse.success("获取锁成功");
-                    }else {
+                    } else {
                         return BaseResponse.error("获取锁失败");
                     }
-                });
+                }).onErrorResume(throwable -> {
+                    // 捕获异常 返回异常错误信息
+                            log.error("获取锁失败，异常：{}", throwable.getMessage());
+                            return Mono.just(BaseResponse.error(throwable.getMessage()));
+                        }
+                );
 
     }
 

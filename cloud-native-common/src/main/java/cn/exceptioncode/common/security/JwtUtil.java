@@ -3,13 +3,16 @@ package cn.exceptioncode.common.security;
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
+/**
+ *
+ * @author zhangkai
+ */
 @Slf4j
 public class JwtUtil {
 
@@ -86,27 +89,27 @@ public class JwtUtil {
         log.info("headerJson：{}", headerJson);
         String payloadJson = JSON.toJSONString(stringStringMap);
         log.info("payloadJson：{}", payloadJson);
-        String headerStr = EncoderUtil.BASE64Encoder(headerJson.getBytes("utf-8"));
+        String headerStr = CodecUtil.BASE64Encoder(headerJson.getBytes("utf-8"));
         log.info("base64headerStr：{}", headerStr);
-        String payloadStr = EncoderUtil.BASE64Encoder(payloadJson.getBytes("utf-8"));
+        String payloadStr = CodecUtil.BASE64Encoder(payloadJson.getBytes("utf-8"));
         log.info("base64payloadStr：{}", payloadStr);
-        headerStr = EncoderUtil.URLEncoderUTF8(headerStr);
-        payloadStr = EncoderUtil.URLEncoderUTF8(payloadStr);
-        byte[] signatureBytes = HmacSHA256Util.sign(headerJson + "." + payloadJson, secret);
-        String signatureStr = EncoderUtil.BASE64Encoder(signatureBytes);
-        signatureStr = EncoderUtil.URLEncoderUTF8(signatureStr);
+        headerStr = CodecUtil.URLEncoderUTF8(headerStr);
+        payloadStr = CodecUtil.URLEncoderUTF8(payloadStr);
+        byte[] signatureBytes = SignUtil.signByHmacSHA256(headerJson + "." + payloadJson, secret);
+        String signatureStr = CodecUtil.BASE64Encoder(signatureBytes);
+        signatureStr = CodecUtil.URLEncoderUTF8(signatureStr);
         return headerStr + "." + payloadStr + "." + signatureStr;
     }
 
 
-    @Test
-    public void test() throws Exception{
-        Payload payload = new Payload();
-        Map map = JSON.parseObject(JSON.toJSONString(payload),Map.class);
-        System.out.println(
-                getJWT(new Header(),map,"test_secret")
-                );
-
-    }
+//    @UtilTest
+//    public void test() throws Exception{
+//        Payload payload = new Payload();
+//        Map map = JSON.parseObject(JSON.toJSONString(payload),Map.class);
+//        System.out.println(
+//                getJWT(new Header(),map,"test_secret")
+//                );
+//
+//    }
 
 }

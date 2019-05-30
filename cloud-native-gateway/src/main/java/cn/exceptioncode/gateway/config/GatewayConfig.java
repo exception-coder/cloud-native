@@ -1,5 +1,6 @@
 package cn.exceptioncode.gateway.config;
 
+import cn.exceptioncode.gateway.filter.decrypt.DecryptKeyResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
@@ -23,10 +24,31 @@ import java.util.Map;
 @Configuration
 public class GatewayConfig {
 
-    public final static String APPID_HEADER = "X-Request-AppId";
+    /**
+     *
+     * 请求应用Id请求头键
+     */
+    public final static String REQUEST_APPID_HEADER = "X-Request-AppId";
 
 
+    /**
+     *
+     * 请求流水号请求头键
+     */
     public final static String REQUEST_SERIAL_HEADER = "X-Request-Serial";
+
+    /**
+     *
+     * 请求签名方式请求头键
+     */
+    private final static String REQUEST_SIGN_ALG_HEADER = "X-Request-Alg-Sign";
+
+
+    /**
+     *
+     * 请求加密方式请求头键
+     */
+    private final static String REQUEST_ENCRY_ALG_HEADER = "X-Request-Alg-Encrypt";
 
 
     RemoteAddressResolver resolver = XForwardedRemoteAddressResolver.maxTrustedIndex(1);
@@ -37,6 +59,11 @@ public class GatewayConfig {
         return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("user"));
     }
 
+    @Bean
+    DecryptKeyResolver decryptKeyResolver(){
+        return new DecryptKeyResolver("d","s");
+    }
+
 
     @Bean
     ReqSerNumKeyResolver reqSerNumKeyResolver() {
@@ -44,15 +71,15 @@ public class GatewayConfig {
     }
 
     public class ReqSerNumKeyResolver {
-        public Mono<Map<String,String>> resolve(ServerWebExchange exchange) {
-            String appId = exchange.getRequest().getHeaders().getFirst(APPID_HEADER);
+        public Mono<Map<String, String>> resolve(ServerWebExchange exchange) {
+            String appId = exchange.getRequest().getHeaders().getFirst(REQUEST_APPID_HEADER);
             String reqSerial = exchange.getRequest().getHeaders().getFirst(REQUEST_SERIAL_HEADER);
-            if(StringUtils.isAnyEmpty(appId,reqSerial)){
+            if (StringUtils.isAnyEmpty(appId, reqSerial)) {
                 return Mono.empty();
             }
-            Map<String,String> map = new HashMap<>();
-            map.put(APPID_HEADER,appId);
-            map.put(REQUEST_SERIAL_HEADER,reqSerial);
+            Map<String, String> map = new HashMap<>();
+            map.put(REQUEST_APPID_HEADER, appId);
+            map.put(REQUEST_SERIAL_HEADER, reqSerial);
             return Mono.just(map);
         }
     }
