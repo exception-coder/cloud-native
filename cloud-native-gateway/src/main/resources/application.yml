@@ -2,8 +2,8 @@ spring:
   application:
     name: gateway
   redis:
-    host: dev.iotechina.com
-    password: GTMCmy123
+    host: 127.0.0.1
+    password:
 management:
   endpoint:
     gateway:
