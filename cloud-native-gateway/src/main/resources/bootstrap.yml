@@ -28,6 +28,7 @@ spring:
           enforce: true
         decrypt-verify-sign:
           data-key: data
+          sign-key: sign
       # 路由集合
       routes:
         # 路由实例 id
@@ -40,12 +41,14 @@ spring:
             - AddResponseHeader=X-Response-Foo, Bar
             # 请求 uri 追加前缀 /test
             - PrefixPath=/test
-            # 配置路由使用的过滤器 由上至下 越下越先执行 (当前最先执行的filter是RequestRateLimiter)
-            - name: Hystrix
+            # 配置路由使用的过滤器 由上至下
+#            - name: Hystrix
+#              args:
+#                name: fallbackcmd
+#                fallback-uri: forward:/gateway/busy
+            - name: RequestSize
               args:
-                name: fallbackcmd
-                fallback-uri: forward:/gateway/busy
-            - name: RequestSubLimiter
+                max-size: 1000000
             - name: RequestRateLimiter
               args:
                 # is how many requests per second do you want a user to be allowed to do, without any dropped requests. This is the rate that the token bucket is filled.
@@ -54,17 +57,16 @@ spring:
                 redis-rate-limiter.burstCapacity: 20
                 key-resolver: "#{@userKeyResolver}"
             - name: DecryptVerifySign
-#              args:
-#                decrypt-key-resolver.dataKey: data
-#                decrypt-key-resolver.signKey: sign
-            - name: RequestSize
               args:
-                max-size: 1000000
+                decrypt-key-resolver.dataKey: data
+                decrypt-key-resolver.signKey: sign
+            - name: RequestSubLimiter
           # 路由匹配规则
           predicates:
             # 对于请求头包含 X-Request-Id 且符合正则表达式 \d+ 的进行匹配
             - Header=X-Request-Id, \d+
             # 对于请求方式为 GET 的请求进行匹配
+            - Path=/echo/**
             - Method=GET
         - id: host_route
           uri: https://host-route.com

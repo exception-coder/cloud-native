@@ -1,6 +1,5 @@
 package cn.exceptioncode.gateway.config;
 
-import cn.exceptioncode.gateway.filter.decrypt.DecryptKeyResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
@@ -59,10 +58,6 @@ public class GatewayConfig {
         return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("user"));
     }
 
-    @Bean
-    DecryptKeyResolver decryptKeyResolver(){
-        return new DecryptKeyResolver("d","s");
-    }
 
 
     @Bean
@@ -74,9 +69,6 @@ public class GatewayConfig {
         public Mono<Map<String, String>> resolve(ServerWebExchange exchange) {
             String appId = exchange.getRequest().getHeaders().getFirst(REQUEST_APPID_HEADER);
             String reqSerial = exchange.getRequest().getHeaders().getFirst(REQUEST_SERIAL_HEADER);
-            if (StringUtils.isAnyEmpty(appId, reqSerial)) {
-                return Mono.empty();
-            }
             Map<String, String> map = new HashMap<>();
             map.put(REQUEST_APPID_HEADER, appId);
             map.put(REQUEST_SERIAL_HEADER, reqSerial);

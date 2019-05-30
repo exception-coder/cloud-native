@@ -83,7 +83,8 @@ public class JwtUtil {
      *
      * @return
      */
-    public static String getJWT(Header header, Map<String, String> stringStringMap, String secret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static String getJWT(Header header, Map<String, String> stringStringMap, String secret) throws UnsupportedEncodingException
+            , NoSuchAlgorithmException, InvalidKeyException {
 
         String headerJson = JSON.toJSONString(header);
         log.info("headerJson：{}", headerJson);
