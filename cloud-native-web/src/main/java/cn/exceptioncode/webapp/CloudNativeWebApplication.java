@@ -1,5 +1,7 @@
 package cn.exceptioncode.webapp;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,19 +10,19 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  *
  * @author zhangkai
  */
+@Slf4j
 @EnableDiscoveryClient
 @SpringBootApplication
 public class CloudNativeWebApplication {
@@ -55,7 +57,10 @@ public class CloudNativeWebApplication {
 
         @RequestMapping(value = "/test/echo/{str}", method = RequestMethod.GET,
         produces = MediaType.TEXT_XML_VALUE)
-        public String echo(@PathVariable String str) {
+        public String echo(@PathVariable String str, @RequestParam("data") String data, ServerHttpRequest httpRequest) {
+            log.info("请求参数data：{}",data);
+            List<String> datas = httpRequest.getQueryParams().get("data");
+            log.info("请求参数datas：{}", datas);
             String text = restTemplate.getForObject("http://cloud-service/echo/" + str, String.class);
             return text;
         }
