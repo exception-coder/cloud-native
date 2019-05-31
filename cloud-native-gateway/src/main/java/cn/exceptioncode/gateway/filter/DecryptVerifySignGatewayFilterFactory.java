@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyRequestBodyGatewayFilterFactory;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
@@ -98,7 +96,7 @@ public class DecryptVerifySignGatewayFilterFactory extends AbstractGatewayFilter
                         List<String> list = new ArrayList<>();
                         list.add(clearText);
                         linkedMultiValueMap.remove(dataKey);
-                        linkedMultiValueMap.put(dataKey,list);
+                        linkedMultiValueMap.put(dataKey, list);
                         return linkedMultiValueMap;
                     }
                 };
@@ -114,6 +112,12 @@ public class DecryptVerifySignGatewayFilterFactory extends AbstractGatewayFilter
                 // 验证签名
                 boolean verify = SignUtil.verifySign4MD5ByBase64(sign, pendingSignStr);
                 if (verify) {
+                    String rawQuery = exchange.getRequest().getURI().getRawQuery();
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(rawQuery);
+                    if(rawQuery.charAt(rawQuery.length()-1)!='&'){
+
+                    }
                     return chain.filter(exchange.mutate().request(serverHttpRequest).build());
                 }
             } catch (Exception e) {
