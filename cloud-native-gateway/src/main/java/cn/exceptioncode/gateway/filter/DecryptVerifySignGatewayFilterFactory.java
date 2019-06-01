@@ -12,13 +12,10 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
 import java.util.Map;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setResponseStatus;
@@ -84,25 +81,6 @@ public class DecryptVerifySignGatewayFilterFactory extends AbstractGatewayFilter
                 String clearText = new String(bytes, "utf-8");
                 log.info("解密后请求明文：{}", clearText);
 
-                MultiValueMap<String, String> multiValueMap = exchange.getRequest().getQueryParams();
-                ServerHttpRequestDecorator decorator = new ServerHttpRequestDecorator(
-                        exchange.getRequest()) {
-                    @Override
-                    public MultiValueMap<String, String> getQueryParams() {
-                        MultiValueMap<String, String> linkedMultiValueMap = new LinkedMultiValueMap<>(10);
-                        multiValueMap.forEach((s, strings) ->
-                                linkedMultiValueMap.put(s, strings)
-                        );
-                        List<String> list = new ArrayList<>();
-                        list.add(clearText);
-                        linkedMultiValueMap.remove(dataKey);
-                        linkedMultiValueMap.put(dataKey, list);
-                        return linkedMultiValueMap;
-                    }
-                };
-
-                ServerHttpRequest serverHttpRequest = new ServerHttpRequestDecorator(decorator);
-
                 Map<String, String> map = JSON.parseObject(clearText, Map.class);
                 // 获取待签串
                 String pendingSignStr = CodecUtil.pendingSignStrEncoder(map);
@@ -112,13 +90,30 @@ public class DecryptVerifySignGatewayFilterFactory extends AbstractGatewayFilter
                 // 验证签名
                 boolean verify = SignUtil.verifySign4MD5ByBase64(sign, pendingSignStr);
                 if (verify) {
-                    String rawQuery = exchange.getRequest().getURI().getRawQuery();
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(rawQuery);
-                    if(rawQuery.charAt(rawQuery.length()-1)!='&'){
-
+                    URI uri = exchange.getRequest().getURI();
+                    String rawQuery = uri.getRawQuery();
+                    log.info("rawQuery：{}",rawQuery);
+                    StringBuilder newRawQuery = new StringBuilder();
+                    String paramSeparator = "&";
+                    String[] paramStr = rawQuery.split(paramSeparator);
+                    boolean isFirst = true;
+                    for (String s : paramStr) {
+                        if(!isFirst){
+                            newRawQuery.append('&');
+                        }
+                        if(s.contains("data=")){
+                           newRawQuery.append("data=").append(clearText);
+                        }else {
+                            newRawQuery.append(s);
+                        }
+                        isFirst = false;
                     }
-                    return chain.filter(exchange.mutate().request(serverHttpRequest).build());
+                    uri = UriComponentsBuilder.fromUri(uri)
+                            .replaceQuery(newRawQuery.toString())
+                            .build(false)
+                            .toUri();
+                    ServerHttpRequest httpRequest = exchange.getRequest().mutate().uri(uri).build();
+                    return chain.filter(exchange.mutate().request(httpRequest).build());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
