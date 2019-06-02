@@ -1,4 +1,4 @@
-package com.iotechina.base.gateway.server.config;
+package cn.exceptioncode.gateway.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import javax.annotation.PreDestroy;
 
-@Configuration
+
+@Deprecated
 /**
  *
  * @author zhangkai
@@ -57,10 +58,10 @@ public class RedisConfiguration {
     /**
      * Clear database before shut down.
      */
-//    public @PreDestroy
-//    void flushTestDb() {
-//        factory.getConnection().flushDb();
-//    }
+    public @PreDestroy
+    void flushTestDb() {
+        factory.getConnection().flushDb();
+    }
 
 
     @Bean
