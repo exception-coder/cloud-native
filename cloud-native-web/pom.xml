@@ -59,11 +59,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- nacos 服务发现依赖 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
                 <version>0.2.2.RELEASE</version>
             </dependency>
+            <!-- nacos  配置管理依赖 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
