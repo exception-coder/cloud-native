@@ -3,9 +3,9 @@ spring:
     # 使用Nacos组为服务注册发现和配置中心
     nacos:
       config:
-        server-addr: 7568259a.ngrok.io:80
+        server-addr: 127.0.0.1:8848
       discovery:
-        server-addr: 7568259a.ngrok.io:80
+        server-addr: 127.0.0.1:8848
     # 使用Sentinel作为流量控制和熔断器
     sentinel:
       transport:
