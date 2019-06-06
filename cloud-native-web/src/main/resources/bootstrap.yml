@@ -2,10 +2,10 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 127.0.0.1:8848
+        server-addr: dev.iotechina.com:8848
 #        namespace: 9a7e9a7f-e203-45a2-9e07-db91e3fe95a4
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: dev.iotechina.com:8848
 
 
 ---

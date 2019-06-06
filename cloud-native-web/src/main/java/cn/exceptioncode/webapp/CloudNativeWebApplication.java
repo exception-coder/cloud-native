@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -19,7 +22,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 /**
- *
  * @author zhangkai
  */
 @Slf4j
@@ -38,14 +40,14 @@ public class CloudNativeWebApplication {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(CloudNativeWebApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(CloudNativeWebApplication.class);
+        springApplication.addListeners(new StartingEvent());
+        springApplication.run();
     }
 
 
     /**
-     *
      * http://localhost:8081/test/echo/2018
-     *
      */
     @RestController
     public class TestController {
@@ -53,12 +55,14 @@ public class CloudNativeWebApplication {
         private final RestTemplate restTemplate;
 
         @Autowired
-        public TestController(RestTemplate restTemplate) {this.restTemplate = restTemplate;}
+        public TestController(RestTemplate restTemplate) {
+            this.restTemplate = restTemplate;
+        }
 
         @RequestMapping(value = "/test/echo/{str}", method = RequestMethod.GET,
-        produces = MediaType.TEXT_XML_VALUE)
+                produces = MediaType.TEXT_PLAIN_VALUE)
         public String echo(@PathVariable String str, @RequestParam("data") String data, ServerHttpRequest httpRequest) {
-            log.info("请求参数data：{}",data);
+            log.info("请求参数data：{}", data);
             List<String> datas = httpRequest.getQueryParams().get("data");
             log.info("请求参数datas：{}", datas);
             String text = restTemplate.getForObject("http://cloud-service/echo/" + str, String.class);
@@ -70,7 +74,9 @@ public class CloudNativeWebApplication {
     class EchoController {
         @RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
         public String echo(@PathVariable String string) throws UnknownHostException {
-            return Inet4Address.getLocalHost().getHostName() +":"+env.getProperty("server.port")+" Hello Nacos Discovery " + string;
+            return Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + string;
         }
     }
+
+
 }
