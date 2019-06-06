@@ -15,7 +15,7 @@ public class WebController {
         return Mono.just("index");
     }
 
-    @GetMapping(value = "/busy",produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/busy", produces = MediaType.TEXT_PLAIN_VALUE)
     public Mono<String> busy() {
         return Mono.just("busy");
     }
