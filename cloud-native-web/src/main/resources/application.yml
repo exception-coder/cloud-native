@@ -5,3 +5,11 @@ spring:
     name: cloud-service
 server:
   port: 8081
+cn:
+  exceptioncode:
+    api:
+      code:
+        doc:
+          controller-base-package: cn.excptioncode.webapp.controller
+          enable: true
+

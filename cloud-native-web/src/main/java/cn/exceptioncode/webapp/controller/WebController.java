@@ -1,18 +1,28 @@
 package cn.exceptioncode.webapp.controller;
 
+import cn.exceptioncode.api.doc.client.autoconfigure.ApiDocClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+
+/**
+ *
+ * @author zhangkai
+ */
 @RestController
 public class WebController {
+
+    @Autowired
+    ApiDocClientService apiDocClientService;
 
 
     @GetMapping("/foo/index")
     public Mono<String> index() {
-        return Mono.just("index");
+        return Mono.just(apiDocClientService.getControllerBasePackage());
     }
 
     @GetMapping(value = "/busy", produces = MediaType.TEXT_PLAIN_VALUE)

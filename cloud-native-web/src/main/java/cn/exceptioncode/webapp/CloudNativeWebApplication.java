@@ -1,16 +1,15 @@
 package cn.exceptioncode.webapp;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -27,7 +26,7 @@ import java.util.List;
 @Slf4j
 @EnableDiscoveryClient
 @SpringBootApplication
-public class CloudNativeWebApplication {
+public class CloudNativeWebApplication{
 
     @Autowired
     private Environment env;
@@ -37,6 +36,7 @@ public class CloudNativeWebApplication {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 
 
     public static void main(String[] args) {
@@ -77,6 +77,10 @@ public class CloudNativeWebApplication {
             return Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + string;
         }
     }
+
+
+
+
 
 
 }

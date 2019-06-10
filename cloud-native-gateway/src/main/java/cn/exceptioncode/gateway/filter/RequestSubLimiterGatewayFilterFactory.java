@@ -78,7 +78,7 @@ public class RequestSubLimiterGatewayFilterFactory extends AbstractGatewayFilter
                 String appId = keyResolver.get(GatewayConfig.REQUEST_APPID_HEADER);
                 String reqSerial = keyResolver.get(GatewayConfig.REQUEST_SERIAL_HEADER);
                 if (StringUtils.isAnyEmpty(appId, reqSerial)) {
-                    // 如果请求同中不包含  GatewayConfig.REQUEST_APPID_HEADER  GatewayConfig.REQUEST_SERIAL_HEADER 则直接方形
+                    // 如果请求同中不包含  GatewayConfig.REQUEST_APPID_HEADER  GatewayConfig.REQUEST_SERIAL_HEADER 则直接放行
                     return chain.filter(exchange);
                 }
                 return distributedLockService.tryGetDistributedLock(appId, reqSerial,
