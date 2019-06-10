@@ -6,10 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -72,7 +69,8 @@ public class CloudNativeWebApplication{
 
     @RestController
     class EchoController {
-        @RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
+        @RequestMapping(value = "/echo/{string}", method = RequestMethod.GET,
+                produces = MediaType.TEXT_PLAIN_VALUE)
         public String echo(@PathVariable String string) throws UnknownHostException {
             return Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + string;
         }

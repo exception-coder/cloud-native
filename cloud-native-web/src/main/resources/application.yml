@@ -12,4 +12,6 @@ cn:
         doc:
           controller-base-package: cn.excptioncode.webapp.controller
           enable: true
-
+logging:
+  level:
+    root: info

@@ -2,6 +2,7 @@ package cn.exceptioncode.webapp.controller;
 
 import cn.exceptioncode.api.doc.client.autoconfigure.ApiDocClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.ribbon.RibbonClientConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +17,9 @@ import reactor.core.publisher.Mono;
 @RestController
 public class WebController {
 
-    @Autowired
-    ApiDocClientService apiDocClientService;
 
+    @Autowired(required = false)
+    ApiDocClientService apiDocClientService;
 
     @GetMapping("/foo/index")
     public Mono<String> index() {

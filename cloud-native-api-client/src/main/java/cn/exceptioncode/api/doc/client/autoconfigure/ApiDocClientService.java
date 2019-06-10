@@ -3,8 +3,15 @@ package cn.exceptioncode.api.doc.client.autoconfigure;
 
 import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.util.unit.DataUnit;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.reactive.result.method.RequestMappingInfo;
+import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
+
+import java.util.Map;
 
 
 /**
@@ -25,8 +32,8 @@ public class ApiDocClientService{
     }
 
     @EventListener
-    public void applicationRunListener(ContextStartedEvent ces){
-      log.info("Application Run {}",ces.getApplicationContext().getStartupDate());
+    public void applicationRunListener(ApplicationStartedEvent event){
+        RequestMappingHandlerMapping mapping = event.getApplicationContext().getBean(RequestMappingHandlerMapping.class);
     }
 
     public String getControllerBasePackage() {
