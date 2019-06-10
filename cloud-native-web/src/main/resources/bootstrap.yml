@@ -12,7 +12,7 @@ spring:
 
 #spring:
 #  profiles: dev
-#use-local-cache: truew
+#use-local-cache: true
 
 ---
 
