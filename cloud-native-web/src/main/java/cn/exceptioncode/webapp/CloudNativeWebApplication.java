@@ -57,7 +57,7 @@ public class CloudNativeWebApplication{
         }
 
         @RequestMapping(value = "/test/echo/{str}", method = RequestMethod.GET,
-                produces = MediaType.TEXT_PLAIN_VALUE)
+                produces = MediaType.TEXT_HTML_VALUE)
         public String echo(@PathVariable String str, @RequestParam("data") String data, ServerHttpRequest httpRequest) {
             log.info("请求参数data：{}", data);
             List<String> datas = httpRequest.getQueryParams().get("data");
@@ -70,7 +70,7 @@ public class CloudNativeWebApplication{
     @RestController
     class EchoController {
         @RequestMapping(value = "/echo/{string}", method = RequestMethod.GET,
-                produces = MediaType.TEXT_PLAIN_VALUE)
+                produces = MediaType.TEXT_HTML_VALUE)
         public String echo(@PathVariable String string) throws UnknownHostException {
             return Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + string;
         }
