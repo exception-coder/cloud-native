@@ -22,10 +22,6 @@ spring:
         request-rate-limiter:
           deny-empty-key: true
           empty-key-status-code: 404
-        request-sub-limiter:
-          # 重复请求限制时间 单位：s
-          expire-time: 1
-          enforce: true
         decrypt-verify-sign:
           data-key: data
           sign-key: sign
@@ -57,10 +53,10 @@ spring:
                 redis-rate-limiter.burstCapacity: 20
                 key-resolver: "#{@userKeyResolver}"
             - name: DecryptVerifySign
-              args:
-                decrypt-key-resolver.dataKey: data
-                decrypt-key-resolver.signKey: sign
             - name: RequestSubLimiter
+              args:
+                sub-limiter.expireTime: 3
+                sub-limiter.enforce: true
           # 路由匹配规则
           predicates:
             # 对于请求头包含 X-Request-Id 且符合正则表达式 \d+ 的进行匹配
