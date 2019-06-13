@@ -58,7 +58,11 @@ public class CloudNativeWebApplication{
 
         @RequestMapping(value = "/test/echo/{str}", method = RequestMethod.GET,
                 produces = MediaType.TEXT_HTML_VALUE)
-        public String echo(@PathVariable String str, @RequestParam("data") String data, ServerHttpRequest httpRequest) {
+        public String echo(@PathVariable String str, @RequestParam("data") String data, ServerHttpRequest httpRequest) throws UnknownHostException{
+           boolean debug = true;
+           if(debug){
+               return Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + str;
+           }
             log.info("请求参数data：{}", data);
             List<String> datas = httpRequest.getQueryParams().get("data");
             log.info("请求参数datas：{}", datas);
