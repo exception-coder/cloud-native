@@ -1,6 +1,7 @@
 package cn.exceptioncode.webapp.controller;
 
 import cn.exceptioncode.api.doc.client.autoconfigure.ApiDocClientService;
+import cn.exceptioncode.webapp.service.WebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.ribbon.RibbonClientConfiguration;
 import org.springframework.http.MediaType;
@@ -20,6 +21,14 @@ public class WebController {
 
     @Autowired(required = false)
     ApiDocClientService apiDocClientService;
+
+    @Autowired
+    WebService webService;
+
+    @GetMapping("/exception")
+    public void exception() throws Exception {
+        webService.service();
+    }
 
     @GetMapping("/foo/index")
     public Mono<String> index() {
