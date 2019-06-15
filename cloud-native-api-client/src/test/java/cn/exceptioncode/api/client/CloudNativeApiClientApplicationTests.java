@@ -1,4 +1,4 @@
-package cn.exceptioncode.cloudnativeapiclient;
+package cn.exceptioncode.api.client;
 
 import cn.exceptioncode.api.doc.client.CloudNativeApiClientApplication;
 import cn.exceptioncode.api.doc.client.dto.AddApiDTO;
@@ -32,7 +32,8 @@ public class CloudNativeApiClientApplicationTests {
 		addApiDTO.setStatus("undone");
 		addApiDTO.setRes_body("hello world");
 		addApiDTO.setRes_body_type("raw");
-		addApiDTO.setSwitch_notice(true);
+		// 暂时不知道有什么用
+		addApiDTO.setSwitch_notice(false);
 		addApiDTO.setMessage("message");
 		System.out.println(yapiClient.interfaceSave(addApiDTO,yapiService.loginCookie()));
 	}
