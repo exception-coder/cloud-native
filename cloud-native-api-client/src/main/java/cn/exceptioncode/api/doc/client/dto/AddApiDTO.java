@@ -1,5 +1,6 @@
 package cn.exceptioncode.api.doc.client.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddApiDTO {
@@ -43,29 +44,33 @@ public class AddApiDTO {
      */
     private boolean switch_notice;
     private String message;
+    /**
+     *
+     * 备注
+     */
     private String desc;
     /**
      *
      * 请求 method
      */
     private String method;
-    private List<?> req_query;
+    private List<?> req_query = new ArrayList<>(3);
     /**
      *
      * 请求头
      */
-    private List<ReqHeadersBean> req_headers;
+    private List<ReqHeadersBean> req_headers = new ArrayList<>(10);
     /**
      *
      *
      * 请求 form 参数
      */
-    private List<?> req_body_form;
+    private List<?> req_body_form = new ArrayList<>(3);
     /**
      *
      * GET 请求参数
      */
-    private List<?> req_params;
+    private List<?> req_params = new ArrayList<>(3);
 
     public String getToken() {
         return token;
