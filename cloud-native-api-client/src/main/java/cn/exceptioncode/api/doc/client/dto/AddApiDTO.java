@@ -59,7 +59,7 @@ public class AddApiDTO {
      *
      * 请求头
      */
-    private List<ReqHeadersBean> req_headers = new ArrayList<>(10);
+    private List<?> req_headers = new ArrayList<>(10);
     /**
      *
      *
@@ -168,11 +168,11 @@ public class AddApiDTO {
         this.req_query = req_query;
     }
 
-    public List<ReqHeadersBean> getReq_headers() {
+    public List<?> getReq_headers() {
         return req_headers;
     }
 
-    public void setReq_headers(List<ReqHeadersBean> req_headers) {
+    public void setReq_headers(List<?> req_headers) {
         this.req_headers = req_headers;
     }
 
@@ -192,19 +192,4 @@ public class AddApiDTO {
         this.req_params = req_params;
     }
 
-    public static class ReqHeadersBean {
-        /**
-         * name : Content-Type
-         */
-
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
 }

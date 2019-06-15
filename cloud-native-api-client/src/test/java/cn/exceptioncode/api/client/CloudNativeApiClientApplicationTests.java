@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CloudNativeApiClientApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,6 +34,8 @@ public class CloudNativeApiClientApplicationTests {
 		addApiDTO.setDesc("接口描述。。。。 开发调试数据");
 		addApiDTO.setMethod("GET");
 		addApiDTO.setStatus("undone");
+		List<Map<String,String>> reqParams = new ArrayList<>(3);
+		addApiDTO.setReq_params(reqParams);
 		addApiDTO.setRes_body("hello world");
 		addApiDTO.setRes_body_type("raw");
 		// 暂时不知道有什么用
