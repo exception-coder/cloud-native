@@ -5,138 +5,7 @@ import java.util.List;
 public class AddApiDTO {
 
 
-    /**
-     * token : b03d88c3cb8c688fdd647a7983de5ed6e6b6d375982633c0cead6fb7f8e8f6dc
-     * req_query : []
-     * req_headers : [{"name":"Content-Type"}]
-     * req_body_form : []
-     * title : /api/group/list
-     * catid : 1376
-     * path : /api/group/list
-     * status : undone
-     * res_body_type : json
-     * res_body : {
-     "errcode": 0,
-     "errmsg": "成功！",
-     "data": [
-     {
-     "_id": 11,
-     "group_name": "个人空间",
-     "add_time": 1507877807,
-     "up_time": 1507877807,
-     "type": "private",
-     "role": "owner"
-     },
-     {
-     "_id": 358,
-     "group_name": "测试新组长",
-     "group_desc": "是组长，但不是超级管理员的情况",
-     "uid": 11,
-     "add_time": 1510152313,
-     "up_time": 1510216549,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 295,
-     "group_name": "eerurueuff",
-     "group_desc": "sdsuddhdh",
-     "uid": 11,
-     "add_time": 1509678660,
-     "up_time": 1509678660,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 19,
-     "group_name": "demo",
-     "group_desc": "demo",
-     "uid": 11,
-     "add_time": 1507877873,
-     "up_time": 1509679366,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 402,
-     "group_name": "yy",
-     "group_desc": "",
-     "uid": 11,
-     "add_time": 1511431183,
-     "up_time": 1511431183,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 390,
-     "group_name": "ttt",
-     "group_desc": "4",
-     "uid": 11,
-     "add_time": 1511430683,
-     "up_time": 1511430683,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 384,
-     "group_name": "yapi 上线测试分组（误删）",
-     "group_desc": "",
-     "uid": 11,
-     "add_time": 1511264706,
-     "up_time": 1511264706,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 373,
-     "group_name": "test",
-     "group_desc": "巍峨如如如如",
-     "uid": 11,
-     "add_time": 1510747315,
-     "up_time": 1510747315,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 366,
-     "group_name": "测试新组长1",
-     "group_desc": "是组长，但不是超级管理员的情况",
-     "uid": 11,
-     "add_time": 1510152399,
-     "up_time": 1510152403,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 151,
-     "group_name": "test_123",
-     "group_desc": "",
-     "uid": 11,
-     "add_time": 1508489714,
-     "up_time": 1508489714,
-     "type": "public",
-     "role": "admin"
-     },
-     {
-     "_id": 40,
-     "group_name": "test1",
-     "group_desc": "",
-     "uid": 11,
-     "add_time": 1507882145,
-     "up_time": 1507882145,
-     "type": "public",
-     "role": "admin"
-     }
-     ]
-     }
-     * switch_notice : false
-     * message :
-     * desc : <p><br></p>
-     * method : GET
-     * req_params : []
-     */
-
-    private String token;
+    private String token = "b03d88c3cb8c688fdd647a7983de5ed6e6b6d375982633c0cead6fb7f8e8f6dc";
     /**
      *
      * 接口标题
@@ -146,7 +15,7 @@ public class AddApiDTO {
      *
      * 品类id
      */
-    private String catid;
+    private String catid = "21";
     /**
      *
      * 请求路径
