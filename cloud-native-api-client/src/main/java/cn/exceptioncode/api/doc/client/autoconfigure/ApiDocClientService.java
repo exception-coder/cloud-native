@@ -4,12 +4,8 @@ package cn.exceptioncode.api.doc.client.autoconfigure;
 import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.unit.DataUnit;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.reactive.result.method.RequestMappingInfo;
-import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.stereotype.Controller;
 
 import java.util.Map;
 
@@ -24,8 +20,6 @@ public class ApiDocClientService{
 
     private ApiDocClientProperties apiDocClientProperties;
 
-    private String controllerBasePackage;
-
 
     public ApiDocClientService(ApiDocClientProperties apiDocClientProperties){
         this.apiDocClientProperties = apiDocClientProperties;
@@ -33,7 +27,11 @@ public class ApiDocClientService{
 
     @EventListener
     public void applicationRunListener(ApplicationStartedEvent event){
-        RequestMappingHandlerMapping mapping = event.getApplicationContext().getBean(RequestMappingHandlerMapping.class);
+        Map<String,Object> controllers = event.getApplicationContext().getBeansWithAnnotation(Controller.class);
+        controllers.forEach((s, o) ->
+            log.warn("alias:{},controller:{}",s,o)
+        );
+
     }
 
     public String getControllerBasePackage() {

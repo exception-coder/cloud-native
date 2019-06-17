@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono;
 @RestController
 public class WebController {
 
-
     @Autowired(required = false)
     ApiDocClientService apiDocClientService;
 

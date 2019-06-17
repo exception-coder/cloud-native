@@ -2,8 +2,7 @@ spring:
   application:
     name: gateway
   redis:
-    host: 0.tcp.ngrok.io
-    port: 15522
+    host: 129.28.173.232
 management:
   endpoint:
     gateway:
@@ -11,4 +10,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: gateway
+        include: '*'

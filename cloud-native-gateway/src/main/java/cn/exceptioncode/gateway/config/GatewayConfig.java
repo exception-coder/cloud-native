@@ -1,5 +1,6 @@
 package cn.exceptioncode.gateway.config;
 
+import cn.exceptioncode.gateway.filter.reqsublimit.RequestSubLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
@@ -51,6 +52,12 @@ public class GatewayConfig {
 
 
     RemoteAddressResolver resolver = XForwardedRemoteAddressResolver.maxTrustedIndex(1);
+
+
+    @Bean
+    RequestSubLimiter subLimiter(){
+        return new RequestSubLimiter(RequestSubLimiter.Config.class);
+    }
 
 
     @Bean
