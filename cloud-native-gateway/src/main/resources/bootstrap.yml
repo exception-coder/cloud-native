@@ -22,9 +22,6 @@ spring:
         request-rate-limiter:
           deny-empty-key: true
           empty-key-status-code: 404
-        decrypt-verify-sign:
-          data-key: data
-          sign-key: sign
       # 路由集合
       routes:
         # 路由实例 id
