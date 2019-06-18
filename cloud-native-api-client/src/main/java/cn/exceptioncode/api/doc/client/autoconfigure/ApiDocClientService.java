@@ -121,7 +121,7 @@ public class ApiDocClientService {
                                         String jsonStr = JSON.toJSONString(clazz.newInstance(),SerializerFeature.WRITE_MAP_NULL_FEATURES);
                                         log.info("返回数据:{}",jsonStr);
                                         ApiPropertiesDTO  apiPropertiesDTO = new ApiPropertiesDTO();
-                                        apiPropertiesDTO.setType("");
+                                        apiPropertiesDTO.setType("object");
                                         Map<String, Object> map = JSON.parseObject(jsonStr,Map.class);
 
                                     }catch (InstantiationException|IllegalAccessException e){
