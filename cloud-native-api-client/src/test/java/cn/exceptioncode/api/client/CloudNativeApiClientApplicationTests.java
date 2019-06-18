@@ -1,7 +1,7 @@
 package cn.exceptioncode.api.client;
 
 import cn.exceptioncode.api.doc.client.CloudNativeApiClientApplication;
-import cn.exceptioncode.api.doc.client.dto.AddApiDTO;
+import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import cn.exceptioncode.api.doc.client.feign.YapiClient;
 import cn.exceptioncode.api.doc.client.service.YapiService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,20 +28,25 @@ public class CloudNativeApiClientApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		AddApiDTO addApiDTO = new AddApiDTO();
-		addApiDTO.setTitle("开发调试测试接口");
-		addApiDTO.setPath("/api/group/list");
-		addApiDTO.setDesc("接口描述。。。。 开发调试数据");
-		addApiDTO.setMethod("GET");
-		addApiDTO.setStatus("undone");
+		ApiDTO apiDTO = new ApiDTO();
+		apiDTO.setTitle("开发调试测试接口");
+		apiDTO.setPath("/api/group/list");
+		apiDTO.setDesc("接口描述。。。。 开发调试数据");
+		apiDTO.setMethod("GET");
+		apiDTO.setStatus("undone");
 		List<Map<String,String>> reqParams = new ArrayList<>(3);
-		addApiDTO.setReq_params(reqParams);
-		addApiDTO.setRes_body("hello world");
-		addApiDTO.setRes_body_type("raw");
+		apiDTO.setReq_params(reqParams);
+		apiDTO.setRes_body("hello world");
+		apiDTO.setRes_body_type("raw");
 		// 暂时不知道有什么用
-		addApiDTO.setSwitch_notice(false);
-		addApiDTO.setMessage("message");
-		System.out.println(yapiClient.interfaceSave(addApiDTO,yapiService.loginCookie()));
+		apiDTO.setSwitch_notice(false);
+		apiDTO.setMessage("message");
+		System.out.println(yapiClient.interfaceSave(apiDTO,yapiService.loginCookie()));
 	}
 
+
+	public static void main(String[] args) {
+		String[] arr = new String[]{};
+		System.out.println(arr.length);
+	}
 }

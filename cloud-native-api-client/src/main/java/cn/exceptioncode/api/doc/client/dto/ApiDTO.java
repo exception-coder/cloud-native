@@ -3,10 +3,10 @@ package cn.exceptioncode.api.doc.client.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddApiDTO {
+public class ApiDTO {
 
 
-    private String token = "b03d88c3cb8c688fdd647a7983de5ed6e6b6d375982633c0cead6fb7f8e8f6dc";
+    private String token = "bc30a4d684908840d42d9bb094e0891f8f778a01be2c15aa9ef27c53e8d2bf23";
     /**
      *
      * 接口标题
@@ -16,7 +16,7 @@ public class AddApiDTO {
      *
      * 品类id
      */
-    private String catid = "21";
+    private String catid = "16";
     /**
      *
      * 请求路径
@@ -54,10 +54,20 @@ public class AddApiDTO {
      * 请求 method
      */
     private String method;
+    /**
+     *
+     * 请求体参数
+     */
+    private List<?> req_body_other = new ArrayList<>(1);
+    /**
+     *
+     * url请求参数
+     *
+     */
     private List<?> req_query = new ArrayList<>(3);
     /**
      *
-     * 请求头
+     * 请求头参数
      */
     private List<?> req_headers = new ArrayList<>(10);
     /**

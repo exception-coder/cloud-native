@@ -5,6 +5,7 @@ import cn.exceptioncode.common.enums.StatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 接口返回对象的固定格式

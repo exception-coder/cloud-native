@@ -1,6 +1,6 @@
 package cn.exceptioncode.api.doc.client.feign;
 
-import cn.exceptioncode.api.doc.client.dto.AddApiDTO;
+import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public interface YapiClient {
      * @return
      */
     @PostMapping("/interface/add")
-    String interfaceAdd(@RequestBody AddApiDTO addApiDTO, @RequestHeader(value = "Cookie") String cookie);
+    String interfaceAdd(@RequestBody ApiDTO apiDTO, @RequestHeader(value = "Cookie") String cookie);
 
 
     /**
@@ -45,7 +45,7 @@ public interface YapiClient {
      * @return
      */
     @PostMapping("/interface/save")
-    String interfaceSave(@RequestBody AddApiDTO addApiDTO, @RequestHeader(value = "Cookie") String cookie);
+    String interfaceSave(@RequestBody ApiDTO apiDTO, @RequestHeader(value = "Cookie") String cookie);
 
 
 }

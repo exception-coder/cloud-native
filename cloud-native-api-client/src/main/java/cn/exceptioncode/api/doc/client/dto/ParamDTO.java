@@ -11,6 +11,17 @@ import lombok.Data;
 @Data
 public class ParamDTO {
 
+    public ParamDTO() {
+    }
+
+    public ParamDTO(String name, String type, String example, String desc, String required) {
+        this.name = name;
+        this.type = type;
+        this.example = example;
+        this.desc = desc;
+        this.required = required;
+    }
+
     private String name;
 
     private String type;
