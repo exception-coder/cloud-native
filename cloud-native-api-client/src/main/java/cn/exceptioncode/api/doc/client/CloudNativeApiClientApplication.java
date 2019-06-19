@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author zhangkai
  */
 @SpringBootApplication
-//@EnableFeignClients
 public class CloudNativeApiClientApplication {
 
 	public static void main(String[] args) {
