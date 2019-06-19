@@ -5,9 +5,6 @@ import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProp
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import cn.exceptioncode.api.doc.client.dto.ApiPropertiesDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
-import cn.exceptioncode.api.doc.client.dto.ResBodyDTO;
-import cn.exceptioncode.api.doc.client.feign.YapiClient;
-import cn.exceptioncode.api.doc.client.service.YapiService;
 import cn.exceptioncode.api.doc.client.util.YapiClientUtil;
 import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
