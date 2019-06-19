@@ -41,7 +41,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.58</version>
-            <optional>true</optional>
+           <!-- <optional>true</optional>-->
         </dependency>
 
         <!-- Guava is a suite of core and expanded libraries that include utility classes, google's collections, io classes, and much much more. -->
