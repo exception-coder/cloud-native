@@ -5,6 +5,7 @@ import cn.exceptioncode.common.enums.StatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +18,8 @@ public class BaseResponse<T> implements Serializable {
     private int code;
     private String message;
     private T data;
+    private List<BaseResponse> baseResponses;
+
 
     public BaseResponse(){
         this.setStatus(DefaultStatusEnum.SUCCESS);

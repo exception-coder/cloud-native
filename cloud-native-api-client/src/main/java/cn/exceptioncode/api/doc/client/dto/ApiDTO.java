@@ -16,7 +16,7 @@ public class ApiDTO {
      *
      * 品类id
      */
-    private String catid = "16";
+    private String catid = "12";
     /**
      *
      * 请求路径

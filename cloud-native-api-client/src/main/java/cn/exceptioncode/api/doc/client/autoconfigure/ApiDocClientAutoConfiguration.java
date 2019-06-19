@@ -22,6 +22,7 @@ public class ApiDocClientAutoConfiguration {
     @Autowired
     ApiDocClientProperties apiDocClientProperties;
 
+
     @Bean(name = "apiDocClientService")
     @ConditionalOnMissingBean(ApiDocClientService.class)
     public ApiDocClientService apiDocClientService(){

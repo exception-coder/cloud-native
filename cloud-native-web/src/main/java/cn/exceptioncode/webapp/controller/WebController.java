@@ -3,7 +3,6 @@ package cn.exceptioncode.webapp.controller;
 import cn.exceptioncode.api.doc.client.autoconfigure.ApiDocClientService;
 import cn.exceptioncode.webapp.service.WebService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.ribbon.RibbonClientConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;

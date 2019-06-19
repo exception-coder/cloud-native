@@ -14,7 +14,7 @@ import java.util.Map;
  * @author zhangkai
  */
 @Service
-@FeignClient(name = "yapi",url = "http://129.28.173.232:3000/api")
+@FeignClient(name = "yapi",url = "http://127.0.0.1:3000/api")
 public interface YapiClient {
 
     /**

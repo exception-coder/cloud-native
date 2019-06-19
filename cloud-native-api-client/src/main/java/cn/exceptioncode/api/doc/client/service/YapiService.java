@@ -34,15 +34,15 @@ public class YapiService {
         Response response = yapiClient.userLogin(map);
         Collection<String> list = response.headers().get("set-cookie");
         String cookie = "";
-        Iterator<String> iterator = list.iterator();
-        boolean isFirst = true;
-        while (iterator.hasNext()) {
-            if (!isFirst) {
-                cookie += ";";
-            }
-            cookie += iterator.next();
-            isFirst = false;
-        }
+//        Iterator<String> iterator = list.iterator();
+//        boolean isFirst = true;
+//        while (iterator.hasNext()) {
+//            if (!isFirst) {
+//                cookie += ";";
+//            }
+//            cookie += iterator.next();
+//            isFirst = false;
+//        }
         return cookie;
     }
 }
