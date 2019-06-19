@@ -2,8 +2,6 @@ package cn.exceptioncode.api.client;
 
 import cn.exceptioncode.api.doc.client.CloudNativeApiClientApplication;
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
-import cn.exceptioncode.api.doc.client.feign.YapiClient;
-import cn.exceptioncode.api.doc.client.service.YapiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,11 +18,11 @@ import java.util.Map;
 @SpringBootTest(classes = CloudNativeApiClientApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CloudNativeApiClientApplicationTests {
 
-	@Autowired
-	YapiClient yapiClient;
-
-	@Autowired
-	YapiService yapiService;
+//	@Autowired
+//	YapiClient yapiClient;
+//
+//	@Autowired
+//	YapiService yapiService;
 
 	@Test
 	public void contextLoads() {
@@ -41,7 +39,7 @@ public class CloudNativeApiClientApplicationTests {
 		// 暂时不知道有什么用
 		apiDTO.setSwitch_notice(false);
 		apiDTO.setMessage("message");
-		System.out.println(yapiClient.interfaceSave(apiDTO,yapiService.loginCookie()));
+//		System.out.println(yapiClient.interfaceSave(apiDTO,yapiService.loginCookie()));
 	}
 
 
