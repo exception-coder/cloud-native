@@ -136,7 +136,9 @@ public class ApiDocClientService {
                                 for (Parameter parameter : parameters) {
                                     Annotation[] annotations = parameter.getAnnotations();
                                     if (annotations != null && annotations.length == 1) {
-                                        String paramAnnotationName =  getTargetClassFromJdkDynamicAopProxy(annotations[0]).getSimpleName();
+                                        // 获取动态代理类类名 
+                                        // TODO: 2019/6/20  
+                                        String paramAnnotationName =  "";
                                         log.info("请求参数注解简称：{}",paramAnnotationName);
                                         switch (paramAnnotationName) {
                                             case "RequestBody":
@@ -224,33 +226,6 @@ public class ApiDocClientService {
 
 
 
-    private static Class getTargetClassFromJdkDynamicAopProxy(Object candidate) {
-        final String ADVISED_FIELD_NAME = "advised";
-
-        final String
-                CLASS_JDK_DYNAMIC_AOP_PROXY = "org.springframework.aop.framework.JdkDynamicAopProxy";
-        try {
-
-            InvocationHandler invocationHandler = Proxy.getInvocationHandler(candidate);
-            if (!invocationHandler.getClass().getName().equals(CLASS_JDK_DYNAMIC_AOP_PROXY)) {
-                //在目前的spring版本，这处永远不会执行，除非以后spring的dynamic proxy实现变掉
-                log.warn("the invocationHandler of JdkDynamicProxy isn`t the instance of "
-                        + CLASS_JDK_DYNAMIC_AOP_PROXY);
-                return candidate.getClass();
-            }
-            AdvisedSupport advised = (AdvisedSupport) new DirectFieldAccessor(invocationHandler).getPropertyValue(ADVISED_FIELD_NAME);
-            Class targetClass = advised.getTargetClass();
-            if (Proxy.isProxyClass(targetClass)) {
-                // 目标类还是代理，递归
-                Object target = advised.getTargetSource().getTarget();
-                return getTargetClassFromJdkDynamicAopProxy(target);
-            }
-            return targetClass;
-        } catch (Exception e) {
-            log.error("get target class from " + CLASS_JDK_DYNAMIC_AOP_PROXY + " error", e);
-            return candidate.getClass();
-        }
-    }
 
     private void log(String reqSource) {
         log.warn("请求参数来源：{}", reqSource);
