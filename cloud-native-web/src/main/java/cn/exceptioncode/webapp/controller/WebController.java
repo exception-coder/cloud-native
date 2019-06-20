@@ -28,8 +28,9 @@ public class WebController {
 
     @GetMapping(value = "/test/javadoc/{foo}",name = "debug测试接口foo_bar")
     public Mono<String> javadoc(@RequestParam(name = "userName",required = false) String userName,
-                                @PathVariable(name = "foo") String foo){
-        return Mono.just("hello world javadoc,userName:"+userName+",foo:"+foo);
+                                @PathVariable(name = "foo") String foo,
+                                @RequestParam(name = "bar") String bar){
+        return Mono.just("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar);
     }
 
 

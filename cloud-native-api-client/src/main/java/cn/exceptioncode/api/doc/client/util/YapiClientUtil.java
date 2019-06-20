@@ -3,7 +3,6 @@ package cn.exceptioncode.api.doc.client.util;
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import com.alibaba.fastjson.JSON;
 import okhttp3.Response;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;

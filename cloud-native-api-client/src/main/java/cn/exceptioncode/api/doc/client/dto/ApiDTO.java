@@ -27,7 +27,7 @@ public class ApiDTO {
      *
      * 接口状态
      */
-    private String status;
+    private String status = "undone";
     /**
      *
      * 返回数据类型 枚举：json，raw
