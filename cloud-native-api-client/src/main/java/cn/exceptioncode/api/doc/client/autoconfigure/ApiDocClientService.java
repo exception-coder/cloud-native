@@ -223,7 +223,7 @@ public class ApiDocClientService {
                                     try {
                                         if (!clazz.isPrimitive()) {
                                             // 返回类型是json
-                                            String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES);
+                                            String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES,SerializerFeature.QuoteFieldNames);
                                             apiDTO.setRes_body(jsonStr);
 
                                             log.info("返回数据:{}", jsonStr);
