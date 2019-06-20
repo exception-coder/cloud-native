@@ -27,7 +27,7 @@ public class WebController {
     WebService webService;
 
 
-    @GetMapping(value = "/test/javadoc/{foo}",name = "debug测试接口foo_bar")
+    @GetMapping(value = "/test/javadoc/{foo}",name = "api-client调试使用接口")
     public Mono<String> javadoc(@ParamDesc(desc = "用户名称",example = "泡泡熊")  @RequestParam(name = "userName",required = false) String userName,
                                 @PathVariable(name = "foo") String foo,
                                 @RequestParam(name = "bar") String bar){

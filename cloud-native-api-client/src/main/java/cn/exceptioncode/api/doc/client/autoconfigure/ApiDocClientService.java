@@ -208,19 +208,19 @@ public class ApiDocClientService {
                                 } else {
                                     try {
 
-                                        // 返回类型是json
-                                        String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES);
-                                        apiDTO.setRes_body(jsonStr);
+                                        if(!clazz.isPrimitive()){
+                                            // 返回类型是json
+                                            String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES);
+                                            apiDTO.setRes_body(jsonStr);
 
-                                        log.info("返回数据:{}", jsonStr);
-                                        ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
-                                        apiPropertiesDTO.setType("object");
-                                        Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
-                                        apiPropertiesDTO.setProperties(map);
-
+                                            log.info("返回数据:{}", jsonStr);
+                                            ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
+                                            apiPropertiesDTO.setType("object");
+                                            Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
+                                            apiPropertiesDTO.setProperties(map);
+                                        }
 
                                     } catch (InstantiationException | IllegalAccessException e) {
-                                        e.printStackTrace();
                                         log.error(e.getMessage());
                                         // 返回类型不是json
                                     }
