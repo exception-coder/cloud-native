@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.1.RELEASE</version>
-	</parent>
-	<groupId>cn.exception-code</groupId>
-	<artifactId>cloud-native-api-client</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>cloud-native-api-client</name>
-	<description>web api 收集客户端</description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.1.RELEASE</version>
+    </parent>
+    <groupId>cn.exception-code</groupId>
+    <artifactId>cloud-native-api-client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>cloud-native-api-client</name>
+    <description>web api 收集客户端</description>
 
-	<properties>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-	</properties>
+    <properties>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+    </properties>
 
-	<dependencies>
+    <dependencies>
 
 
         <!-- OkHttp -->
@@ -36,10 +36,10 @@
             <optional>true</optional>
         </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
 
         <!-- Fastjson is a JSON processor (JSON parser + JSON generator) written in Java -->
         <dependency>
@@ -49,12 +49,12 @@
         </dependency>
 
         <!-- Guava is a suite of core and expanded libraries that include utility classes, google's collections, io classes, and much much more. -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>28.0-jre</version>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.0-jre</version>
             <optional>true</optional>
-		</dependency>
+        </dependency>
 
 
         <dependency>
@@ -71,8 +71,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-           <!-- <scope>test</scope>-->
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -83,25 +82,18 @@
     </dependencies>
 
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+        </dependencies>
+    </dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

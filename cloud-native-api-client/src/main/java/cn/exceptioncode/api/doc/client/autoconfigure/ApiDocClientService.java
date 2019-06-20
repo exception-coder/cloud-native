@@ -10,19 +10,29 @@ import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
+import com.sun.deploy.net.proxy.ProxyUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AdvisedSupport;
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.DirectFieldAccessor;
+import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +45,7 @@ import java.util.Map;
 public class ApiDocClientService {
 
 
-    private ApiDocClientProperties apiDocClientProperties;
+    private  ApiDocClientProperties apiDocClientProperties;
 
 
     public ApiDocClientService(ApiDocClientProperties apiDocClientProperties) {
@@ -53,27 +63,63 @@ public class ApiDocClientService {
         controllers.forEach((s, o) -> {
                     if (!list.contains(o)) {
                         list.add(o);
-                        Controller controllerAnn = o.getClass().getAnnotation(Controller.class);
+                        RequestMapping requestMapping = o.getClass().getAnnotation(RequestMapping.class);
                         String pathPrefix = "";
-                        if (controllerAnn != null) {
-                            pathPrefix = controllerAnn.value();
+                        if (requestMapping != null) {
+                            String[] pathValues = requestMapping.value();
+                            if(pathValues!=null&&pathValues.length>0){
+                                pathPrefix = pathValues[0];
+                            }
                         }
                         Method[] methods = ReflectionUtils.getAllDeclaredMethods(o.getClass());
                         for (Method method : methods) {
-                            RequestMapping annotation = method.getAnnotation(RequestMapping.class);
+                            RequestMapping requestMappingAnn = method.getAnnotation(RequestMapping.class);
+                            // 接口路径
+                            String path = null;
+                            // 接口名称
+                            String apiName = "";
+                            if(requestMappingAnn==null){
+                               List<Class> classArrayList = Lists.newArrayList(GetMapping.class,PutMapping.class,DeleteMapping.class,PatchMapping.class);
+                               // 尝试获取 GetMapping、PostMapping、PutMapping、DeleteMapping、PatchMapping
+                               for (Class aClass : classArrayList) {
+                                   Annotation  annotation = method.getAnnotation(aClass);
+                                   if(annotation!=null){
+                                       Object pathObject = AnnotationUtils.getValue(annotation);
+                                       if(pathObject!=null){
+                                           if(pathObject instanceof String[]){
+                                              path =  ((String[])pathObject)[0];
+                                           }
+                                       }
+                                       pathObject = AnnotationUtils.getValue(annotation,"name");
+                                       if(pathObject!=null){
+                                           if(pathObject instanceof String){
+                                               apiName =  ((String)pathObject);
+                                           }
+                                       }
+                                       requestMappingAnn = AnnotationUtils.findAnnotation(annotation.getClass(),RequestMapping.class);
+                                       break;
+                                   }
+                               }
+                           }
+
                             // 只解析 @RequestMapping 申明的方法
-                            if (annotation != null) {
+                            if (requestMappingAnn != null) {
                                 ApiDTO apiDTO = new ApiDTO();
                                 // step1：获取请求路径
-                                String[] pathValue = annotation.value();
-                                if (pathValue != null) {
+                                String[] pathValue = path==null?requestMappingAnn.value():new String[]{path};
+                                apiName = StringUtils.isEmpty(apiName) ?requestMappingAnn.name():apiName;
+                                if (pathValue != null&&pathValue.length>0) {
                                     // v0.1 仅获取一个请求路径 多个请求路径映射处理
                                     apiDTO.setPath(pathPrefix + pathValue[0]);
-                                    apiDTO.setTitle("java debug");
+                                    if(StringUtils.isEmpty(apiName)){
+                                        apiDTO.setTitle(apiDTO.getPath());
+                                    }else {
+                                        apiDTO.setTitle(apiName);
+                                    }
                                     apiDTO.setStatus("undone");
                                 }
                                 // step2：获取请求方法
-                                RequestMethod[] requestMethods = annotation.method();
+                                RequestMethod[] requestMethods = requestMappingAnn.method();
                                 if (requestMethods != null && requestMethods.length == 1) {
                                     apiDTO.setMethod(requestMethods[0].name());
                                 } else {
@@ -90,7 +136,9 @@ public class ApiDocClientService {
                                 for (Parameter parameter : parameters) {
                                     Annotation[] annotations = parameter.getAnnotations();
                                     if (annotations != null && annotations.length == 1) {
-                                        switch (annotations[0].getClass().getSimpleName()) {
+                                        String paramAnnotationName =  getTargetClassFromJdkDynamicAopProxy(annotations[0]).getSimpleName();
+                                        log.info("请求参数注解简称：{}",paramAnnotationName);
+                                        switch (paramAnnotationName) {
                                             case "RequestBody":
                                                 this.log("请求体");
                                                 // 参数中应当只有一个 @RequestBody 注解，待发掘多个的使用场景
@@ -127,7 +175,10 @@ public class ApiDocClientService {
                                     }
                                     // annotations 为 null 获取存在多个 annotation 暂不处理
                                 }
-
+                                // 赋值请求参数
+                                apiDTO.setReq_query(reqQuery);
+                                apiDTO.setReq_params(reqParams);
+                                apiDTO.setReq_headers(reqHeaders);
                                 // step4：获取响应参数
                                 Class clazz = method.getReturnType();
                                 if (Mono.class.getPackage().equals(clazz.getPackage())
@@ -171,6 +222,36 @@ public class ApiDocClientService {
 
     }
 
+
+
+    private static Class getTargetClassFromJdkDynamicAopProxy(Object candidate) {
+        final String ADVISED_FIELD_NAME = "advised";
+
+        final String
+                CLASS_JDK_DYNAMIC_AOP_PROXY = "org.springframework.aop.framework.JdkDynamicAopProxy";
+        try {
+
+            InvocationHandler invocationHandler = Proxy.getInvocationHandler(candidate);
+            if (!invocationHandler.getClass().getName().equals(CLASS_JDK_DYNAMIC_AOP_PROXY)) {
+                //在目前的spring版本，这处永远不会执行，除非以后spring的dynamic proxy实现变掉
+                log.warn("the invocationHandler of JdkDynamicProxy isn`t the instance of "
+                        + CLASS_JDK_DYNAMIC_AOP_PROXY);
+                return candidate.getClass();
+            }
+            AdvisedSupport advised = (AdvisedSupport) new DirectFieldAccessor(invocationHandler).getPropertyValue(ADVISED_FIELD_NAME);
+            Class targetClass = advised.getTargetClass();
+            if (Proxy.isProxyClass(targetClass)) {
+                // 目标类还是代理，递归
+                Object target = advised.getTargetSource().getTarget();
+                return getTargetClassFromJdkDynamicAopProxy(target);
+            }
+            return targetClass;
+        } catch (Exception e) {
+            log.error("get target class from " + CLASS_JDK_DYNAMIC_AOP_PROXY + " error", e);
+            return candidate.getClass();
+        }
+    }
+
     private void log(String reqSource) {
         log.warn("请求参数来源：{}", reqSource);
     }
@@ -185,6 +266,7 @@ public class ApiDocClientService {
 
 
     public static void main(String[] args) {
+        String simpleName = RequestBody.class.getSimpleName();
         BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
         String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
         System.out.println(jsonStr);

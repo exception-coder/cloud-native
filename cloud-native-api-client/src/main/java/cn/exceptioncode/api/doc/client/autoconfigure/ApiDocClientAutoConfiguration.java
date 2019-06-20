@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(ApiDocClientProperties.class)
 @ConditionalOnWebApplication
-@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable")
+@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable",havingValue = "true")
 public class ApiDocClientAutoConfiguration {
 
     @Autowired
