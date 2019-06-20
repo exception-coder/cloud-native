@@ -19,7 +19,7 @@ public class YapiClientUtil {
 
     }
 
-    private static final String YAPI_URL = "http://127.0.0.1:3000/api";
+    private static final String YAPI_URL = "http://192.168.0.104:3000/api";
     private static final String LOGIN_URL = YAPI_URL + "/user/login";
     private static final String SAVE_API_URL = YAPI_URL + "/interface/save";
 
