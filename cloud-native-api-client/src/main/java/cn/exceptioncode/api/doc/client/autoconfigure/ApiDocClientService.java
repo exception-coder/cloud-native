@@ -134,6 +134,7 @@ public class ApiDocClientService {
                                             PathVariable.class, RequestBody.class)) {
                                         annotation = parameter.getAnnotation(aClass);
                                         if(annotation!=null){
+                                            // 一但找到对应注解 不再继续获取
                                             break;
                                         }
 
