@@ -210,7 +210,7 @@ public class ApiDocClientService {
                                         if (actualTypeArguments != null && actualTypeArguments.length > 0) {
                                             Type actualTypeArgument = actualTypeArguments[0];
                                             try{
-                                                String jsonStr = JSON.toJSONString(Class.forName(actualTypeArgument.getTypeName()).newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES);
+                                                String jsonStr = JSON.toJSONString(Class.forName(actualTypeArgument.getTypeName()).newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES,SerializerFeature.QuoteFieldNames);
                                                 apiDTO.setRes_body(jsonStr);
                                             }catch (Exception e){
                                                 log.error("赋值响应类型异常，ApiDTO：{}，异常信息：{}",JSON.toJSONString(apiDTO),e.getMessage());
