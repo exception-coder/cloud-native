@@ -6,7 +6,7 @@ import java.util.List;
 public class ApiDTO {
 
 
-    private String token = "94677a30c3e3fa0a19609c9629b13aa0f46b91a8b9bfd45e482235751d615b22";
+    private String token = "bc30a4d684908840d42d9bb094e0891f8f778a01be2c15aa9ef27c53e8d2bf23";
     /**
      *
      * 接口标题

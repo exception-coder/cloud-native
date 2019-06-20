@@ -29,10 +29,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,10 +132,24 @@ public class ApiDocClientService {
                                 // 遍历 controller 绑定的参数
                                 for (Parameter parameter : parameters) {
                                     Annotation[] annotations = parameter.getAnnotations();
+                                    String paramAnnotationName =  "";
                                     if (annotations != null && annotations.length == 1) {
                                         // 获取动态代理类类名 
-                                        // TODO: 2019/6/20  
-                                        String paramAnnotationName =  "";
+                                        // TODO: 2019/6/20
+                                        Annotation annotation = annotations[0];
+                                        try{
+
+                                            Field filed =  Proxy.getInvocationHandler(annotation).getClass().getDeclaredField("type");
+                                            filed.setAccessible(true);
+                                            Object object = filed.get(Proxy.getInvocationHandler(annotation));
+                                            if(object instanceof Class){
+                                                Class clazz = (Class)object;
+                                                paramAnnotationName = clazz.getSimpleName();
+                                            }
+                                        }catch (NoSuchFieldException|IllegalAccessException e){
+                                            log.error("获取字段type失败，失败信息：{}",e.getMessage());
+                                        }
+
                                         log.info("请求参数注解简称：{}",paramAnnotationName);
                                         switch (paramAnnotationName) {
                                             case "RequestBody":
