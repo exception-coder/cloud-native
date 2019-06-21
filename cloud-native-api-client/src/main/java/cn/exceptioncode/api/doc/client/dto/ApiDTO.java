@@ -6,7 +6,7 @@ import java.util.List;
 public class ApiDTO {
 
 
-    private String token = "94677a30c3e3fa0a19609c9629b13aa0f46b91a8b9bfd45e482235751d615b22";
+    private String token;
     /**
      *
      * 接口标题
@@ -16,7 +16,7 @@ public class ApiDTO {
      *
      * 品类id
      */
-    private String catid = "11";
+    private String catid;
     /**
      *
      * 请求路径

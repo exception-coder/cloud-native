@@ -6,11 +6,6 @@ spring:
         server-addr: 127.0.0.1:8848
       discovery:
         server-addr: 127.0.0.1:8848
-    # 使用Sentinel作为流量控制和熔断器
-    sentinel:
-      transport:
-        port: 8084
-        dashboard: localhost:8080
     # 路由网关配置
     gateway:
       discovery:

@@ -6,7 +6,6 @@ import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProp
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import cn.exceptioncode.api.doc.client.dto.ApiPropertiesDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
-import cn.exceptioncode.api.doc.client.util.YapiClientUtil;
 import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -15,10 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +44,12 @@ public class ApiDocClientService {
 
     private ApiDocClientProperties apiDocClientProperties;
 
+    private RestTemplate restTemplate;
 
-    public ApiDocClientService(ApiDocClientProperties apiDocClientProperties) {
+    public ApiDocClientService(ApiDocClientProperties apiDocClientProperties,
+                               RestTemplate restTemplate) {
         this.apiDocClientProperties = apiDocClientProperties;
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -98,6 +105,8 @@ public class ApiDocClientService {
                             // 只解析 @RequestMapping 申明的方法
                             if (requestMappingAnn != null) {
                                 ApiDTO apiDTO = new ApiDTO();
+                                apiDTO.setCatid(this.apiDocClientProperties.getApiCatid());
+                                apiDTO.setToken(this.apiDocClientProperties.getApiToken());
                                 // step1：获取接口路径、接口名称
                                 String[] pathValue = path == null ? requestMappingAnn.value() : new String[]{path};
                                 apiName = StringUtils.isEmpty(apiName) ? requestMappingAnn.name() : apiName;
@@ -210,11 +219,11 @@ public class ApiDocClientService {
                                         Type[] actualTypeArguments = type.getActualTypeArguments();
                                         if (actualTypeArguments != null && actualTypeArguments.length > 0) {
                                             Type actualTypeArgument = actualTypeArguments[0];
-                                            try{
-                                                String jsonStr = JSON.toJSONString(Class.forName(actualTypeArgument.getTypeName()).newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES,SerializerFeature.QuoteFieldNames);
+                                            try {
+                                                String jsonStr = JSON.toJSONString(Class.forName(actualTypeArgument.getTypeName()).newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                                 apiDTO.setRes_body(jsonStr);
-                                            }catch (Exception e){
-                                                log.error("赋值响应类型异常，ApiDTO：{}，异常信息：{}",JSON.toJSONString(apiDTO),e.getMessage());
+                                            } catch (Exception e) {
+                                                log.error("赋值响应类型异常，ApiDTO：{}，异常信息：{}", JSON.toJSONString(apiDTO), e.getMessage());
                                             }
                                             log.warn("响应数据类型：{}", actualTypeArgument);
                                         }
@@ -224,7 +233,7 @@ public class ApiDocClientService {
                                     try {
                                         if (!clazz.isPrimitive()) {
                                             // 返回类型是json
-                                            String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES,SerializerFeature.QuoteFieldNames);
+                                            String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                             apiDTO.setRes_body(jsonStr);
 
                                             log.info("返回数据:{}", jsonStr);
@@ -240,12 +249,9 @@ public class ApiDocClientService {
                                     }
 
                                 }
-                                try {
-                                    String result = YapiClientUtil.saveApi(apiDTO);
-                                    log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO), result);
-                                } catch (IOException e) {
-                                    log.error("保存api异常，异常信息：{}", e.getMessage());
-                                }
+                                String
+                                        result = saveApi(apiDTO);
+                                log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO), result);
                             }
 
 
@@ -258,6 +264,35 @@ public class ApiDocClientService {
 
     }
 
+
+    private String saveApi(ApiDTO apiDTO) {
+        apiDTO.setMessage("");
+        final String YAPI_URL = "http://" + this.apiDocClientProperties.getApiServer() + "/api";
+        final String LOGIN_URL = YAPI_URL + "/user/login";
+        final String SAVE_API_URL = YAPI_URL + "/interface/save";
+        Map<String, String> map = new HashMap<>(2);
+        map.put("email", "425485346@qq.com");
+        map.put("password", "ymfe.org");
+        ResponseEntity<Map> responseEntity = restTemplate.postForEntity(LOGIN_URL, map, Map.class);
+
+        List<String> headers = responseEntity.getHeaders().get("set-cookie");
+
+        String cookie = "";
+        Iterator<String> iterator = headers.iterator();
+        boolean isFirst = true;
+        while (iterator.hasNext()) {
+            if (!isFirst) {
+                cookie += ";";
+
+            }
+            cookie += iterator.next();
+            isFirst = false;
+        }
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Cookie",cookie);
+        HttpEntity<ApiDTO> httpEntity = new HttpEntity<>(apiDTO,httpHeaders);
+        return restTemplate.postForEntity(SAVE_API_URL, httpEntity, String.class).getBody();
+    }
 
     private void log(String reqSource) {
         log.warn("请求参数来源：{}", reqSource);
