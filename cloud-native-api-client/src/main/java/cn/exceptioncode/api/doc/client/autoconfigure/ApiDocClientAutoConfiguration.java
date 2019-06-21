@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableConfigurationProperties(ApiDocClientProperties.class)
 @ConditionalOnWebApplication
-@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable",havingValue = "true")
+@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable")
 public class ApiDocClientAutoConfiguration {
 
     @Autowired
