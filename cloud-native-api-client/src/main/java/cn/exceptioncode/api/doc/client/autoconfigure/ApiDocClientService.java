@@ -102,7 +102,8 @@ public class ApiDocClientService {
                                 String[] pathValue = path == null ? requestMappingAnn.value() : new String[]{path};
                                 apiName = StringUtils.isEmpty(apiName) ? requestMappingAnn.name() : apiName;
                                 if (pathValue != null && pathValue.length > 0) {
-                                    // v0.1 仅获取一个请求路径 多个请求路径映射处理
+                                    // v0.1 仅获取一个请求路径
+                                    // TODO: 2019/6/21 多请求路径映射处理 
                                     apiDTO.setPath(pathPrefix + pathValue[0]);
                                     if (StringUtils.isEmpty(apiName)) {
                                         apiDTO.setTitle(apiDTO.getPath());
