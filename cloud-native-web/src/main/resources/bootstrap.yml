@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: home
+    active: home2
 
 ---
 spring:
@@ -21,3 +21,13 @@ spring:
         server-addr: 192.168.0.104:8848
       discovery:
         server-addr: 192.168.0.104:8848
+
+---
+spring:
+  profiles: home2
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
