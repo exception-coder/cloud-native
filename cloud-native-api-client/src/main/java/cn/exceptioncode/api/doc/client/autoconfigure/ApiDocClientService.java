@@ -9,7 +9,10 @@ import cn.exceptioncode.api.doc.client.dto.ParamDTO;
 import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -58,6 +61,7 @@ public class ApiDocClientService {
     public void applicationRunListener(ApplicationStartedEvent event) {
 
         Map<String, Object> controllers = event.getApplicationContext().getBeansWithAnnotation(Controller.class);
+        ObjectMapper objectMapper = event.getApplicationContext().getBean(ObjectMapper.class);
         List<Object> list = Lists.newArrayList();
         controllers.forEach((s, o) -> {
                     if (!list.contains(o)) {
@@ -201,7 +205,8 @@ public class ApiDocClientService {
 
                                         }
                                     }
-                                    // annotations 为 null 获取存在多个 annotations 暂不处理
+
+                                    // TODO: 2019/6/23  annotations 为 null 获取存在多个 annotations
                                 }
                                 // 赋值请求参数
                                 apiDTO.setReq_query(reqQuery);
@@ -211,6 +216,7 @@ public class ApiDocClientService {
                                 Class clazz = method.getReturnType();
                                 if (!clazz.isPrimitive() && (Mono.class.getPackage().equals(clazz.getPackage())
                                         || Flux.class.getPackage().equals(clazz.getPackage()))) {
+                                // 返回类型是 Flux 或 Mono 序列
                                     log.info("Reactor");
                                     Type genericReturnType = method.getGenericReturnType();
                                     if (genericReturnType instanceof ParameterizedTypeImpl) {
@@ -221,17 +227,18 @@ public class ApiDocClientService {
                                             try {
                                                 String jsonStr = JSON.toJSONString(Class.forName(actualTypeArgument.getTypeName()).newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                                 apiDTO.setRes_body(jsonStr);
-                                            } catch (Exception e) {
+                                            } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
                                                 log.error("赋值响应类型异常，ApiDTO：{}，异常信息：{}", JSON.toJSONString(apiDTO), e.getMessage());
                                             }
                                             log.warn("响应数据类型：{}", actualTypeArgument);
                                         }
-                                        // TODO: 2019/6/18 可能出现多个泛型类型
+                                        // TODO: 2019/6/18 可能出现多个泛型类型、也可能还是Flux或者Mono序列类型
                                     }
                                 } else {
                                     try {
                                         if (!clazz.isPrimitive()) {
-                                            // 返回类型是json
+                                            // 返回类型不是基本数据类型
+                                            apiDTO.setRes_body_type("json");
                                             String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                             apiDTO.setRes_body(jsonStr);
 
@@ -239,17 +246,35 @@ public class ApiDocClientService {
                                             ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
                                             apiPropertiesDTO.setType("object");
                                             Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
+                                            map.keySet().forEach(key->{
+                                                map.put(key,new ParamDTO(key,null,null,key+"desc",null));
+                                            });
+                                            apiPropertiesDTO.setProperties(map);
+                                        }else {
+                                            // 返回类型是基本数据类型
+                                            apiDTO.setRes_body_type("text");
+                                            ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
+                                            apiPropertiesDTO.setType("object");
+                                            Map<String, Object> map = new HashMap<>(1);
+                                            map.put("String","");
                                             apiPropertiesDTO.setProperties(map);
                                         }
 
                                     } catch (InstantiationException | IllegalAccessException e) {
                                         log.error(e.getMessage());
-                                        // 返回类型不是json
                                     }
 
                                 }
+
+                                try{
+                                    log.warn("请求体：{}",objectMapper.writeValueAsString(apiDTO));
+                                }catch (JsonProcessingException e){
+                                    log.error(e.getMessage());
+                                }
                                 String
                                         result = saveApi(apiDTO);
+
+
                                 log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO), result);
                             }
 
@@ -265,7 +290,6 @@ public class ApiDocClientService {
 
 
     private String saveApi(ApiDTO apiDTO) {
-        apiDTO.setMessage("");
         final String YAPI_URL = "http://" + this.apiDocClientProperties.getApiServer() + "/api";
         final String LOGIN_URL = YAPI_URL + "/user/login";
         final String SAVE_API_URL = YAPI_URL + "/interface/save";
@@ -288,8 +312,9 @@ public class ApiDocClientService {
             isFirst = false;
         }
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Cookie",cookie);
-        HttpEntity<ApiDTO> httpEntity = new HttpEntity<>(apiDTO,httpHeaders);
+        httpHeaders.add("Cookie", cookie);
+        String apiDTOStr = JSON.toJSONString(apiDTO, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
+        HttpEntity<ApiDTO> httpEntity = new HttpEntity<>(apiDTO, httpHeaders);
         return restTemplate.postForEntity(SAVE_API_URL, httpEntity, String.class).getBody();
     }
 
@@ -303,10 +328,13 @@ public class ApiDocClientService {
     }
 
 
+
+    @SneakyThrows
     public static void main(String[] args) {
         BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
         String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
         System.out.println(jsonStr);
+        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
         map.forEach((s, obj) -> log.info("s:{},classSimpleName:{}", s, obj == null ? null : obj.getClass().getSimpleName()));
     }

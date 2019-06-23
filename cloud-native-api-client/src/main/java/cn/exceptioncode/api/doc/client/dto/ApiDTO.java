@@ -42,8 +42,18 @@ public class ApiDTO {
      *
      *
      */
-    private boolean switch_notice;
-    private String message;
+    private boolean switch_notice = true;
+
+    /**
+     *
+     * 如果为null yapi-server 异常
+     * {
+     *     "errcode": 400,
+     *     "errmsg": "请求参数 data.message 不应少于 1 个字符",
+     *     "data": null
+     * }
+     */
+    private String message="default_message";
     /**
      *
      * 备注

@@ -29,10 +29,12 @@ public class WebController {
 
 
     @GetMapping(value = "/test/javadoc/{foo}",name = "api-client调试使用接口")
-    public Mono<BaseResponse> javadoc(@ParamDesc(desc = "用户名称",example = "泡泡熊")  @RequestParam(name = "userName",required = false) String userName,
-                                      @ParamDesc(desc = "foo" ,example = "foo") @PathVariable(name = "foo") String foo,
-                                      @ParamDesc(desc = "bar" ,example = "bar")  @RequestParam(name = "bar") String bar){
-        return Mono.just(BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar));
+    public BaseResponse javadoc(@ParamDesc(desc = "用户名称",example = "泡泡熊")  @RequestParam(name = "userName",required = false) String userName,
+                                      @ParamDesc(desc = "foo" ,example = "foo") @PathVariable(name = "foo1") String foo,
+                                      @ParamDesc(desc = "bar" ,example = "bar")  @RequestParam(name = "bar1") String bar,
+                                      @RequestParam(name="code") String code){
+        return BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar);
+//        return Mono.just(BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar));
     }
 
 
@@ -57,6 +59,7 @@ public class WebController {
         String ipAddress = httpRequest.getRemoteAddress().getAddress().getHostAddress();
         System.out.println(ipAddress);
         return Mono.just("proxied_route");
+
     }
 
 
