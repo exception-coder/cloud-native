@@ -313,7 +313,6 @@ public class ApiDocClientService {
         }
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Cookie", cookie);
-        String apiDTOStr = JSON.toJSONString(apiDTO, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
         HttpEntity<ApiDTO> httpEntity = new HttpEntity<>(apiDTO, httpHeaders);
         return restTemplate.postForEntity(SAVE_API_URL, httpEntity, String.class).getBody();
     }
