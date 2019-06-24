@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: home2
+    active: company
 
 ---
 spring:

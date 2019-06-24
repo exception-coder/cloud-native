@@ -29,6 +29,15 @@
             <version>2.0.1</version>
         </dependency>
 
+        <!-- JDBC Type 4 driver for MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.16</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

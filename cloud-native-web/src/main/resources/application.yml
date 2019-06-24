@@ -1,13 +1,13 @@
 spring:
   profiles:
-    active: home2
+    active: company
   application:
     name: cloud-service
 server:
   port: 8081
 logging:
   level:
-    root: debug
+    root: info
 
 
 ---

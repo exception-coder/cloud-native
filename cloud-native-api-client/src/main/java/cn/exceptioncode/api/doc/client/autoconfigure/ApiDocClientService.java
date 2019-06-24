@@ -246,10 +246,11 @@ public class ApiDocClientService {
                                             ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
                                             apiPropertiesDTO.setType("object");
                                             Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
-                                            map.keySet().forEach(key->{
-                                                map.put(key,new ParamDTO(key,null,null,key+"desc",null));
-                                            });
-                                            apiPropertiesDTO.setProperties(map);
+                                            map.keySet().forEach(key->
+                                                map.put(key,new ParamDTO(key,null,null,key+"desc",null))
+                                            );
+                                            apiPropertiesDTO.setProperties(apiPropertiesDTO);
+                                            apiDTO.setRes_body(JSON.toJSONString(apiPropertiesDTO));
                                         }else {
                                             // 返回类型是基本数据类型
                                             apiDTO.setRes_body_type("text");
@@ -333,7 +334,6 @@ public class ApiDocClientService {
         BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
         String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
         System.out.println(jsonStr);
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
         map.forEach((s, obj) -> log.info("s:{},classSimpleName:{}", s, obj == null ? null : obj.getClass().getSimpleName()));
     }

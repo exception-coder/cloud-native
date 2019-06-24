@@ -1,1 +1,8 @@
-
+spring:
+  datasource:
+    url: jdbc:mysql://47.75.196.191:3306/mybatis_demo?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true
+    username: root
+    password: autumnOrangerA/8._1nsrkQ20181010~
+logging:
+  level:
+    root: info
