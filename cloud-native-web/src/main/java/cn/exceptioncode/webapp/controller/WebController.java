@@ -1,6 +1,5 @@
 package cn.exceptioncode.webapp.controller;
 
-import cn.exceptioncode.api.doc.client.annotations.ParamDesc;
 import cn.exceptioncode.api.doc.client.autoconfigure.ApiDocClientService;
 import cn.exceptioncode.common.dto.BaseResponse;
 import cn.exceptioncode.webapp.service.WebService;
@@ -29,10 +28,10 @@ public class WebController {
 
 
     @GetMapping(value = "/test/javadoc/{foo}",name = "api-client调试使用接口")
-    public BaseResponse javadoc(@ParamDesc(desc = "用户名称",example = "泡泡熊")  @RequestParam(name = "userName",required = false) String userName,
-                                      @ParamDesc(desc = "foo" ,example = "foo") @PathVariable(name = "foo") String foo,
-                                      @ParamDesc(desc = "bar" ,example = "bar")  @RequestParam(name = "bar1") String bar,
-                                      String code){
+    public BaseResponse javadoc(@RequestParam(name = "userName",required = false) String userName,
+                                @PathVariable(name = "foo") String foo,
+                                @RequestParam(name = "bar1") String bar,
+                                String code){
         return BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar);
 //        return Mono.just(BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar));
     }
