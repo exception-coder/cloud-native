@@ -93,7 +93,7 @@ public class JsoupUtil {
 
         });
 
-        // 派遣英雄
+        // 派遣英雄 英雄冒险
         Map<String, String> form = new HashMap<>(4);
         form.put("cid", cid);
         form.put("0.1259743080763418", "");

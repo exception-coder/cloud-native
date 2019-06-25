@@ -113,8 +113,12 @@ public class OkHttpUtil {
             try {
                 // 派遣到主城
                 form.put("cid", "140183");
+                // 兵种ids
                 form.put("armyIds", "16");
+                // 兵种 nums
                 form.put("armyNums", "324143");
+                                form.put("armyIds", "");
+                form.put("armyNums", "");
                 form.put("x", "-374");
                 form.put("y", "278");
                 form.put("myX", "-375");
