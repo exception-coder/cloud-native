@@ -8,6 +8,7 @@ import cn.exceptioncode.api.doc.client.dto.ApiPropertiesDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
 import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -239,26 +240,30 @@ public class ApiDocClientService {
                                         if (!clazz.isPrimitive()) {
                                             // 返回类型不是基本数据类型
                                             apiDTO.setRes_body_type("json");
+                                            Object object = JSON.toJSON(clazz.newInstance());
+                                            if(object instanceof JSONObject){
+                                                JSONObject jsonObject = (JSONObject) object;
+                                                jsonObject.forEach((s1, o1) -> {
+
+                                                });
+                                            }
+
                                             String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                             apiDTO.setRes_body(jsonStr);
 
                                             log.info("返回数据:{}", jsonStr);
-                                            ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
+                                           ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
                                             apiPropertiesDTO.setType("object");
                                             Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
                                             map.keySet().forEach(key->
                                                 map.put(key,new ParamDTO(key,null,null,key+"desc",null))
                                             );
-                                            apiPropertiesDTO.setProperties(apiPropertiesDTO);
-                                            apiDTO.setRes_body(JSON.toJSONString(apiPropertiesDTO));
+                                            apiPropertiesDTO.setProperties(map);
+                                            apiDTO.setRes_body(JSON.toJSONString(apiPropertiesDTO,SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames));
                                         }else {
                                             // 返回类型是基本数据类型
                                             apiDTO.setRes_body_type("text");
-                                            ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
-                                            apiPropertiesDTO.setType("object");
-                                            Map<String, Object> map = new HashMap<>(1);
-                                            map.put("String","");
-                                            apiPropertiesDTO.setProperties(map);
+                                            apiDTO.setRes_body_type(clazz.getName());
                                         }
 
                                     } catch (InstantiationException | IllegalAccessException e) {
@@ -276,7 +281,7 @@ public class ApiDocClientService {
                                         result = saveApi(apiDTO);
 
 
-                                log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO), result);
+                                log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO,SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames), result);
                             }
 
 
@@ -331,6 +336,10 @@ public class ApiDocClientService {
 
     @SneakyThrows
     public static void main(String[] args) {
+        String str = "hello world";
+        if(str.getClass().isPrimitive()){
+            System.out.println(str.getClass()+" isPrimitive");
+        }
         BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
         String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
         System.out.println(jsonStr);
