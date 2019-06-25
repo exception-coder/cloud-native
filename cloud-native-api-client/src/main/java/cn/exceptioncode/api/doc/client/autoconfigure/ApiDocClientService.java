@@ -7,7 +7,6 @@ import cn.exceptioncode.api.doc.client.dto.ApiPropertiesDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.dto.BaseResponse;
-import cn.exceptioncode.common.dto.DogDTO;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -338,9 +337,21 @@ public class ApiDocClientService {
 
     @SneakyThrows
     public static void main(String[] args) {
-        Class clazz = DogDTO.class;
-        Field[] fields = clazz.getDeclaredFields();
 
+        List<String> list = new ArrayList<>();
+        System.out.println( list.getClass().isArray());
+
+
+        Class clazz = BaseResponse.class;
+        Field[] fields = clazz.getDeclaredFields();
+        Annotation annotation = clazz.getAnnotation(ParamDesc.class);
+        Map<String,Object> jsonProperties = new HashMap<>(10);
+        if(annotation!=null&&annotation instanceof ParamDesc){
+            ParamDesc paramDesc = (ParamDesc)annotation;
+            paramDesc.desc();
+            paramDesc.example();
+//            jsonProperties(clazz.getSimpleName(),);
+        }
         for (Field field : fields) {
             String fieldName = field.getName();
             char[] cs = fieldName.toCharArray();
@@ -367,16 +378,22 @@ public class ApiDocClientService {
      *
      * yapi json 请求 响应对象
      *
+     * @param name
+     * @param type
+     * @param example
+     * @param description
+     * @param jsonProperties
+     * @param properties
      * @return
      */
-    private Map<String,Object> jsonProperties(String name,String type,String example,
-                                              String description,Map<String,Object> properties){
-        Map<String,Object> jsonMap = new HashMap<>(10);
-        jsonMap.put("name",name);
-        jsonMap.put("type",type);
-        jsonMap.put("example",example);
-        jsonMap.put("description",description);
-        jsonMap.put("properties",properties );
+    private static Map<String, Object> jsonProperties(String name, String type, String example,
+                                                      String description, Map<String,Object> jsonProperties,Map<String, Object> properties) {
+        Map<String, Object> jsonMap = new HashMap<>(10);
+        jsonMap.put("name", name);
+        jsonMap.put("type", type);
+        jsonMap.put("example", example);
+        jsonMap.put("description", description);
+        jsonMap.put("properties", properties);
         return jsonMap;
     }
 }

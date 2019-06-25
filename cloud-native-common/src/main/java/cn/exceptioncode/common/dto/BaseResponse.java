@@ -1,8 +1,10 @@
 package cn.exceptioncode.common.dto;
 
+import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.enums.DefaultStatusEnum;
 import cn.exceptioncode.common.enums.StatusEnum;
 import lombok.Data;
+import org.junit.runners.Parameterized;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,12 +18,15 @@ import java.util.Map;
 @Data
 public class BaseResponse<T> implements Serializable {
 
+    @ParamDesc(desc = "响应码",example = "200")
     private int code;
 
+    @ParamDesc(desc = "响应信息描述",example = "success")
     private String message;
 
     private T data;
 
+    @ParamDesc(desc = "泡泡狗",example = "{}")
     private DogDTO dogDTO;
 
     public BaseResponse() {
