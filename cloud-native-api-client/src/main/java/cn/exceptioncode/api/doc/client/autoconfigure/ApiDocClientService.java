@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -32,7 +33,10 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -41,6 +45,8 @@ import java.util.*;
 @Slf4j
 public class ApiDocClientService {
 
+
+    private static String PROPERTIES_KEY = "properties";
 
     private ApiDocClientProperties apiDocClientProperties;
 
@@ -337,63 +343,101 @@ public class ApiDocClientService {
 
     @SneakyThrows
     public static void main(String[] args) {
-
-        List<String> list = new ArrayList<>();
-        System.out.println( list.getClass().isArray());
-
-
-        Class clazz = BaseResponse.class;
-        Field[] fields = clazz.getDeclaredFields();
-        Annotation annotation = clazz.getAnnotation(ParamDesc.class);
-        Map<String,Object> jsonProperties = new HashMap<>(10);
-        if(annotation!=null&&annotation instanceof ParamDesc){
-            ParamDesc paramDesc = (ParamDesc)annotation;
-            paramDesc.desc();
-            paramDesc.example();
-//            jsonProperties(clazz.getSimpleName(),);
-        }
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            char[] cs = fieldName.toCharArray();
-            cs[0] -= 32;
-            try {
-                Method method = clazz.getMethod("get" + String.valueOf(cs));
-                if (method != null) {
-                    System.out.println(fieldName);
-                }
-            } catch (NoSuchMethodException e) {
-                log.info("获取方法失败，异常信息：" + e.getMessage());
-            }
-
-
-        }
-        BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
-        String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
-        System.out.println(jsonStr);
-        Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
-        map.forEach((s, obj) -> log.info("s:{},classSimpleName:{}", s, obj == null ? null : obj.getClass().getSimpleName()));
+        Map<String,Object> stringObjectMap = yapiJsonProperties(BaseResponse.class,null);
+        System.out.println(stringObjectMap);
+//        BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
+//        String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
+//        System.out.println(jsonStr);
+//        Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
+//        map.forEach((s, obj) -> log.info("s:{},classSimpleName:{}", s, obj == null ? null : obj.getClass().getSimpleName()));
     }
 
-    /**
-     *
-     * yapi json 请求 响应对象
-     *
-     * @param name
-     * @param type
-     * @param example
-     * @param description
-     * @param jsonProperties
-     * @param properties
-     * @return
-     */
-    private static Map<String, Object> jsonProperties(String name, String type, String example,
-                                                      String description, Map<String,Object> jsonProperties,Map<String, Object> properties) {
+
+    private static Map<String, Object> jsonProperties(String name, ParamDesc paramDesc,Map<String, Object> properties) {
         Map<String, Object> jsonMap = new HashMap<>(10);
         jsonMap.put("name", name);
-        jsonMap.put("type", type);
-        jsonMap.put("example", example);
-        jsonMap.put("description", description);
+        jsonMap.put("type", "object");
+        if(paramDesc!=null){
+            jsonMap.put("example", paramDesc.example());
+            jsonMap.put("description", paramDesc.desc());
+        }else {
+            jsonMap.put("example", name);
+            jsonMap.put("description", name);
+        }
+        if(properties==null){
+            properties = new HashMap<>(1);
+        }
         jsonMap.put("properties", properties);
         return jsonMap;
     }
+
+
+
+    private static Map<String,Object> yapiJsonProperties(Object object,Map<String,Object> propertiesMap){
+        List<Field> fields = Lists.newArrayList();
+        Class clazz = null ;
+        Field field = null;
+        if(object instanceof  Class){
+            clazz = (Class)object;
+        }
+        if(object instanceof  Field){
+            field = (Field) object;
+            try{
+                clazz = ClassUtils.getClass(field.getType().getTypeName());
+            }catch (ClassNotFoundException e){
+
+            }
+
+        }
+        if(clazz!=null){
+            Field[] classFields= clazz.getDeclaredFields();
+            String propertiesName;
+            if(field!=null){
+                propertiesName = field.getName();
+            }else {
+                propertiesName = clazz.getSimpleName();
+            }
+            if(propertiesMap==null){
+                propertiesMap = jsonProperties(propertiesName,getParamDesc(clazz),null);
+            }
+            for (Field field1 : classFields) {
+                // 判断是否私有属性
+                if(field1.getModifiers() == 2){
+                    String fieldName = field1.getName();
+                    char[] cs = fieldName.toCharArray();
+                    cs[0] -= 32;
+                    try {
+                        Method method = clazz.getMethod("get" + String.valueOf(cs));
+                        // 判断是否有对应的getter方法则判断为DTO
+                        if (method != null) {
+                            fields.add(field1);
+                        }
+                    } catch (NoSuchMethodException e) {
+
+                    }
+                }
+
+            }
+            if(fields.isEmpty()){
+                propertiesMap.put(propertiesName,jsonProperties(clazz.getSimpleName(),getParamDesc(clazz),null));
+            }else {
+                for (Field field1 : fields) {
+                    yapiJsonProperties( field1,propertiesMap);
+
+                }
+            }
+            return propertiesMap;
+        }
+        return  propertiesMap;
+
+    }
+
+    private static ParamDesc getParamDesc(Class clazz){
+        Annotation annotation = clazz.getAnnotation(ParamDesc.class);
+        if(annotation!=null&&annotation instanceof ParamDesc){
+            return (ParamDesc)annotation;
+        }
+        return null;
+    }
+
 }
