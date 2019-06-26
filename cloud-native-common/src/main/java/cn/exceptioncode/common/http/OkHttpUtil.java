@@ -147,4 +147,36 @@ public class OkHttpUtil {
 
     }
 
+    /**
+     *
+     * 派遣
+     */
+    static void send_army(Map<String,String> headers,
+            String cid,String armyIds,String armyNums,
+                          String x,String y,String myX,String myY,
+                          String resource1,String resource2,String resource3,String resource4,String resource5) throws  IOException{
+        Map<String, String> form = new HashMap<>(10);
+        form.put("marchSpeed", " 61.8");
+        form.put("marchSpeedPercent", "100");
+        form.put("marchType", "5");
+        form.put("firstHeroId", "");
+        form.put("secondHeroId", "");
+        form.put("thirdHeroId", "");
+        form.put("queryType", "1");
+        form.put("0.45699247085102046", "");
+        form.put("cid", cid);
+        form.put("armyIds", armyIds);
+        form.put("armyNums", armyNums);
+        form.put("resource1",resource1 );
+        form.put("resource2", resource2);
+        form.put("resource3", resource3);
+        form.put("resource4", resource4);
+        form.put("resource5", resource5);
+        form.put("x", x);
+        form.put("y", y);
+        form.put("myX", myX);
+        form.put("myY", myY);
+        OkHttpUtil.postWithForm("https://s8.sl.qq.com/s/send_army.alc", headers, form);
+    }
+
 }
