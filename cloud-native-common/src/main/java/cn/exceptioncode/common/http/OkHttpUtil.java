@@ -57,7 +57,7 @@ public class OkHttpUtil {
     }
 
 
-    public static String getResWithPost(String url, Map<String, String> header, Map<String, String> queryParam) throws IOException {
+    public static String getResWithQueryParam(String url, Map<String, String> header, Map<String, String> queryParam) throws IOException {
         boolean isFirst = true;
         for (String s : queryParam.keySet()) {
             String param = s + "=" + queryParam.get(s);
