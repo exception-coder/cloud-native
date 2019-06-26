@@ -79,11 +79,11 @@ public class JsoupUtil {
                                         if (ownText != null & ownText.contains("等级")) {
                                             ownText = ownText.replace("等级：", "");
                                             int heroLevel = Integer.valueOf(ownText);
-                                            if (heroLevel < 27) {
+                                            if (heroLevel < 22) {
                                                 // 长安
                                                 changAn.add(heroId);
                                             }
-                                            if (heroLevel >= 27 && heroLevel < 36) {
+                                            if (heroLevel >= 22 && heroLevel < 36) {
                                                 // 敦煌
                                                 dunHuang.add(heroId);
                                             }
@@ -125,6 +125,7 @@ public class JsoupUtil {
                 form.put("endCid", "2");
                 send_hero(s, form, headers);
                 create_mission_room(s, headers, "11021", "1116", "2");
+                // TODO: 2019/6/27  冒险失败 尝试 冒险 漠北围歼战 
             });
 
 
@@ -148,7 +149,7 @@ public class JsoupUtil {
                 if (res == null || !res.contains("1")) {
                     // 天山雪莲 冒险失败等级不足 尝试冒险穆天子的扳指
                     System.out.println("天山雪莲 冒险失败等级不足 尝试冒险穆天子的扳指 res：" + res);
-                    create_mission_room(s, headers, "14021", "1402", "3");
+                    create_mission_room(s, headers, "14021", "1402", "5");
                 }
             });
 
