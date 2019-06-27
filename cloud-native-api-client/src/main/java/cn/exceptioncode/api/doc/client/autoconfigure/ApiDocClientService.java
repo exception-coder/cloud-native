@@ -176,7 +176,7 @@ public class ApiDocClientService {
                                             case "RequestBody":
                                                 this.log("请求体");
                                                 // 参数中应当只有一个 @RequestBody 注解，待发掘多个的使用场景
-                                                apiDTO.setRes_body(JSON.toJSONString(parameter));
+                                                // TODO: 2019/6/27 设置请求体 
                                                 break;
                                             case "RequestParam":
                                                 this.log("URL请求参数");
@@ -236,9 +236,12 @@ public class ApiDocClientService {
                                         if (actualTypeArguments != null && actualTypeArguments.length > 0) {
                                             Type actualTypeArgument = actualTypeArguments[0];
                                             try {
-                                                String jsonStr = JSON.toJSONString(Class.forName(actualTypeArgument.getTypeName()).newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+                                                Class resBodyClass = Class.forName(actualTypeArgument.getTypeName());
+                                                Map<String,Object> JsonProperties = yapiJsonProperties(resBodyClass, null);
+                                                String jsonStr = JSON.toJSONString(JsonProperties.get(resBodyClass.getSimpleName()),SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+                                                apiDTO.setRes_body_type("json");
                                                 apiDTO.setRes_body(jsonStr);
-                                            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                                            } catch (ClassNotFoundException e) {
                                                 log.error("赋值响应类型异常，ApiDTO：{}，异常信息：{}", JSON.toJSONString(apiDTO), e.getMessage());
                                             }
                                             log.warn("响应数据类型：{}", actualTypeArgument);

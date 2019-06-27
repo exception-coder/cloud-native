@@ -29,12 +29,12 @@ public class WebController {
 
 
     @GetMapping(value = "/test/javadoc/{foo}",name = "api-client调试使用接口")
-    public BaseResponse javadoc(@RequestParam(name = "userName",required = false) String userName,
+    public Mono<BaseResponse> javadoc(@RequestParam(name = "userName",required = false) String userName,
                                 @ParamDesc(example = "foo_example",desc = "foo_desc") @PathVariable(name = "foo") String foo,
-                                @RequestParam(name = "bar1") String bar,
+                                @ParamDesc(example = "bar_example",desc = "bar_desc") @RequestParam(name = "bar",required = false) String bar,
                                 String code){
-        return BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar);
-//        return Mono.just(BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar));
+//        return BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar);
+        return Mono.just(BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar));
     }
 
 
