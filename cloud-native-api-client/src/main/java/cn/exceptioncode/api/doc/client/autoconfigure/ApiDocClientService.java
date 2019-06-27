@@ -3,12 +3,10 @@ package cn.exceptioncode.api.doc.client.autoconfigure;
 
 import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties;
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
-import cn.exceptioncode.api.doc.client.dto.ApiPropertiesDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +29,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.HashMap;
@@ -128,7 +125,7 @@ public class ApiDocClientService {
                                         apiDTO.setTitle(apiName);
                                     }
                                 }
-                                // step2：获取请求方法
+                                // 获取请求方法
                                 RequestMethod[] requestMethods = requestMappingAnn.method();
                                 if (requestMethods != null && requestMethods.length == 1) {
                                     apiDTO.setMethod(requestMethods[0].name());
@@ -253,7 +250,8 @@ public class ApiDocClientService {
                                     if (!clazz.isPrimitive()) {
                                         // 返回类型不是基本数据类型
                                         apiDTO.setRes_body_type("json");
-                                        apiDTO.setRes_body(JSON.toJSONString(yapiJsonProperties(clazz, null), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames));
+                                        Map<String,Object> JsonProperties = yapiJsonProperties(clazz, null);
+                                        apiDTO.setRes_body(JSON.toJSONString(JsonProperties.get(clazz.getSimpleName()), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames));
                                     } else {
                                         // 返回类型是基本数据类型
                                         apiDTO.setRes_body_type("text");

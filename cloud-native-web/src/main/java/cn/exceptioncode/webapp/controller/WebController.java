@@ -1,6 +1,7 @@
 package cn.exceptioncode.webapp.controller;
 
 import cn.exceptioncode.api.doc.client.autoconfigure.ApiDocClientService;
+import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.dto.BaseResponse;
 import cn.exceptioncode.webapp.service.WebService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class WebController {
 
     @GetMapping(value = "/test/javadoc/{foo}",name = "api-client调试使用接口")
     public BaseResponse javadoc(@RequestParam(name = "userName",required = false) String userName,
-                                @PathVariable(name = "foo") String foo,
+                                @ParamDesc(example = "foo_example",desc = "foo_desc") @PathVariable(name = "foo") String foo,
                                 @RequestParam(name = "bar1") String bar,
                                 String code){
         return BaseResponse.success("hello world javadoc,userName:"+userName+",foo:"+foo+",bar:"+bar);
