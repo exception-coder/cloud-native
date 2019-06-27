@@ -31,6 +31,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.HashMap;
@@ -114,7 +115,7 @@ public class ApiDocClientService {
                                 ApiDTO apiDTO = new ApiDTO();
                                 apiDTO.setCatid(this.apiDocClientProperties.getApiCatid());
                                 apiDTO.setToken(this.apiDocClientProperties.getApiToken());
-                                // step1：获取接口路径、接口名称
+                                // 获取接口路径、接口名称
                                 String[] pathValue = path == null ? requestMappingAnn.value() : new String[]{path};
                                 apiName = StringUtils.isEmpty(apiName) ? requestMappingAnn.name() : apiName;
                                 if (pathValue != null && pathValue.length > 0) {
@@ -135,7 +136,7 @@ public class ApiDocClientService {
                                     // 存在多个请求method 或者获取不到 直接使用 GET method
                                     apiDTO.setMethod(RequestMethod.GET.name());
                                 }
-                                // step3：获取请求参数
+                                // 获取请求参数
                                 Parameter[] parameters = method.getParameters();
                                 ParamDTO paramDTO;
                                 List<ParamDTO> reqQuery = Lists.newArrayList();
@@ -216,7 +217,7 @@ public class ApiDocClientService {
                                 apiDTO.setReq_query(reqQuery);
                                 apiDTO.setReq_params(reqParams);
                                 apiDTO.setReq_headers(reqHeaders);
-                                // step4：获取响应参数
+                                // 获取响应参数
                                 Class clazz = method.getReturnType();
                                 /**
                                  *
@@ -344,7 +345,7 @@ public class ApiDocClientService {
     @SneakyThrows
     public static void main(String[] args) {
         Map<String,Object> stringObjectMap = yapiJsonProperties(BaseResponse.class,null);
-        System.out.println(stringObjectMap);
+        System.out.println(JSON.toJSONString(stringObjectMap));
 //        BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
 //        String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
 //        System.out.println(jsonStr);
@@ -419,11 +420,17 @@ public class ApiDocClientService {
 
             }
             if(fields.isEmpty()){
-                propertiesMap.put(propertiesName,jsonProperties(clazz.getSimpleName(),getParamDesc(clazz),null));
-            }else {
-                for (Field field1 : fields) {
-                    yapiJsonProperties( field1,propertiesMap);
+                if(field!=null){
+                    propertiesMap.put(propertiesName,jsonProperties(propertiesName,getParamDesc(field),null));
+                }else {
+                    propertiesMap.put(propertiesName,jsonProperties(propertiesName,getParamDesc(clazz),null));
+                }
 
+            }else {
+                Map map  = new HashMap<>(10);
+                propertiesMap.put(PROPERTIES_KEY,map);
+                for (Field field1 : fields) {
+                    yapiJsonProperties( field1,map);
                 }
             }
             return propertiesMap;
@@ -432,11 +439,23 @@ public class ApiDocClientService {
 
     }
 
-    private static ParamDesc getParamDesc(Class clazz){
-        Annotation annotation = clazz.getAnnotation(ParamDesc.class);
-        if(annotation!=null&&annotation instanceof ParamDesc){
-            return (ParamDesc)annotation;
+    private static ParamDesc getParamDesc(Object object){
+        Annotation annotation;
+        if(object instanceof  Field){
+            Field field = (Field)object;
+            ParamDesc paramDesc = field.getAnnotation(ParamDesc.class);
+            if(paramDesc!=null){
+                return paramDesc;
+            }
         }
+        if(object instanceof Class){
+            Class clazz = (Class) object;
+            annotation = clazz.getAnnotation(ParamDesc.class);
+            if(annotation!=null&&annotation instanceof ParamDesc){
+                return (ParamDesc)annotation;
+            }
+        }
+
         return null;
     }
 
