@@ -427,12 +427,12 @@ public class ApiDocClientService {
 
             }
             if(fields.isEmpty()){
+                // 解析的类属性没有对应的有效属性则直接将属性直接绑定到根节点下
                 if(field!=null){
                     propertiesMap.put(propertiesName,jsonProperties(propertiesName,getParamDesc(field),null));
                 }else {
                     propertiesMap.put(propertiesName,jsonProperties(propertiesName,getParamDesc(clazz),null));
                 }
-
             }else {
                 Map map  = new HashMap<>(10);
                 propertiesMap.put(PROPERTIES_KEY,map);
