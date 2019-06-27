@@ -34,7 +34,7 @@ public class JsoupUtil {
         // 凉风
         cid = "767076";
         headers.put("Cookie", Cookie);
-        System.out.println(view_user_info(headers,"455969164"));
+//        System.out.println(view_user_info(headers,"455969164"));
         boolean continue_ = true;
         if(continue_){
             /**
