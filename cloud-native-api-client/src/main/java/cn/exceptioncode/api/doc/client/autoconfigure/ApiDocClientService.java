@@ -249,36 +249,17 @@ public class ApiDocClientService {
                                         // TODO: 2019/6/18 可能出现多个泛型类型、也可能还是Flux或者Mono序列类型
                                     }
                                 } else {
-                                    try {
-                                        if (!clazz.isPrimitive()) {
-                                            // 返回类型不是基本数据类型
-                                            apiDTO.setRes_body_type("json");
-                                            Object object = JSON.toJSON(clazz.newInstance());
-                                            if (object instanceof JSONObject) {
 
-                                            }
-
-                                            String jsonStr = JSON.toJSONString(clazz.newInstance(), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
-                                            apiDTO.setRes_body(jsonStr);
-
-                                            log.info("返回数据:{}", jsonStr);
-                                            ApiPropertiesDTO apiPropertiesDTO = new ApiPropertiesDTO();
-                                            apiPropertiesDTO.setType("object");
-                                            Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
-                                            map.keySet().forEach(key ->
-                                                    map.put(key, new ParamDTO(key, null, null, key + "desc", null))
-                                            );
-                                            apiPropertiesDTO.setProperties(map);
-                                            apiDTO.setRes_body(JSON.toJSONString(apiPropertiesDTO, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames));
-                                        } else {
-                                            // 返回类型是基本数据类型
-                                            apiDTO.setRes_body_type("text");
-                                            apiDTO.setRes_body_type(clazz.getName());
-                                        }
-
-                                    } catch (InstantiationException | IllegalAccessException e) {
-                                        log.error(e.getMessage());
+                                    if (!clazz.isPrimitive()) {
+                                        // 返回类型不是基本数据类型
+                                        apiDTO.setRes_body_type("json");
+                                        apiDTO.setRes_body(JSON.toJSONString(yapiJsonProperties(clazz, null), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames));
+                                    } else {
+                                        // 返回类型是基本数据类型
+                                        apiDTO.setRes_body_type("text");
+                                        apiDTO.setRes_body_type(clazz.getName());
                                     }
+
 
                                 }
 
@@ -344,28 +325,23 @@ public class ApiDocClientService {
 
     @SneakyThrows
     public static void main(String[] args) {
-        Map<String,Object> stringObjectMap = yapiJsonProperties(BaseResponse.class,null);
+        Map<String, Object> stringObjectMap = yapiJsonProperties(BaseResponse.class, null);
         System.out.println(JSON.toJSONString(stringObjectMap));
-//        BaseResponse baseResponse = BaseResponse.success(new HashMap<>(1));
-//        String jsonStr = JSON.toJSONString(baseResponse, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.PrettyFormat);
-//        System.out.println(jsonStr);
-//        Map<String, Object> map = JSON.parseObject(jsonStr, Map.class);
-//        map.forEach((s, obj) -> log.info("s:{},classSimpleName:{}", s, obj == null ? null : obj.getClass().getSimpleName()));
     }
 
 
-    private static Map<String, Object> jsonProperties(String name, ParamDesc paramDesc,Map<String, Object> properties) {
+    private static Map<String, Object> jsonProperties(String name, ParamDesc paramDesc, Map<String, Object> properties) {
         Map<String, Object> jsonMap = new HashMap<>(10);
         jsonMap.put("name", name);
         jsonMap.put("type", "object");
-        if(paramDesc!=null){
+        if (paramDesc != null) {
             jsonMap.put("example", paramDesc.example());
             jsonMap.put("description", paramDesc.desc());
-        }else {
+        } else {
             jsonMap.put("example", name);
             jsonMap.put("description", name);
         }
-        if(properties==null){
+        if (properties == null) {
             properties = new HashMap<>(1);
         }
         jsonMap.put("properties", properties);
@@ -374,43 +350,40 @@ public class ApiDocClientService {
 
 
     /**
-     *
-     *
-     *
-     * @param object Class 或 Field
+     * @param object        Class 或 Field
      * @param propertiesMap 对象子节点
      * @return
      */
-    private static Map<String,Object> yapiJsonProperties(Object object,Map<String,Object> propertiesMap){
+    private static Map<String, Object> yapiJsonProperties(Object object, Map<String, Object> propertiesMap) {
         List<Field> fields = Lists.newArrayList();
-        Class clazz = null ;
+        Class clazz = null;
         Field field = null;
-        if(object instanceof  Class){
-            clazz = (Class)object;
+        if (object instanceof Class) {
+            clazz = (Class) object;
         }
-        if(object instanceof  Field){
+        if (object instanceof Field) {
             field = (Field) object;
-            try{
+            try {
                 clazz = ClassUtils.getClass(field.getType().getTypeName());
-            }catch (ClassNotFoundException e){
+            } catch (ClassNotFoundException e) {
 
             }
 
         }
-        if(clazz!=null){
-            Field[] classFields= clazz.getDeclaredFields();
+        if (clazz != null) {
+            Field[] classFields = clazz.getDeclaredFields();
             String propertiesName;
-            if(field!=null){
+            if (field != null) {
                 propertiesName = field.getName();
-            }else {
+            } else {
                 propertiesName = clazz.getSimpleName();
             }
-            if(propertiesMap==null){
-                propertiesMap = jsonProperties(propertiesName,getParamDesc(clazz),null);
+            if (propertiesMap == null) {
+                propertiesMap = jsonProperties(propertiesName, getParamDesc(clazz), null);
             }
             for (Field field1 : classFields) {
                 // 判断是否私有属性
-                if(field1.getModifiers() == 2){
+                if (field1.getModifiers() == 2) {
                     String fieldName = field1.getName();
                     char[] cs = fieldName.toCharArray();
                     cs[0] -= 32;
@@ -426,41 +399,43 @@ public class ApiDocClientService {
                 }
 
             }
-            if(fields.isEmpty()){
+            if (fields.isEmpty()) {
                 // 解析的类属性没有对应的有效属性则直接将属性直接绑定到根节点下
-                if(field!=null){
-                    propertiesMap.put(propertiesName,jsonProperties(propertiesName,getParamDesc(field),null));
-                }else {
-                    propertiesMap.put(propertiesName,jsonProperties(propertiesName,getParamDesc(clazz),null));
+                if (field != null) {
+                    propertiesMap.put(propertiesName, jsonProperties(propertiesName, getParamDesc(field), null));
+                } else {
+                    propertiesMap.put(propertiesName, jsonProperties(propertiesName, getParamDesc(clazz), null));
                 }
-            }else {
-                Map map  = new HashMap<>(10);
-                propertiesMap.put(PROPERTIES_KEY,map);
+            } else {
+                Map<String,Object> map = jsonProperties(propertiesName, getParamDesc(clazz), null);
+                propertiesMap.put(propertiesName,map);
+                Map<String,Object> mapp = new HashMap<>(10);
+                map.put(PROPERTIES_KEY, mapp);
                 for (Field field1 : fields) {
                     // 递归构建 properties 节点
-                    yapiJsonProperties( field1,map);
+                    yapiJsonProperties(field1, mapp);
                 }
             }
             return propertiesMap;
         }
-        return  propertiesMap;
+        return propertiesMap;
 
     }
 
-    private static ParamDesc getParamDesc(Object object){
+    private static ParamDesc getParamDesc(Object object) {
         Annotation annotation;
-        if(object instanceof  Field){
-            Field field = (Field)object;
+        if (object instanceof Field) {
+            Field field = (Field) object;
             ParamDesc paramDesc = field.getAnnotation(ParamDesc.class);
-            if(paramDesc!=null){
+            if (paramDesc != null) {
                 return paramDesc;
             }
         }
-        if(object instanceof Class){
+        if (object instanceof Class) {
             Class clazz = (Class) object;
             annotation = clazz.getAnnotation(ParamDesc.class);
-            if(annotation!=null&&annotation instanceof ParamDesc){
-                return (ParamDesc)annotation;
+            if (annotation != null && annotation instanceof ParamDesc) {
+                return (ParamDesc) annotation;
             }
         }
 
