@@ -1,6 +1,5 @@
 package cn.exceptioncode.api.doc.client.enums;
 
-import lombok.Data;
 
 /**
  * @author zhangkai
