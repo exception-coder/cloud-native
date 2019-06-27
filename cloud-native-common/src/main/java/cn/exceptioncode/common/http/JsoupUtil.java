@@ -124,8 +124,13 @@ public class JsoupUtil {
             dunHuang.forEach(s -> {
                 form.put("endCid", "2");
                 send_hero(s, form, headers);
-                create_mission_room(s, headers, "11021", "1116", "2");
-                // TODO: 2019/6/27  冒险失败 尝试 冒险 漠北围歼战 
+                String res = create_mission_room(s, headers, "11021", "1116", "2");
+                // TODO: 2019/6/27  冒险失败 尝试 冒险 漠北围歼战
+                if (res == null || !res.contains("1")) {
+                    // 清理丝绸之路 冒险失败等级不足 尝试冒险清理丝绸之路
+                    System.out.println("天下无双霸王之证③ 冒险失败等级不足 尝试冒险漠北围歼战 res：" + res);
+                    create_mission_room(s, headers, "11003", "1112", "3");
+                }
             });
 
 
