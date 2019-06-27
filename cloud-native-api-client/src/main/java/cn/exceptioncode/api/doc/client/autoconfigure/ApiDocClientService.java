@@ -61,7 +61,6 @@ public class ApiDocClientService {
      */
     @EventListener
     public void applicationRunListener(ApplicationStartedEvent event) {
-
         Map<String, Object> controllers = event.getApplicationContext().getBeansWithAnnotation(Controller.class);
         ObjectMapper objectMapper = event.getApplicationContext().getBean(ObjectMapper.class);
         List<Object> list = Lists.newArrayList();
@@ -84,6 +83,7 @@ public class ApiDocClientService {
                             // 接口名称
                             String apiName = "";
                             if (requestMappingAnn == null) {
+                                // RequestMapping 的 派生注解 集合
                                 List<Class> classArrayList = Lists.newArrayList(GetMapping.class, PutMapping.class, DeleteMapping.class, PatchMapping.class);
                                 // 尝试获取 GetMapping、PostMapping、PutMapping、DeleteMapping、PatchMapping
                                 for (Class aClass : classArrayList) {
@@ -236,6 +236,7 @@ public class ApiDocClientService {
                                         if (actualTypeArguments != null && actualTypeArguments.length > 0) {
                                             Type actualTypeArgument = actualTypeArguments[0];
                                             try {
+                                                // 获取具体申明的泛型 Class
                                                 Class resBodyClass = Class.forName(actualTypeArgument.getTypeName());
                                                 Map<String,Object> JsonProperties = yapiJsonProperties(resBodyClass, null);
                                                 String jsonStr = JSON.toJSONString(JsonProperties.get(resBodyClass.getSimpleName()),SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
