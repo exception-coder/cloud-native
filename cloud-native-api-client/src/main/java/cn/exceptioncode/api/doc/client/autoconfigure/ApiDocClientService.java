@@ -373,7 +373,14 @@ public class ApiDocClientService {
     }
 
 
-
+    /**
+     *
+     *
+     *
+     * @param object Class 或 Field
+     * @param propertiesMap 对象子节点
+     * @return
+     */
     private static Map<String,Object> yapiJsonProperties(Object object,Map<String,Object> propertiesMap){
         List<Field> fields = Lists.newArrayList();
         Class clazz = null ;
@@ -430,6 +437,7 @@ public class ApiDocClientService {
                 Map map  = new HashMap<>(10);
                 propertiesMap.put(PROPERTIES_KEY,map);
                 for (Field field1 : fields) {
+                    // 递归构建 properties 节点
                     yapiJsonProperties( field1,map);
                 }
             }
