@@ -407,7 +407,13 @@ public class ApiDocClientService {
                 if (field != null) {
                     Class typeClass= Object.class;
                     try{
-                        typeClass = Class.forName(field.getGenericType().getTypeName());
+                        // TODO: 19-6-28  判断字段类型是否基本类型
+                        Class classType = field.getType();
+                        if(classType.isPrimitive()){
+                            typeClass = cn.exceptioncode.api.doc.client.util.ClassUtils.getWrapperByPrimitive(classType);
+                        }else {
+                            typeClass = Class.forName(field.getGenericType().getTypeName());
+                        }
                     }catch (ClassNotFoundException e){
 
                     }
