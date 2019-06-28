@@ -13,14 +13,13 @@ public class YapiUtils {
                 return "boolean";
             }
 
-
         }
 
         return "object";
     }
     
     public static void main(String[] args) {
-        
+
         System.out.println(Integer.class.isPrimitive());
     }
 }
