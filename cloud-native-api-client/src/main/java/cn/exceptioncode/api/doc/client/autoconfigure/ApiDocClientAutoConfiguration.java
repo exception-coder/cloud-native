@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 // TODO: 19-6-28
 /**
  *
- * 不够优雅 用户习惯于默认显示开启组件 默认pom文件添加依赖后即代表用户默许开启组件
+ * 不够优雅 用户习惯于pom文件添加依赖后即代表用户默许开启组件 不习惯于显性配置属性开启
  * 使用依赖配置对象 `ApiDocClientProperties` 申明关闭组件
  *
  */
