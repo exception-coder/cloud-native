@@ -4,6 +4,7 @@ package cn.exceptioncode.api.doc.client.autoconfigure;
 import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties;
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
+import cn.exceptioncode.api.doc.client.util.YapiUtils;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.dto.BaseResponse;
 import com.alibaba.fastjson.JSON;
@@ -332,10 +333,10 @@ public class ApiDocClientService {
     }
 
 
-    private static Map<String, Object> jsonProperties(String name, ParamDesc paramDesc, Map<String, Object> properties) {
+    private static Map<String, Object> jsonProperties(String name, Class clazz,ParamDesc paramDesc, Map<String, Object> properties) {
         Map<String, Object> jsonMap = new HashMap<>(10);
         jsonMap.put("name", name);
-        jsonMap.put("type", "object");
+        jsonMap.put("type", YapiUtils.getPropertiesType(clazz));
         if (paramDesc != null) {
             jsonMap.put("example", paramDesc.example());
             jsonMap.put("description", paramDesc.desc());
@@ -381,7 +382,7 @@ public class ApiDocClientService {
                 propertiesName = clazz.getSimpleName();
             }
             if (propertiesMap == null) {
-                propertiesMap = jsonProperties(propertiesName, getParamDesc(clazz), null);
+                propertiesMap = jsonProperties(propertiesName,clazz, getParamDesc(clazz), null);
             }
             for (Field field1 : classFields) {
                 // 判断是否私有属性
@@ -404,12 +405,18 @@ public class ApiDocClientService {
             if (fields.isEmpty()) {
                 // 解析的类属性没有对应的有效属性则直接将属性直接绑定到根节点下
                 if (field != null) {
-                    propertiesMap.put(propertiesName, jsonProperties(propertiesName, getParamDesc(field), null));
+                    Class typeClass= Object.class;
+                    try{
+                        typeClass = Class.forName(field.getGenericType().getTypeName());
+                    }catch (ClassNotFoundException e){
+
+                    }
+                    propertiesMap.put(propertiesName, jsonProperties(propertiesName, typeClass,getParamDesc(field), null));
                 } else {
-                    propertiesMap.put(propertiesName, jsonProperties(propertiesName, getParamDesc(clazz), null));
+                    propertiesMap.put(propertiesName, jsonProperties(propertiesName, clazz,getParamDesc(clazz), null));
                 }
             } else {
-                Map<String,Object> map = jsonProperties(propertiesName, getParamDesc(clazz), null);
+                Map<String,Object> map = jsonProperties(propertiesName, clazz,getParamDesc(clazz), null);
                 propertiesMap.put(propertiesName,map);
                 Map<String,Object> mapp = new HashMap<>(10);
                 map.put(PROPERTIES_KEY, mapp);
