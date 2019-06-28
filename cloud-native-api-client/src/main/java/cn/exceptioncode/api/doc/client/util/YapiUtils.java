@@ -1,8 +1,11 @@
 package cn.exceptioncode.api.doc.client.util;
 
+import cn.exceptioncode.common.annotations.ParamDesc;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class YapiUtils {
 
@@ -34,7 +37,33 @@ public class YapiUtils {
     }
 
 
-    public static void main(String[] args) {
-        System.out.println(Integer.class.isPrimitive());
+    /**
+     *
+     * 构建 yapi json元素描述对象
+     *
+     * @param name 键
+     * @param clazz 类类型
+     * @param paramDesc 对象或字段描述注解
+     * @param properties yapi json元素描述对象 properties 对应的 map
+     * @return
+     */
+    public static Map<String, Object> jsonProperties(String name, Class clazz, ParamDesc paramDesc, Map<String, Object> properties) {
+        Map<String, Object> jsonMap = new HashMap<>(10);
+        jsonMap.put("name", name);
+        jsonMap.put("type", YapiUtils.getPropertiesType(clazz));
+        if (paramDesc != null) {
+            jsonMap.put("example", paramDesc.example());
+            jsonMap.put("description", paramDesc.desc());
+        } else {
+            jsonMap.put("example", name);
+            jsonMap.put("description", name);
+        }
+        if (properties == null) {
+            properties = new HashMap<>(1);
+        }
+        jsonMap.put("properties", properties);
+        return jsonMap;
     }
+
+
 }

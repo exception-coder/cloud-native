@@ -18,7 +18,14 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableConfigurationProperties(ApiDocClientProperties.class)
 @ConditionalOnWebApplication
-@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable")
+// TODO: 19-6-28
+/**
+ *
+ * 不够优雅 用户习惯于默认显示开启组件 默认pom文件添加依赖后即代表用户默许开启组件
+ * 使用依赖配置对象 `ApiDocClientProperties` 申明关闭组件
+ *
+ */
+//@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable")
 public class ApiDocClientAutoConfiguration {
 
     @Autowired
