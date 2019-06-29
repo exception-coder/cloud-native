@@ -291,6 +291,12 @@ public class ApiDocClientService {
     }
 
 
+    /**
+     *
+     *
+     * @param apiDTO
+     * @return
+     */
     private String saveApi(ApiDTO apiDTO) {
         final String YAPI_URL = "http://" + this.apiDocClientProperties.getApiServer() + "/api";
         final String LOGIN_URL = YAPI_URL + "/user/login";
@@ -387,9 +393,10 @@ public class ApiDocClientService {
                 if (field != null) {
                     Class typeClass= Object.class;
                     try{
-                        // TODO: 19-6-28  判断字段类型是否基本类型
                         Class classType = field.getType();
+                        // 判断字段类型是否基本类型
                         if(classType.isPrimitive()){
+                            // 若是基本数据类型 则获取其对应包装类型
                             typeClass = cn.exceptioncode.api.doc.client.util.ClassUtils.getWrapperByPrimitive(classType);
                         }else {
                             typeClass = Class.forName(field.getGenericType().getTypeName());
@@ -417,6 +424,12 @@ public class ApiDocClientService {
 
     }
 
+    /**
+     *
+     * 从 Class 或 Field 上获取 ParamDesc 注解
+     * @param object
+     * @return
+     */
     private static ParamDesc getParamDesc(Object object) {
         Annotation annotation;
         if (object instanceof Field) {
