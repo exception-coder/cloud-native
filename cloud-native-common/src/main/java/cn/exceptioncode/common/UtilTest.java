@@ -73,16 +73,5 @@ public class UtilTest {
         private T data;
     }
 
-    public A<DogDTO> method() {
-        return null;
-    }
-
-    @SneakyThrows
-    public static void main(String[] args) {
-        Method method = UtilTest.class.getMethod("method");
-        System.out.println(method.getGenericReturnType().getTypeName());
-        System.out.println(method.getReturnType().getTypeName());
-        Class clazz = Class.forName(method.getReturnType().getTypeName());
-    }
 
 }
