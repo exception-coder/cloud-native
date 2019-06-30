@@ -1,10 +1,12 @@
 package cn.exceptioncode.api.doc.client.util;
 
 import cn.exceptioncode.common.annotations.ParamDesc;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class YapiUtils {
@@ -45,9 +47,10 @@ public class YapiUtils {
      * @param clazz 类类型
      * @param paramDesc 对象或字段描述注解
      * @param properties yapi json元素描述对象 properties 对应的 map
+     * @param required 必填属性集合
      * @return
      */
-    public static Map<String, Object> jsonProperties(String name, Class clazz, ParamDesc paramDesc, Map<String, Object> properties) {
+    public static Map<String, Object> jsonProperties(String name, Class clazz, ParamDesc paramDesc, Map<String, Object> properties, List required) {
         Map<String, Object> jsonMap = new HashMap<>(10);
         jsonMap.put("name", name);
         jsonMap.put("type", YapiUtils.getPropertiesType(clazz));
@@ -62,6 +65,12 @@ public class YapiUtils {
             properties = new HashMap<>(1);
         }
         jsonMap.put("properties", properties);
+        if(required==null){
+            jsonMap.put("required", Lists.newArrayList(10));
+        }else {
+            jsonMap.put("required", required);
+        }
+
         return jsonMap;
     }
 

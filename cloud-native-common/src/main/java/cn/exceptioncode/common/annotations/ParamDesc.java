@@ -26,5 +26,6 @@ public @interface ParamDesc {
      */
     String example() default "";
 
+    boolean require() default true;
 
 }

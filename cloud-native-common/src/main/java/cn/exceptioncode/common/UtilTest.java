@@ -1,13 +1,17 @@
 package cn.exceptioncode.common;
 
+import cn.exceptioncode.common.dto.DogDTO;
 import cn.exceptioncode.common.security.CodecUtil;
 import cn.exceptioncode.common.security.EncryptUtil;
 import cn.exceptioncode.common.security.SignUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
 import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,16 +59,30 @@ public class UtilTest {
         map.put("sign", sign);
         String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAojydj+dKyvC7FUejUtoiy/GxSUxhMutDoxCEwcMlB+0VxGy1siUw1T66tUWK8jCsPS9V5enDcoP5O7Rg+69bAZmJJgbvbqnNku7L44izl0MWMhRdpVBws8Lp7qN9jci/wBBuJyLGbEKarzeBtnmOt9DHF77W1eLw7jQRCPTIdNFb8pawKaQiw5cPfQ2qhtWC53LI81vwMwzaprUj3yQXOn6mN5wu/oKcV2vTFd6I8rfpQTqs/wAXpBFF7T+Cymv1yPXV2jhxRtyYhB9lSve6ZpOacMXLzG1Gmrf+Ba8sazs3eRTQW4Hs3m5TgcXbLUCqHMaFtURjpUrD9oNjTkdByQIDAQAB";
         String jsonStr = JSON.toJSONString(map);
-        byte[]  bytes = EncryptUtil.blockEncryptByRSA2(EncryptUtil.getPublicKeyByRSA2(publicKey), jsonStr);
+        byte[] bytes = EncryptUtil.blockEncryptByRSA2(EncryptUtil.getPublicKeyByRSA2(publicKey), jsonStr);
         String ciphertext = CodecUtil.URLEncoderUTF8(CodecUtil.BASE64Encoder(bytes));
-        log.info("请求密文：{}",ciphertext);
+        log.info("请求密文：{}", ciphertext);
     }
 
     @Data
-    class A {
+    class A<T> {
         private String a;
 
         private String b;
+
+        private T data;
+    }
+
+    public A<DogDTO> method() {
+        return null;
+    }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        Method method = UtilTest.class.getMethod("method");
+        System.out.println(method.getGenericReturnType().getTypeName());
+        System.out.println(method.getReturnType().getTypeName());
+        Class clazz = Class.forName(method.getReturnType().getTypeName());
     }
 
 }

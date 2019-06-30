@@ -64,11 +64,23 @@ public class ApiDTO {
      * 请求 method
      */
     private String method;
+
+    /**
+     *
+     * 响应参数是否json
+     */
+    private boolean res_body_is_json_schema = true;
+
+    /**
+     *
+     * 请求参数是否json
+     */
+    private boolean req_body_is_json_schema = true;
     /**
      *
      * 请求体参数
      */
-    private List<?> req_body_other = new ArrayList<>(1);
+    private String req_body_other ;
     /**
      *
      * url请求参数
@@ -212,4 +224,35 @@ public class ApiDTO {
         this.req_params = req_params;
     }
 
+    public boolean getReq_body_is_json_schema() {
+        return req_body_is_json_schema;
+    }
+
+    public void setReq_body_is_json_schema(Boolean req_body_is_json_schema) {
+        this.req_body_is_json_schema = req_body_is_json_schema;
+    }
+
+    public String getReq_body_other() {
+        return req_body_other;
+    }
+
+    public void setReq_body_other(String req_body_other) {
+        this.req_body_other = req_body_other;
+    }
+
+    public boolean isRes_body_is_json_schema() {
+        return res_body_is_json_schema;
+    }
+
+    public void setRes_body_is_json_schema(boolean res_body_is_json_schema) {
+        this.res_body_is_json_schema = res_body_is_json_schema;
+    }
+
+    public boolean isReq_body_is_json_schema() {
+        return req_body_is_json_schema;
+    }
+
+    public void setReq_body_is_json_schema(boolean req_body_is_json_schema) {
+        this.req_body_is_json_schema = req_body_is_json_schema;
+    }
 }

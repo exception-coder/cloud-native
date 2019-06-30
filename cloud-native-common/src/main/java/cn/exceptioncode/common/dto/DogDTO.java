@@ -2,6 +2,8 @@ package cn.exceptioncode.common.dto;
 
 
 import cn.exceptioncode.common.annotations.ParamDesc;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -10,13 +12,15 @@ import lombok.ToString;
  * @author zhangkai
  *
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class DogDTO {
 
     @ParamDesc(desc = "呢称",example = "jock")
     private String name;
 
-    @ParamDesc(desc = "年龄",example = "1")
+    @ParamDesc(desc = "年龄",example = "1",require = false)
     private Integer age;
 
     String color;

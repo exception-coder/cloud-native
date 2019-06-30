@@ -14,7 +14,7 @@ public class ParamDTO {
     public ParamDTO() {
     }
 
-    public ParamDTO(String name, String type, String example, String desc, String required) {
+    public ParamDTO(String name, String type, String example, String desc, String required ) {
         this.name = name;
         this.type = type;
         this.example = example;
@@ -22,6 +22,10 @@ public class ParamDTO {
         this.required = required;
     }
 
+    public  ParamDTO(String name,String value){
+        this.name = name;
+        this.value = value;
+    }
     private String name;
 
     private String type;
@@ -31,6 +35,8 @@ public class ParamDTO {
     private String desc;
 
     private String required;
+
+    private String value;
 
 
 }

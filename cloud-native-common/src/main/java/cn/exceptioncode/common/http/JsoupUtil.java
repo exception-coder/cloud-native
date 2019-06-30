@@ -35,8 +35,8 @@ public class JsoupUtil {
         // 凉风
         cid = "767076";
         headers.put("Cookie", Cookie);
-        paiQianZiYuan(headers,"425485346","-379","284",cid);
-        boolean continue_ = false;
+//        paiQianZiYuan(headers,"425485346","-379","284",cid);
+        boolean continue_ = true;
         if(continue_){
             /**
              *
