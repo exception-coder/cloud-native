@@ -4,29 +4,24 @@ package cn.exceptioncode.api.doc.client.autoconfigure;
 import cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties;
 import cn.exceptioncode.api.doc.client.dto.ApiDTO;
 import cn.exceptioncode.api.doc.client.dto.ParamDTO;
+import cn.exceptioncode.api.doc.client.util.YapiClassUtils;
 import cn.exceptioncode.api.doc.client.util.YapiUtils;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.annotation.Annotation;
@@ -63,92 +58,56 @@ public class ApiDocClientService {
     public void applicationRunListener(ApplicationStartedEvent event) {
         Boolean enable = apiDocClientProperties.getEnable();
         if (enable == true) {
+            // 从 `ApplicationContext` 获取所有包含 `Controller` 注解的类
             Map<String, Object> controllers = event.getApplicationContext().getBeansWithAnnotation(Controller.class);
-            ObjectMapper objectMapper = event.getApplicationContext().getBean(ObjectMapper.class);
+            // `Controoler` 对象集合
             List<Object> list = Lists.newArrayList();
-            controllers.forEach((s, o) -> {
-                        if (!list.contains(o)) {
-                            list.add(o);
-                            RequestMapping requestMapping = o.getClass().getAnnotation(RequestMapping.class);
+            controllers.forEach((s, controller) -> {
+                        // 集合中存在 `Controller` 则表示已经处理 不再进行处理
+                        if (!list.contains(controller)) {
+                            list.add(controller);
+
+                            RequestMapping requestMapping = controller.getClass().getAnnotation(RequestMapping.class);
+                            // url 请求路径前缀
                             String pathPrefix = "";
                             if (requestMapping != null) {
+                                // TODO: 19-7-1 路径可为路径数组 暂时只获取第一个路径
                                 String[] pathValues = requestMapping.value();
                                 if (pathValues != null && pathValues.length > 0) {
                                     pathPrefix = pathValues[0];
                                 }
                             }
-                            Method[] methods = ReflectionUtils.getAllDeclaredMethods(o.getClass());
-                            for (Method method : methods) {
-                                RequestMapping requestMappingAnn = method.getAnnotation(RequestMapping.class);
-                                // 接口路径
-                                String path = null;
-                                // 接口名称
-                                String apiName = "";
-                                if (requestMappingAnn == null) {
-                                    // RequestMapping 的 派生注解 集合
-                                    List<Class> classArrayList = Lists.newArrayList(GetMapping.class, PutMapping.class, DeleteMapping.class, PatchMapping.class,PostMapping.class);
-                                    // 尝试获取 GetMapping、PostMapping、PutMapping、DeleteMapping、PatchMapping
-                                    for (Class aClass : classArrayList) {
-                                        Annotation annotation = method.getAnnotation(aClass);
-                                        if (annotation != null) {
-                                            Object pathObject = AnnotationUtils.getValue(annotation);
-                                            if (pathObject != null) {
-                                                if (pathObject instanceof String[]) {
-                                                    path = ((String[]) pathObject)[0];
-                                                }
-                                            }
-                                            pathObject = AnnotationUtils.getValue(annotation, "name");
-                                            if (pathObject != null) {
-                                                if (pathObject instanceof String) {
-                                                    apiName = ((String) pathObject);
-                                                }
-                                            }
-                                            requestMappingAnn = AnnotationUtils.findAnnotation(annotation.getClass(), RequestMapping.class);
-                                            break;
-                                        }
-                                    }
-                                }
 
-                                // 只解析 @RequestMapping 申明的方法
-                                if (requestMappingAnn != null) {
-                                    ApiDTO apiDTO = new ApiDTO();
+                            Method[] methods = ReflectionUtils.getAllDeclaredMethods(controller.getClass());
+
+                            for (Method method : methods) {
+                                ApiDTO apiDTO = new ApiDTO();
+                                RequestMapping methodRequestMapping = YapiUtils.getRequestMapping(pathPrefix, apiDTO, method);
+
+                                // 只解析 `RequestMapping`及其派生注解申明的方法
+                                if (methodRequestMapping != null) {
                                     apiDTO.setCatid(this.apiDocClientProperties.getApiCatid());
                                     apiDTO.setToken(this.apiDocClientProperties.getApiToken());
-                                    // 获取接口路径、接口名称
-                                    String[] pathValue = path == null ? requestMappingAnn.value() : new String[]{path};
-                                    apiName = StringUtils.isEmpty(apiName) ? requestMappingAnn.name() : apiName;
-                                    if (pathValue != null && pathValue.length > 0) {
-                                        // v0.1 仅获取一个请求路径
-                                        // TODO: 2019/6/21 多请求路径映射处理
-                                        apiDTO.setPath(pathPrefix + pathValue[0]);
-                                        if (StringUtils.isEmpty(apiName)) {
-                                            apiDTO.setTitle(apiDTO.getPath());
-                                        } else {
-                                            apiDTO.setTitle(apiName);
-                                        }
-                                    }
-                                    // 获取请求方法
-                                    RequestMethod[] requestMethods = requestMappingAnn.method();
-                                    if (requestMethods != null && requestMethods.length == 1) {
-                                        apiDTO.setMethod(requestMethods[0].name());
-                                    } else {
-                                        // 存在多个请求method 或者获取不到 直接使用 GET method
-                                        apiDTO.setMethod(RequestMethod.GET.name());
-                                    }
-                                    // 获取请求参数
+
+                                    /**
+                                     *
+                                     * 绑定 yapi 请求参数
+                                     */
+
                                     Parameter[] parameters = method.getParameters();
                                     ParamDTO paramDTO;
                                     List<ParamDTO> reqQuery = Lists.newArrayList();
                                     List<ParamDTO> reqHeaders = Lists.newArrayList();
                                     List<ParamDTO> reqParams = Lists.newArrayList();
-                                    // 遍历 controller 绑定的参数
+
+                                    // 遍历 `Controller` 对象绑定的参数
                                     for (Parameter parameter : parameters) {
-                                        Annotation annotation = null;
+                                        Annotation paramAnnotation = null;
                                         // 获取 RequestParam、RequestHeader、PathVariable、RequestBody 注解信息
                                         for (Class<? extends Annotation> aClass : Lists.newArrayList(RequestParam.class, RequestHeader.class,
                                                 PathVariable.class, RequestBody.class)) {
-                                            annotation = parameter.getAnnotation(aClass);
-                                            if (annotation != null) {
+                                            paramAnnotation = parameter.getAnnotation(aClass);
+                                            if (paramAnnotation != null) {
                                                 // 一但找到对应注解 不再继续获取
                                                 break;
                                             }
@@ -157,39 +116,37 @@ public class ApiDocClientService {
                                         // 获取 ParamDesc 注解信息
                                         ParamDesc paramDesc = parameter.getAnnotation(ParamDesc.class);
 
-                                        String paramAnnotationName = "";
-                                        if (annotation != null) {
+                                        String paramAnnotationSimpleName = "";
+                                        if (paramAnnotation != null) {
                                             // 获取动态代理类类名
                                             try {
                                                 // TODO: 2019/6/20 强行获取 待优化
-                                                Field filed = Proxy.getInvocationHandler(annotation).getClass().getDeclaredField("type");
+                                                Field filed = Proxy.getInvocationHandler(paramAnnotation).getClass().getDeclaredField("type");
                                                 filed.setAccessible(true);
-                                                Object object = filed.get(Proxy.getInvocationHandler(annotation));
+                                                Object object = filed.get(Proxy.getInvocationHandler(paramAnnotation));
                                                 if (object instanceof Class) {
                                                     Class clazz = (Class) object;
-                                                    paramAnnotationName = clazz.getSimpleName();
+                                                    paramAnnotationSimpleName = clazz.getSimpleName();
                                                 }
                                             } catch (NoSuchFieldException | IllegalAccessException e) {
                                                 log.error("获取字段type失败，失败信息：{}", e.getMessage());
                                             }
 
-                                            log.info("请求参数注解简称：{}", paramAnnotationName);
-                                            switch (paramAnnotationName) {
+                                            log.info("请求参数注解简称：{}", paramAnnotationSimpleName);
+                                            switch (paramAnnotationSimpleName) {
                                                 case "RequestBody":
                                                     this.log("请求体");
                                                     // 参数中应当只有一个 @RequestBody 注解，待发掘多个的使用场景
-                                                    // TODO: 2019/6/27 设置请求体
                                                     apiDTO.setReq_body_is_json_schema(true);
                                                     Class clazz = parameter.getType();
                                                     Map<String, Object> yapiJsonProperties = yapiJsonProperties(clazz, null, null);
                                                     Object object = yapiJsonProperties.get(StringUtils.uncapitalize(clazz.getSimpleName()));
                                                     String reqBodyOther = JSON.toJSONString(object, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                                     apiDTO.setReq_body_other(reqBodyOther);
-//                                                    reqHeaders.add(new ParamDTO(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
                                                     break;
                                                 case "RequestParam":
                                                     this.log("URL请求参数");
-                                                    RequestParam requestParam = (RequestParam) annotation;
+                                                    RequestParam requestParam = (RequestParam) paramAnnotation;
                                                     paramDTO = new ParamDTO(requestParam.name(), parameter.getType().getSimpleName(),
                                                             paramDesc == null ? null : paramDesc.example(), paramDesc == null ? null : paramDesc.desc(),
                                                             requestParam.required() == true ? "1" : "0");
@@ -197,7 +154,7 @@ public class ApiDocClientService {
                                                     break;
                                                 case "RequestHeader":
                                                     this.log("请求头");
-                                                    RequestHeader requestHeader = (RequestHeader) annotation;
+                                                    RequestHeader requestHeader = (RequestHeader) paramAnnotation;
                                                     paramDTO = new ParamDTO(requestHeader.name(), parameter.getType().getSimpleName(),
                                                             paramDesc == null ? null : paramDesc.example(), paramDesc == null ? null : paramDesc.desc(),
                                                             requestHeader.required() == true ? "1" : "0");
@@ -205,14 +162,14 @@ public class ApiDocClientService {
                                                     break;
                                                 case "PathVariable":
                                                     this.log("请求路径");
-                                                    PathVariable pathVariable = (PathVariable) annotation;
+                                                    PathVariable pathVariable = (PathVariable) paramAnnotation;
                                                     paramDTO = new ParamDTO(pathVariable.name(), parameter.getType().getSimpleName(),
                                                             paramDesc == null ? null : paramDesc.example(), paramDesc == null ? null : paramDesc.desc(),
                                                             pathVariable.required() == true ? "1" : "0");
                                                     reqParams.add(paramDTO);
                                                     break;
                                                 default:
-                                                    this.log("classSimpleName:" + paramAnnotationName + ",unknown");
+                                                    this.log("classSimpleName:" + paramAnnotation + ",unknown");
 
                                             }
                                         }
@@ -223,19 +180,9 @@ public class ApiDocClientService {
                                     apiDTO.setReq_query(reqQuery);
                                     apiDTO.setReq_params(reqParams);
                                     apiDTO.setReq_headers(reqHeaders);
-                                    // 获取响应参数
-                                    Class clazz = method.getReturnType();
-                                    /**
-                                     *
-                                     * 基本数据类型没有 package
-                                     *
-                                     */
-                                    Package monoPackage = Mono.class.getPackage();
-                                    Package fluxPackage = Flux.class.getPackage();
-                                    Package clazzPackage = clazz.getPackage();
-                                    boolean isReactor = monoPackage.equals(clazzPackage)
-                                            || fluxPackage.equals(clazzPackage);
-                                    if (!clazz.isPrimitive() && isReactor) {
+
+                                    // 赋值响应参数
+                                    if (YapiClassUtils.returnTypeIsReactor(method)) {
                                         // 返回类型是 Flux 或 Mono 序列
                                         log.info("Reactor");
                                         Type genericReturnType = method.getGenericReturnType();
@@ -256,11 +203,11 @@ public class ApiDocClientService {
                                                     Class resBodyClass = Class.forName(typeName);
                                                     Map<String, Object> jsonProperties = yapiJsonProperties(resBodyClass, null, null);
                                                     // 响应类泛型获取 替换 T
-                                                    if (!org.apache.commons.lang3.StringUtils.isEmpty(genericTypeName)) {
+                                                    if (!StringUtils.isEmpty(genericTypeName)) {
                                                         try {
-                                                            jsonProperties = yapiJsonProperties(clazz, null, Class.forName(genericTypeName));
+                                                            jsonProperties = yapiJsonProperties(resBodyClass, null, Class.forName(genericTypeName));
                                                         } catch (ClassNotFoundException e) {
-                                                            jsonProperties = yapiJsonProperties(clazz, null, null);
+                                                            jsonProperties = yapiJsonProperties(resBodyClass, null, null);
                                                         }
                                                     }
                                                     String jsonStr = JSON.toJSONString(jsonProperties.get(StringUtils.uncapitalize(resBodyClass.getSimpleName())), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
@@ -275,7 +222,7 @@ public class ApiDocClientService {
                                             // TODO: 2019/6/18 可能出现多个泛型类型、也可能还是Flux或者Mono序列类型
                                         }
                                     } else {
-
+                                        Class clazz = Object.class;
                                         if (!clazz.isPrimitive()) {
                                             // 返回类型不是基本数据类型
                                             Type methodGenericReturnType = method.getGenericReturnType();
@@ -289,15 +236,15 @@ public class ApiDocClientService {
 
                                             Map<String, Object> jsonProperties = yapiJsonProperties(clazz, null, null);
                                             // 响应类泛型获取 替换 T
-                                            if (!org.apache.commons.lang3.StringUtils.isEmpty(genericTypeName)) {
+                                            if (!StringUtils.isEmpty(genericTypeName)) {
                                                 try {
                                                     jsonProperties = yapiJsonProperties(clazz, null, Class.forName(genericTypeName));
                                                 } catch (ClassNotFoundException e) {
                                                     jsonProperties = yapiJsonProperties(clazz, null, null);
                                                 }
                                             }
-
-                                            String resBody = JSON.toJSONString(jsonProperties.get(StringUtils.uncapitalize(clazz.getSimpleName())), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+                                            Object jsonPropertiesObj = jsonProperties.get(StringUtils.uncapitalize(clazz.getSimpleName()));
+                                            String resBody = JSON.toJSONString(jsonPropertiesObj, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
                                             log.warn("赋值响应参数res_body:{}", resBody);
                                             apiDTO.setRes_body(resBody);
                                         } else {
@@ -309,11 +256,6 @@ public class ApiDocClientService {
 
                                     }
 
-                                    try {
-                                        log.warn("请求体：{}", objectMapper.writeValueAsString(apiDTO));
-                                    } catch (JsonProcessingException e) {
-                                        log.error(e.getMessage());
-                                    }
                                     String result = saveApi(apiDTO);
                                     log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames), result);
                                 }
@@ -321,7 +263,7 @@ public class ApiDocClientService {
 
                             }
                         }
-                        log.warn("alias:{},controller:{}", s, o);
+                        log.warn("alias:{},controller:{}", s, controller);
                     }
 
             );
@@ -437,7 +379,7 @@ public class ApiDocClientService {
                         // 判断字段类型是否基本类型
                         if (classType.isPrimitive()) {
                             // 若是基本数据类型 则获取其对应包装类型
-                            typeClass = cn.exceptioncode.api.doc.client.util.ClassUtils.getWrapperByPrimitive(classType);
+                            typeClass = YapiClassUtils.getWrapperByPrimitive(classType);
                         } else {
                             typeClass = Class.forName(field.getGenericType().getTypeName());
                         }
