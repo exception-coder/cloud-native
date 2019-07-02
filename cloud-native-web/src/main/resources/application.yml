@@ -20,7 +20,6 @@ cn:
     api:
       code:
         doc:
-          controller-base-package: cn.excptioncode.webapp.controller
           api-catid: 12
           api-server: 127.0.0.1:3000
           api-token: bc30a4d684908840d42d9bb094e0891f8f778a01be2c15aa9ef27c53e8d2bf23
@@ -39,7 +38,6 @@ cn:
     api:
       code:
         doc:
-          controller-base-package: cn.excptioncode.webapp.controller
           api-catid: 11
           api-server: 192.168.0.104:3000
           api-token: 94677a30c3e3fa0a19609c9629b13aa0f46b91a8b9bfd45e482235751d615b22
@@ -57,7 +55,6 @@ cn:
     api:
       code:
         doc:
-          controller-base-package: cn.excptioncode.webapp.controller
           api-catid: 17
           api-server: 47.75.196.191:3000
           api-token: 0f871d650ec3170e894f4c48bfc625c87734ddb6cfe64ee53105de63c230e296
