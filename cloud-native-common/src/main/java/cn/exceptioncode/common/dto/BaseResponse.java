@@ -27,9 +27,6 @@ public class BaseResponse<T> implements Serializable {
     @ParamDesc(desc = "响应信息描述",example = "success",require = false)
     private T data;
 
-//    @ParamDesc(desc = "泡泡狗",example = "{}")
-//    private DogDTO dogDTO;
-
     public BaseResponse() {
         this.setStatus(DefaultStatusEnum.SUCCESS);
     }

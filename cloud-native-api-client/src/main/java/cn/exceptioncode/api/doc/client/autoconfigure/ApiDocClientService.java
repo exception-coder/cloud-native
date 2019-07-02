@@ -26,10 +26,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -60,9 +57,9 @@ public class ApiDocClientService {
         if (enable == true) {
             // 从 `ApplicationContext` 获取所有包含 `Controller` 注解的类
             Map<String, Object> controllers = event.getApplicationContext().getBeansWithAnnotation(Controller.class);
-            // `Controoler` 对象集合
+            // `Controller` 对象集合
             List<Object> list = Lists.newArrayList();
-            controllers.forEach((s, controller) -> {
+            controllers.forEach((controllerKey, controller) -> {
                         // 集合中存在 `Controller` 则表示已经处理 不再进行处理
                         if (!list.contains(controller)) {
                             list.add(controller);
@@ -181,81 +178,35 @@ public class ApiDocClientService {
                                     apiDTO.setReq_params(reqParams);
                                     apiDTO.setReq_headers(reqHeaders);
 
-                                    // 赋值响应参数
-                                    if (YapiClassUtils.returnTypeIsReactor(method)) {
-                                        // 返回类型是 Flux 或 Mono 序列
-                                        log.info("Reactor");
-                                        Type genericReturnType = method.getGenericReturnType();
-                                        if (genericReturnType instanceof ParameterizedTypeImpl) {
-                                            ParameterizedTypeImpl type = (ParameterizedTypeImpl) genericReturnType;
-                                            Type[] actualTypeArguments = type.getActualTypeArguments();
-                                            if (actualTypeArguments != null && actualTypeArguments.length > 0) {
-                                                Type actualTypeArgument = actualTypeArguments[0];
-                                                try {
-                                                    String typeName = actualTypeArgument.getTypeName();
-                                                    String genericTypeName = "";
-                                                    if (typeName.contains("<")) {
-                                                        // 获取序列具体申明的泛型勒种申明的泛型
-                                                        genericTypeName = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
-                                                        typeName = typeName.substring(0, typeName.indexOf("<"));
-                                                    }
-                                                    // 获取序列具体申明的泛型 Class
-                                                    Class resBodyClass = Class.forName(typeName);
-                                                    Map<String, Object> jsonProperties = yapiJsonProperties(resBodyClass, null, null);
-                                                    // 响应类泛型获取 替换 T
-                                                    if (!StringUtils.isEmpty(genericTypeName)) {
-                                                        try {
-                                                            jsonProperties = yapiJsonProperties(resBodyClass, null, Class.forName(genericTypeName));
-                                                        } catch (ClassNotFoundException e) {
-                                                            jsonProperties = yapiJsonProperties(resBodyClass, null, null);
-                                                        }
-                                                    }
-                                                    String jsonStr = JSON.toJSONString(jsonProperties.get(StringUtils.uncapitalize(resBodyClass.getSimpleName())), SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
-                                                    apiDTO.setRes_body_type("json");
-                                                    log.warn("赋值响应参数res_body:{}", jsonStr);
-                                                    apiDTO.setRes_body(jsonStr);
-                                                } catch (ClassNotFoundException e) {
-                                                    log.error("赋值响应类型异常，ApiDTO：{}，异常信息：{}", JSON.toJSONString(apiDTO), e.getMessage());
-                                                }
-                                                log.warn("响应数据类型：{}", actualTypeArgument);
-                                            }
-                                            // TODO: 2019/6/18 可能出现多个泛型类型、也可能还是Flux或者Mono序列类型
-                                        }
-                                    } else {
-                                        Class clazz = Object.class;
-                                        if (!clazz.isPrimitive()) {
-                                            // 返回类型不是基本数据类型
-                                            Type methodGenericReturnType = method.getGenericReturnType();
-                                            String typeName = methodGenericReturnType.getTypeName();
-                                            String genericTypeName = "";
-                                            if (typeName.contains("<")) {
-                                                // 获取泛型申明类全名
-                                                genericTypeName = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
-                                            }
-                                            apiDTO.setRes_body_type("json");
 
-                                            Map<String, Object> jsonProperties = yapiJsonProperties(clazz, null, null);
-                                            // 响应类泛型获取 替换 T
-                                            if (!StringUtils.isEmpty(genericTypeName)) {
-                                                try {
-                                                    jsonProperties = yapiJsonProperties(clazz, null, Class.forName(genericTypeName));
-                                                } catch (ClassNotFoundException e) {
-                                                    jsonProperties = yapiJsonProperties(clazz, null, null);
-                                                }
-                                            }
-                                            Object jsonPropertiesObj = jsonProperties.get(StringUtils.uncapitalize(clazz.getSimpleName()));
-                                            String resBody = JSON.toJSONString(jsonPropertiesObj, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
-                                            log.warn("赋值响应参数res_body:{}", resBody);
-                                            apiDTO.setRes_body(resBody);
-                                        } else {
-                                            // 返回类型是基本数据类型
-                                            apiDTO.setRes_body_type("text");
-                                            apiDTO.setRes_body_type(clazz.getName());
-                                        }
-
-
+                                    /**
+                                     *
+                                     *
+                                     * yapi响应参数绑定
+                                     *
+                                     */
+                                    Map<Class, Class> classMap = YapiClassUtils.getResponseReturnType(method);
+                                    Set<Class> set = classMap.keySet();
+                                    Class clazz = null;
+                                    Class genericClazz = null;
+                                    for (Class aClass : set) {
+                                        clazz = aClass;
+                                        genericClazz = classMap.get(aClass);
                                     }
-
+                                    // 赋值响应参数
+                                    if (!clazz.isPrimitive()) {
+                                        // 返回类型不是基本数据类型
+                                        Map<String, Object> jsonProperties = yapiJsonProperties(clazz, null, genericClazz);
+                                        Object jsonPropertiesObj = jsonProperties.get(StringUtils.uncapitalize(clazz.getSimpleName()));
+                                        String resBody = JSON.toJSONString(jsonPropertiesObj, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+                                        apiDTO.setRes_body_type("json");
+                                        log.warn("赋值响应参数res_body:{}", resBody);
+                                        apiDTO.setRes_body(resBody);
+                                    } else {
+                                        // 返回类型是基本数据类型
+                                        apiDTO.setRes_body_type("text");
+                                        apiDTO.setRes_body_type(clazz.getName());
+                                    }
                                     String result = saveApi(apiDTO);
                                     log.warn("保存api成功，请求参数：{}，响应信息：{}", JSON.toJSONString(apiDTO, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames), result);
                                 }
@@ -263,7 +214,7 @@ public class ApiDocClientService {
 
                             }
                         }
-                        log.warn("alias:{},controller:{}", s, controller);
+                        log.warn("alias:{},controller:{}", controllerKey, controller);
                     }
 
             );

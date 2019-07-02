@@ -3,7 +3,7 @@ package cn.exceptioncode.api.doc.client.util;
 import cn.exceptioncode.common.dto.DogDTO;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.ClassUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,7 +13,13 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+
+@Slf4j
 public class YapiClassUtils {
+
+    private YapiClassUtils(){
+
+    }
 
 
     private static final Map<Class, Class> primmitiveToPrimmitiveWrapperMap = Maps.newHashMap();
@@ -68,87 +74,116 @@ public class YapiClassUtils {
     }
 
 
+    // TODO: 19-7-2 方法待完善 判断一个Class是否是一个泛型类
+
     /**
      * 获取具体响应类型及泛型 没有申明的泛型默认赋值 `Object`
      *
      * @param method
      * @return
      */
-    public static Map<Class, Class> getResponseReturnType(Method method) {
+     public static Map<Class, Class> getResponseReturnType(Method method) {
         Map<Class, Class> classMap = new HashMap<>();
         Class returnTypeClass = method.getReturnType();
         if (returnTypeIsReactor(method)) {
             String genericReturnTypeName = method.getGenericReturnType().getTypeName();
-            // 获取 `Reactor` 序列 `Mono`、`Flux` 中申明的泛型TypeName
-            String genericTypeName = getGenericTypeName(genericReturnTypeName);
-            if(genericTypeName!=null){
-                // 序列申明了具体泛型
-
-                genericTypeName = getGenericTypeName(genericTypeName);
-                if(genericTypeName!=null){
-
-                }else {
-                    try{
-                        classMap.put(Class.forName(genericTypeName),Object.class);
-                    }catch (ClassNotFoundException e){
-                        classMap.put(Object.class,Object.class);
+            // 获取 `Reactor` 序列 `Mono`、`Flux` 元素中申明的泛型 genericTypeName
+            String genericTypeName = getFirstGenericTypeName(genericReturnTypeName);
+            if (genericTypeName != null) {
+                String classTypeName = getClassByGenericTypeName(genericTypeName);
+                // 序列元素申明了具体泛型
+                genericTypeName = getFirstGenericTypeName(genericTypeName);
+                if (genericTypeName != null) {
+                    try {
+                        // TODO: 19-7-2 泛型中申明的泛型暂时不解析
+                        genericTypeName = getClassByGenericTypeName(genericTypeName);
+                        classMap.put(Class.forName(classTypeName), Class.forName(genericTypeName));
+                    } catch (ClassNotFoundException e) {
+                        log.error("ClassNotFoundException message:{}", e.getMessage());
+                        classMap.put(Object.class, Object.class);
+                    }
+                } else {
+                    try {
+                        classMap.put(Class.forName(classTypeName), Object.class);
+                    } catch (ClassNotFoundException e) {
+                        log.error("ClassNotFoundException message:{}", e.getMessage());
+                        classMap.put(Object.class, Object.class);
                     }
 
                 }
-            }else {
+            } else {
                 // 序列中没有具体申明泛型
-                classMap.put(Object.class,Object.class);
+                classMap.put(Object.class, Object.class);
             }
         } else {
             String genericReturnTypeName = method.getGenericReturnType().getTypeName();
-            String genericTypeName = getGenericTypeName(genericReturnTypeName);
+            String genericTypeName = getFirstGenericTypeName(genericReturnTypeName);
             try {
-                if(genericTypeName!=null){
-                    classMap.put(returnTypeClass,Class.forName(genericTypeName));
-                }else{
-                    classMap.put(returnTypeClass,Object.class);
+                if (genericTypeName != null) {
+                    // TODO: 19-7-2 泛型中申明的泛型暂时不解析
+                    genericTypeName = getClassByGenericTypeName(genericTypeName);
+                    classMap.put(returnTypeClass, Class.forName(genericTypeName));
+                } else {
+                    classMap.put(returnTypeClass, Object.class);
                 }
-            }catch (ClassNotFoundException e){
-                classMap.put(returnTypeClass,Object.class);
+            } catch (ClassNotFoundException e) {
+                log.error("ClassNotFoundException message:{}", e.getMessage());
+                classMap.put(returnTypeClass, Object.class);
             }
         }
         return classMap;
     }
 
 
-    public static String getGenericTypeName(String genericClassTypeName){
-        if(!StringUtils.isEmpty(genericClassTypeName)&&genericClassTypeName.contains("<")){
-           return genericClassTypeName.substring(genericClassTypeName.indexOf("<") + 1, genericClassTypeName.indexOf(">"));
-        }else {
+    /**
+     * 通过类泛型全类名获取其中具体的泛型全类名
+     * reactor.core.publisher.Mono<cn.exceptioncode.common.dto.DogDTO>
+     * ->
+     * cn.exceptioncode.common.dto.DogDTO
+     *
+     * @param genericClassTypeName
+     * @return
+     */
+    public static String getFirstGenericTypeName(String genericClassTypeName) {
+        if (!StringUtils.isEmpty(genericClassTypeName) && genericClassTypeName.contains("<")) {
+            String genericTypeNameStr = genericClassTypeName.substring(genericClassTypeName.indexOf("<") + 1, genericClassTypeName.lastIndexOf(">"));
+            String[] genericTypeNames = genericTypeNameStr.split(",");
+            return genericTypeNames[0];
+        } else {
             return null;
         }
     }
 
-    public static String getClassByGenericTypeName(String genericTypeName){
-        if(!StringUtils.isEmpty(genericTypeName)){
-           if(genericTypeName.contains("<")){
-               return genericTypeName.substring(0,genericTypeName.indexOf("<"));
-           }else {
-               return genericTypeName;
-           }
-        }else {
+    /**
+     * 通过泛型全类名获取类对应的全类名
+     * reactor.core.publisher.Mono<cn.exceptioncode.common.dto.DogDTO>
+     * ->
+     * reactor.core.publisher.Mono
+     *
+     * @param genericTypeName
+     * @return
+     */
+    public static String getClassByGenericTypeName(String genericTypeName) {
+        if (!StringUtils.isEmpty(genericTypeName)) {
+            if (genericTypeName.contains("<")) {
+                return genericTypeName.substring(0, genericTypeName.indexOf("<"));
+            } else {
+                return genericTypeName;
+            }
+        } else {
             return null;
         }
     }
 
 
-    public Mono<DogDTO> reactor1() {
-        return Mono.just(new DogDTO());
-    }
-
-    public Mono reactor2() {
+    Mono reactor1() {
         return Mono.just(new DogDTO());
     }
 
 
     @SneakyThrows
     public static void main(String[] args) {
-        Method method = YapiClassUtils.class.getMethod("reactor1");
+        Method method = YapiClassUtils.class.getDeclaredMethod("reactor1");
         Type genericReturnType = method.getGenericReturnType();
         Type returnType = method.getReturnType();
         String genericReturnTypeName = genericReturnType.getTypeName();

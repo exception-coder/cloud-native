@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @EnableConfigurationProperties(ApiDocClientProperties.class)
-@ConditionalOnWebApplication
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 // TODO: 19-6-28
 /**
  *

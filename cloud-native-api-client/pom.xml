@@ -32,6 +32,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Fastjson is a JSON processor (JSON parser + JSON generator) written in Java -->

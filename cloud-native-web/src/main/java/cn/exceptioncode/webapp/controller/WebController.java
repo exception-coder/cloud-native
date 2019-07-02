@@ -26,15 +26,16 @@ public class WebController {
 
 
     @PutMapping(value = "/test/javadoc/{foo}", name = "api-client调试使用接口")
-    public BaseResponse<DogDTO>
-//    Mono<BaseResponse<DogDTO>>
+    public
+//    BaseResponse<DogDTO>
+    Mono<BaseResponse<DogDTO>>
     javadoc(@RequestParam(name = "userName", required = false) String userName,
             @ParamDesc(example = "foo_example", desc = "foo_desc") @PathVariable(name = "foo") String foo,
             @ParamDesc(example = "bar_example", desc = "bar_desc") @RequestParam(name = "bar", required = false) String bar,
             String code,
             @RequestBody DogDTO dogDTO) {
-        return BaseResponse.success(new DogDTO(foo, 1, bar));
-//        return Mono.just(BaseResponse.success(new DogDTO()));
+//        return BaseResponse.success(new DogDTO(foo, 1, bar));
+        return Mono.just(BaseResponse.success(new DogDTO()));
     }
 
 

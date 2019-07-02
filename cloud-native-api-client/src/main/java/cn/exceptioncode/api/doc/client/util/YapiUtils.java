@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author zhangkai
- *
  */
 public class YapiUtils {
 
@@ -27,7 +25,6 @@ public class YapiUtils {
 
 
     /**
-     *
      * 获取类对应的 yapi 元素类型
      *
      * @param clazz
@@ -135,28 +132,33 @@ public class YapiUtils {
                 }
             }
         }
-        // 获取接口路径
-        String[] pathValue = path == null ? requestMapping.value() : new String[]{path};
-        // 获取接口名称
-        apiName = apiName == null ? requestMapping.name() : apiName;
-        if (pathValue != null && pathValue.length > 0) {
-            // TODO: 2019/6/21 path为数组 可能存在多个请求路径
-            apiDTO.setPath(pathPrefix + pathValue[0]);
-            if (StringUtils.isEmpty(apiName)) {
-                apiDTO.setTitle(apiDTO.getPath());
-            } else {
-                apiDTO.setTitle(apiName);
+        if(requestMapping!=null){
+            // 获取接口路径
+            String[] pathValue = path == null ? requestMapping.value() : new String[]{path};
+            // 获取接口名称
+            apiName = apiName == null ? requestMapping.name() : apiName;
+            if (pathValue != null && pathValue.length > 0) {
+                // TODO: 2019/6/21 path为数组 可能存在多个请求路径
+                apiDTO.setPath(pathPrefix + pathValue[0]);
+                if (StringUtils.isEmpty(apiName)) {
+                    apiDTO.setTitle(apiDTO.getPath());
+                } else {
+                    apiDTO.setTitle(apiName);
+                }
             }
+            // 获取请求方法
+            RequestMethod[] requestMethods = requestMapping.method();
+            if (requestMethods != null && requestMethods.length == 1) {
+                apiDTO.setMethod(requestMethods[0].name());
+            } else {
+                // 存在多个请求method 或者获取不到 直接使用 GET method
+                apiDTO.setMethod(RequestMethod.GET.name());
+            }
+            return requestMapping;
+        }else {
+            return null;
         }
-        // 获取请求方法
-        RequestMethod[] requestMethods = requestMapping.method();
-        if (requestMethods != null && requestMethods.length == 1) {
-            apiDTO.setMethod(requestMethods[0].name());
-        } else {
-            // 存在多个请求method 或者获取不到 直接使用 GET method
-            apiDTO.setMethod(RequestMethod.GET.name());
-        }
-        return requestMapping;
+
     }
 
 }
