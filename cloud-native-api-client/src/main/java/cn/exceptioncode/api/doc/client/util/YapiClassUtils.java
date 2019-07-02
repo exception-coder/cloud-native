@@ -1,15 +1,14 @@
 package cn.exceptioncode.api.doc.client.util;
 
-import cn.exceptioncode.common.dto.DogDTO;
 import com.google.common.collect.Maps;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.lang.instrument.ClassDefinition;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,11 +60,16 @@ public class YapiClassUtils {
     public static boolean returnTypeIsReactor(Method method) {
         if (method != null) {
             String typeName = method.getReturnType().getTypeName();
-            String monoTypeName = Mono.class.getTypeName();
-            String fluxTypeName = Flux.class.getTypeName();
-            if (monoTypeName.equals(typeName) || fluxTypeName.equals(typeName)) {
-                return true;
-            } else {
+            try{
+                String monoTypeName = Mono.class.getTypeName();
+                String fluxTypeName = Flux.class.getTypeName();
+                if (monoTypeName.equals(typeName) || fluxTypeName.equals(typeName)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }catch (NoClassDefFoundError e){
+                log.error("NoClassDefFoundError e:{}",e.getMessage());
                 return false;
             }
         } else {
@@ -176,24 +180,24 @@ public class YapiClassUtils {
     }
 
 
-    Mono reactor1() {
-        return Mono.just(new DogDTO());
-    }
-
-
-    @SneakyThrows
-    public static void main(String[] args) {
-        Method method = YapiClassUtils.class.getDeclaredMethod("reactor1");
-        Type genericReturnType = method.getGenericReturnType();
-        Type returnType = method.getReturnType();
-        String genericReturnTypeName = genericReturnType.getTypeName();
-        String returnTypeName = returnType.getTypeName();
-        System.out.println(genericReturnTypeName);
-        System.out.println(returnTypeName);
-        System.out.println(getClassByGenericTypeName(genericReturnTypeName));
-        System.out.println(getClassByGenericTypeName(returnTypeName));
-
-    }
+//    Mono reactor1() {
+//        return Mono.just(new DogDTO());
+//    }
+//
+//
+//    @SneakyThrows
+//    public static void main(String[] args) {
+//        Method method = YapiClassUtils.class.getDeclaredMethod("reactor1");
+//        Type genericReturnType = method.getGenericReturnType();
+//        Type returnType = method.getReturnType();
+//        String genericReturnTypeName = genericReturnType.getTypeName();
+//        String returnTypeName = returnType.getTypeName();
+//        System.out.println(genericReturnTypeName);
+//        System.out.println(returnTypeName);
+//        System.out.println(getClassByGenericTypeName(genericReturnTypeName));
+//        System.out.println(getClassByGenericTypeName(returnTypeName));
+//
+//    }
 
 
 }

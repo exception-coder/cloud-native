@@ -4,7 +4,6 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import reactor.core.publisher.Mono;
 
 /**
  *
@@ -14,10 +13,10 @@ import reactor.core.publisher.Mono;
 public class ExceptionController{
 
     @ExceptionHandler
-    public Mono<String> exception(ServerHttpRequest request, ServerHttpResponse response, Exception e){
+    public String exception(ServerHttpRequest request, ServerHttpResponse response, Exception e){
         if(e instanceof  NullPointerException){
-            return Mono.just("空指针");
+            return "空指针";
         }
-        return Mono.just(e.getMessage());
+        return e.getMessage();
     }
 }
