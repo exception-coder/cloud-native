@@ -8,7 +8,7 @@
         <version>2.1.1.RELEASE</version>
     </parent>
     <groupId>cn.exception-code</groupId>
-    <artifactId>cloud-native-api-client</artifactId>
+    <artifactId>cloud-native-yapi-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cloud-native-api-client</name>
     <description>web api 收集客户端</description>

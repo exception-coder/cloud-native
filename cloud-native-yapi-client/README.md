@@ -6,7 +6,7 @@
 ```xml
      <dependency>
             <groupId>cn.exception-code</groupId>
-            <artifactId>cloud-native-api-client</artifactId>
+            <artifactId>cloud-native-yapi-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
