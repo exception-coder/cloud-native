@@ -1,0 +1,54 @@
+{
+  "groups": [
+    {
+      "name": "cn.exceptioncode.api.code.doc",
+      "type": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "cn.exceptioncode.api.code.doc.api-catid",
+      "type": "java.lang.String",
+      "description": "yapi分组id",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.api.code.doc.api-server",
+      "type": "java.lang.String",
+      "description": "yapi-server 配置",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.api.code.doc.api-token",
+      "type": "java.lang.String",
+      "description": "yapi-server token",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.api.code.doc.api-user-name",
+      "type": "java.lang.String",
+      "description": "yapi-server 用户名",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.api.code.doc.api-user-password",
+      "type": "java.lang.String",
+      "description": "yapi-server 密码",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.api.code.doc.controller-base-package",
+      "type": "java.lang.String",
+      "description": "扫描的controller包",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.api.code.doc.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.exceptioncode.api.doc.client.autoconfigure.properties.ApiDocClientProperties",
+      "defaultValue": true
+    }
+  ],
+  "hints": []
+}
