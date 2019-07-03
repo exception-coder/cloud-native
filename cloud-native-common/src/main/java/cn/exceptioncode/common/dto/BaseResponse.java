@@ -4,11 +4,8 @@ import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.enums.DefaultStatusEnum;
 import cn.exceptioncode.common.enums.StatusEnum;
 import lombok.Data;
-import org.junit.runners.Parameterized;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 接口返回对象的固定格式
@@ -24,7 +21,7 @@ public class BaseResponse<T> implements Serializable {
     @ParamDesc(desc = "响应信息描述",example = "success")
     private String message;
 
-    @ParamDesc(desc = "响应信息描述",example = "success",require = false)
+    @ParamDesc(desc = "响应信息描述",example = "success",required = false)
     private T data;
 
     public BaseResponse() {

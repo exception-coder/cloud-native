@@ -20,7 +20,7 @@ public class DogDTO {
     @ParamDesc(desc = "呢称",example = "jock")
     private String name;
 
-    @ParamDesc(desc = "年龄",example = "1",require = false)
+    @ParamDesc(desc = "年龄",example = "1",required = false)
     private Integer age;
 
     String color;
