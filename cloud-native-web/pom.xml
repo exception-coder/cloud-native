@@ -25,18 +25,16 @@
 
         <dependency>
             <groupId>cn.exception-code</groupId>
-            <artifactId>cloud-native-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>cn.exception-code</groupId>
             <artifactId>cloud-native-yapi-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>cn.exception-code</groupId>
+            <artifactId>cloud-native-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
 
         <dependency>
