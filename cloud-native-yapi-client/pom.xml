@@ -10,7 +10,7 @@
     <groupId>cn.exception-code</groupId>
     <artifactId>cloud-native-yapi-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>cloud-native-api-client</name>
+    <name>cloud-native-yapi-client</name>
     <description>web api 收集客户端</description>
 
     <properties>
