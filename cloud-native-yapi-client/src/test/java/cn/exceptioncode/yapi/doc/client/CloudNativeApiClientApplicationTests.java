@@ -1,6 +1,5 @@
 package cn.exceptioncode.yapi.doc.client;
 
-import cn.exceptioncode.yapi.doc.client.CloudNativeApiClientApplication;
 import cn.exceptioncode.yapi.doc.client.dto.ApiDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
