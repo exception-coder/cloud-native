@@ -56,6 +56,38 @@ public class WebController {
 
 }
 
+
+@Data
+public class BaseResponse<T> implements Serializable {
+
+    @ParamDesc(desc = "响应码",example = "200")
+    private int code;
+
+    @ParamDesc(desc = "响应信息描述",example = "success")
+    private String message;
+
+    @ParamDesc(desc = "响应信息描述",example = "success",required = false)
+    private T data;
+
+ // ......
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Data
+public class DogDTO {
+
+    @ParamDesc(desc = "呢称",example = "jock")
+    private String name;
+
+    @ParamDesc(desc = "年龄",example = "1",required = false)
+    private Integer age;
+
+    String color;
+
+}
+
 ```
 - ### 对应注解属性描述 (扩展注解ParamDesc可用于方法参数以及类属性上)
 
