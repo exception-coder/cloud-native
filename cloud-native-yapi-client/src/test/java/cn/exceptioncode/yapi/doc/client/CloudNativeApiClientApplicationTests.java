@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.client;
+package cn.exceptioncode.yapi.doc.client;
 
 import cn.exceptioncode.yapi.doc.client.CloudNativeApiClientApplication;
 import cn.exceptioncode.yapi.doc.client.dto.ApiDTO;
