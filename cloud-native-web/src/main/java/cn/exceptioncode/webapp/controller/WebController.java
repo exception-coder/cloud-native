@@ -43,8 +43,8 @@ public class WebController {
     }
 
     @GetMapping(value = "/busy", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String busy() {
-        return "busy";
+    public BaseResponse<String> busy() {
+        return BaseResponse.success("busy");
     }
 
 

@@ -89,6 +89,7 @@ public class YapiClassUtils {
      public static Map<Class, Class> getResponseReturnType(Method method) {
         Map<Class, Class> classMap = new HashMap<>();
         Class returnTypeClass = method.getReturnType();
+        // 判断返回类型是否 `Reactor` 序列
         if (returnTypeIsReactor(method)) {
             String genericReturnTypeName = method.getGenericReturnType().getTypeName();
             // 获取 `Reactor` 序列 `Mono`、`Flux` 元素中申明的泛型 genericTypeName
