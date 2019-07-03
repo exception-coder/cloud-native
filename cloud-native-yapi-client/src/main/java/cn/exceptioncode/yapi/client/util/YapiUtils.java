@@ -1,6 +1,6 @@
-package cn.exceptioncode.yapi.doc.client.util;
+package cn.exceptioncode.yapi.client.util;
 
-import cn.exceptioncode.yapi.doc.client.dto.ApiDTO;
+import cn.exceptioncode.yapi.client.dto.ApiDTO;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ClassUtils;

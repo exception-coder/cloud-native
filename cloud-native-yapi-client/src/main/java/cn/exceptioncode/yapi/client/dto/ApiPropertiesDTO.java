@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.doc.client.dto;
+package cn.exceptioncode.yapi.client.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

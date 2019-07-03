@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.doc.client.util;
+package cn.exceptioncode.yapi.client.util;
 
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;

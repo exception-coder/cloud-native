@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.doc.client.enums;
+package cn.exceptioncode.yapi.client.enums;
 
 /**
  * @author zhangkai

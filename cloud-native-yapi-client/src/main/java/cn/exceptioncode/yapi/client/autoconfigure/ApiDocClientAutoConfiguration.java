@@ -1,6 +1,6 @@
-package cn.exceptioncode.yapi.doc.client.autoconfigure;
+package cn.exceptioncode.yapi.client.autoconfigure;
 
-import cn.exceptioncode.yapi.doc.client.autoconfigure.properties.ApiDocClientProperties;
+import cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

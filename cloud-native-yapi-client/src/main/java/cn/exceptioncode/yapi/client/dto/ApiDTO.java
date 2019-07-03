@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.doc.client.dto;
+package cn.exceptioncode.yapi.client.dto;
 
 import java.util.ArrayList;
 import java.util.List;

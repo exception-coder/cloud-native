@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.doc.client;
+package cn.exceptioncode.yapi.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

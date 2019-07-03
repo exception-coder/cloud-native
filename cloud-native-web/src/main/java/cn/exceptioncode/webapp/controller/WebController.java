@@ -1,6 +1,6 @@
 package cn.exceptioncode.webapp.controller;
 
-import cn.exceptioncode.yapi.doc.client.autoconfigure.ApiDocClientService;
+import cn.exceptioncode.yapi.client.autoconfigure.ApiDocClientService;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import cn.exceptioncode.common.dto.BaseResponse;
 import cn.exceptioncode.common.dto.DogDTO;

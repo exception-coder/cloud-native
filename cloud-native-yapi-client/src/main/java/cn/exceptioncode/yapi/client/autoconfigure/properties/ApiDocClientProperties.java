@@ -1,4 +1,4 @@
-package cn.exceptioncode.yapi.doc.client.autoconfigure.properties;
+package cn.exceptioncode.yapi.client.autoconfigure.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author zhangkai
  *
  */
-@ConfigurationProperties(prefix = "cn.exceptioncode.yapi.code.doc")
+@ConfigurationProperties(prefix = "cn.exceptioncode.yapi.client")
 @Data
 public class ApiDocClientProperties {
 

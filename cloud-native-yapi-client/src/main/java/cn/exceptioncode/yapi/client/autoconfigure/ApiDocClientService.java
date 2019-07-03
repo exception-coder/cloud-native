@@ -1,11 +1,11 @@
-package cn.exceptioncode.yapi.doc.client.autoconfigure;
+package cn.exceptioncode.yapi.client.autoconfigure;
 
 
-import cn.exceptioncode.yapi.doc.client.autoconfigure.properties.ApiDocClientProperties;
-import cn.exceptioncode.yapi.doc.client.dto.ApiDTO;
-import cn.exceptioncode.yapi.doc.client.dto.ParamDTO;
-import cn.exceptioncode.yapi.doc.client.util.YapiClassUtils;
-import cn.exceptioncode.yapi.doc.client.util.YapiUtils;
+import cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties;
+import cn.exceptioncode.yapi.client.dto.ApiDTO;
+import cn.exceptioncode.yapi.client.dto.ParamDTO;
+import cn.exceptioncode.yapi.client.util.YapiClassUtils;
+import cn.exceptioncode.yapi.client.util.YapiUtils;
 import cn.exceptioncode.common.annotations.ParamDesc;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;

@@ -1,6 +1,6 @@
-package cn.exceptioncode.yapi.doc.client;
+package cn.exceptioncode.yapi.client;
 
-import cn.exceptioncode.yapi.doc.client.dto.ApiDTO;
+import cn.exceptioncode.yapi.client.dto.ApiDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
