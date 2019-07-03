@@ -52,7 +52,7 @@ cn:
   exceptioncode:
     yapi:
       client:
-        api-catid: 12
+        api-catid: 17
         api-server: 47.75.196.191:3000
         api-token: 0f871d650ec3170e894f4c48bfc625c87734ddb6cfe64ee53105de63c230e296
         api-user-name: 425485346@qq.com
