@@ -23,6 +23,7 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>cn.exception-code</groupId>
             <artifactId>cloud-native-yapi-client</artifactId>
@@ -34,7 +35,6 @@
             <artifactId>cloud-native-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -66,6 +66,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <!--<dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
