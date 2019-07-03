@@ -128,7 +128,7 @@ public class ApiDocClientService {
                                                 log.error("获取字段type失败，失败信息：{}", e.getMessage());
                                             }
 
-                                            log.info("请求参数注解简称：{}", paramAnnotationSimpleName);
+                                            String paramName = "";
                                             switch (paramAnnotationSimpleName) {
                                                 case "RequestBody":
                                                     this.log("请求体");
@@ -143,7 +143,8 @@ public class ApiDocClientService {
                                                 case "RequestParam":
                                                     this.log("URL请求参数");
                                                     RequestParam requestParam = (RequestParam) paramAnnotation;
-                                                    paramDTO = new ParamDTO(requestParam.name(), parameter.getType().getSimpleName(),
+                                                    paramName = requestParam.name();
+                                                    paramDTO = new ParamDTO(StringUtils.isEmpty(paramName)==true?parameter.getName():paramName, parameter.getType().getSimpleName(),
                                                             paramDesc == null ? null : paramDesc.example(), paramDesc == null ? null : paramDesc.desc(),
                                                             requestParam.required() == true ? "1" : "0");
                                                     reqQuery.add(paramDTO);
@@ -151,7 +152,8 @@ public class ApiDocClientService {
                                                 case "RequestHeader":
                                                     this.log("请求头");
                                                     RequestHeader requestHeader = (RequestHeader) paramAnnotation;
-                                                    paramDTO = new ParamDTO(requestHeader.name(), parameter.getType().getSimpleName(),
+                                                    paramName = requestHeader.name();
+                                                    paramDTO = new ParamDTO(StringUtils.isEmpty(paramName)==true?parameter.getName():paramName, parameter.getType().getSimpleName(),
                                                             paramDesc == null ? null : paramDesc.example(), paramDesc == null ? null : paramDesc.desc(),
                                                             requestHeader.required() == true ? "1" : "0");
                                                     reqHeaders.add(paramDTO);
@@ -159,7 +161,8 @@ public class ApiDocClientService {
                                                 case "PathVariable":
                                                     this.log("请求路径");
                                                     PathVariable pathVariable = (PathVariable) paramAnnotation;
-                                                    paramDTO = new ParamDTO(pathVariable.name(), parameter.getType().getSimpleName(),
+                                                    paramName = pathVariable.name();
+                                                    paramDTO = new ParamDTO(StringUtils.isEmpty(paramName)==true?parameter.getName():paramName, parameter.getType().getSimpleName(),
                                                             paramDesc == null ? null : paramDesc.example(), paramDesc == null ? null : paramDesc.desc(),
                                                             pathVariable.required() == true ? "1" : "0");
                                                     reqParams.add(paramDTO);
