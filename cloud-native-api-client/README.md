@@ -59,3 +59,21 @@ public class WebController {
 ```
 - 对应注解属性描述
 
+| 注解           | 属性     | 描述     |
+| -------- | -------- | -------- |
+| RequestMapping | method   | 请求方法 |
+|                | value    | 接口路径 |
+|                | name     | 接口名称 |
+|                |          |          |
+| PathVariable   | name     | 参数名称 |
+|                | required | 是否必填 |
+|                |          |          |
+| RequestParam   | name     | 参数名称 |
+|                | required | 是否必填 |
+|                |          |          |
+| RequestBody    | required | 是否必填 |
+|                |          |          |
+| ParamDesc      | desc     | 备注     |
+|                | example  | 示例     |
+|                | required | 是否必填 |
+
