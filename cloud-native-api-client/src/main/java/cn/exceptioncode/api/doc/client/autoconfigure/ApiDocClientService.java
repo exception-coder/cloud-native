@@ -311,7 +311,7 @@ public class ApiDocClientService {
                             fields.add(field1);
                         }
                         ParamDesc paramDesc = getParamDesc(field);
-                        if (paramDesc != null && paramDesc.require()) {
+                        if (paramDesc != null && paramDesc.required()) {
                             required.add(field1.getName());
                         }
                     } catch (NoSuchMethodException e) {
@@ -349,7 +349,7 @@ public class ApiDocClientService {
                 map.put("required", required);
                 for (Field field1 : fields) {
                     ParamDesc paramDesc = getParamDesc(field1);
-                    if (paramDesc != null && paramDesc.require()) {
+                    if (paramDesc != null && paramDesc.required()) {
                         required.add(field1.getName());
                     }
                     // 递归构建 properties 节点，子节点泛型不再捕获替换

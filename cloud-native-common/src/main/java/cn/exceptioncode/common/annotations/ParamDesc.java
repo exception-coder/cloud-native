@@ -10,7 +10,7 @@ public @interface ParamDesc {
 
     /**
      *
-     * 参数描述
+     * 备注
      *
      * @return
      */
@@ -20,12 +20,18 @@ public @interface ParamDesc {
     /**
      *
      *
-     * 参数样例
+     * 示例
      *
      * @return
      */
     String example() default "";
 
-    boolean require() default true;
+    /**
+     *
+     * 是否必填
+     *
+     * @return
+     */
+    boolean required() default true;
 
 }
