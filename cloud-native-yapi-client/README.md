@@ -2,7 +2,7 @@
 
 ## quick start
 
-- `pom.xml`文件添加依赖
+- ### `pom.xml`文件添加依赖
 ```xml
      <dependency>
             <groupId>cn.exception-code</groupId>
@@ -11,7 +11,7 @@
         </dependency>
 
 ```
-- `properties`文件添加 `yapi-server` 相关信息
+- ### `properties`文件添加 `yapi-server` 相关信息
 
 ```yaml
 
@@ -34,7 +34,7 @@ cn:
           enable: true
 
 ```
-- 使用示例
+- ### 使用示例
 ```java
 
 @RestController
@@ -57,7 +57,7 @@ public class WebController {
 }
 
 ```
-- 对应注解属性描述
+- ### 对应注解属性描述
 
 | 注解           | 属性     | 描述     |
 | -------- | -------- | -------- |
