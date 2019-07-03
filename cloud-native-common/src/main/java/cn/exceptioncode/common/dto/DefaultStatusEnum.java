@@ -1,4 +1,4 @@
-package cn.exceptioncode.common.enums;
+package cn.exceptioncode.common.dto;
 
 /**
  * 返回码，默认枚举对象

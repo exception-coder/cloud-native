@@ -1,9 +1,9 @@
 package cn.exceptioncode.webapp.controller;
 
-import cn.exceptioncode.yapi.client.autoconfigure.ApiDocClientService;
-import cn.exceptioncode.common.annotations.ParamDesc;
+import cn.exceptioncode.common.annotation.ParamDesc;
 import cn.exceptioncode.common.dto.BaseResponse;
 import cn.exceptioncode.common.dto.DogDTO;
+import cn.exceptioncode.yapi.client.autoconfigure.ApiDocClientService;
 import cn.exceptioncode.webapp.service.WebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,8 +25,7 @@ public class WebController {
 
 
     @PutMapping(value = "/test/javadoc/{foo}", name = "api-client调试使用接口")
-    public
-    BaseResponse<DogDTO>
+    public BaseResponse<DogDTO>
 //    Mono<BaseResponse<DogDTO>>
     javadoc(@RequestParam(name = "userName", required = false) String userName,
             @ParamDesc(example = "foo_example", desc = "foo_desc") @PathVariable(name = "foo") String foo,

@@ -1,4 +1,4 @@
-package cn.exceptioncode.common.enums;
+package cn.exceptioncode.common.dto;
 
 /**
  * 枚举使用的抽象接口定义

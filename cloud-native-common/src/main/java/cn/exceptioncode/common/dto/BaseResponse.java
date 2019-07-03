@@ -1,8 +1,6 @@
 package cn.exceptioncode.common.dto;
 
-import cn.exceptioncode.common.annotations.ParamDesc;
-import cn.exceptioncode.common.enums.DefaultStatusEnum;
-import cn.exceptioncode.common.enums.StatusEnum;
+import cn.exceptioncode.common.annotation.ParamDesc;
 import lombok.Data;
 
 import java.io.Serializable;

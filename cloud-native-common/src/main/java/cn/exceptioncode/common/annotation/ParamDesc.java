@@ -1,4 +1,4 @@
-package cn.exceptioncode.common.annotations;
+package cn.exceptioncode.common.annotation;
 
 import java.lang.annotation.*;
 

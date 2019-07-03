@@ -1,12 +1,12 @@
 package cn.exceptioncode.yapi.client.autoconfigure;
 
 
+import cn.exceptioncode.common.annotation.ParamDesc;
 import cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties;
 import cn.exceptioncode.yapi.client.dto.ApiDTO;
 import cn.exceptioncode.yapi.client.dto.ParamDTO;
 import cn.exceptioncode.yapi.client.util.YapiClassUtils;
 import cn.exceptioncode.yapi.client.util.YapiUtils;
-import cn.exceptioncode.common.annotations.ParamDesc;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
@@ -128,7 +128,7 @@ public class ApiDocClientService {
                                                 log.error("获取字段type失败，失败信息：{}", e.getMessage());
                                             }
 
-                                            String paramName = "";
+                                            String paramName;
                                             switch (paramAnnotationSimpleName) {
                                                 case "RequestBody":
                                                     this.log("请求体");
@@ -173,7 +173,7 @@ public class ApiDocClientService {
                                             }
                                         }
 
-                                        // TODO: 2019/6/23  annotations 为 null 获取存在多个 annotations
+                                        // TODO: 2019/6/23  annotation 为 null 获取存在多个 annotation
                                     }
                                     // 赋值请求参数
                                     apiDTO.setReq_query(reqQuery);
