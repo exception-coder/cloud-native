@@ -1,12 +1,15 @@
 package cn.exceptioncode.webapp;
 
+import cn.exceptioncode.common.dto.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -75,9 +78,15 @@ public class CloudNativeWebApplication{
     class EchoController {
         @RequestMapping(value = "/echo/{string}", method = RequestMethod.GET,
                 produces = MediaType.TEXT_HTML_VALUE)
-        public String echo(@PathVariable String string) throws UnknownHostException {
-            return Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + string;
+        public BaseResponse<String> echo(@PathVariable String string) throws UnknownHostException {
+            return BaseResponse.success(Inet4Address.getLocalHost().getHostName() + ":" + env.getProperty("server.port") + " Hello Nacos Discovery " + string);
         }
+    }
+
+
+    @EventListener
+    public void applicationRunListener(ApplicationStartedEvent event) {
+        log.info("ApplicationStartedEvent:{}",event.getApplicationContext().getEnvironment().getSystemEnvironment());
     }
 
 

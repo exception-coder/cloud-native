@@ -1,6 +1,6 @@
 package cn.exceptioncode.gateway.filter;
 
-import cn.exceptioncode.common.enums.DefaultStatusEnum;
+import cn.exceptioncode.common.dto.DefaultStatusEnum;
 import cn.exceptioncode.gateway.config.GatewayConfig;
 import cn.exceptioncode.gateway.filter.reqsublimit.RequestSubLimiter;
 import cn.exceptioncode.gateway.service.DistributedLockService;

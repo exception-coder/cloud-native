@@ -1,0 +1,54 @@
+{
+  "groups": [
+    {
+      "name": "cn.exceptioncode.yapi.client",
+      "type": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "cn.exceptioncode.yapi.client.api-catid",
+      "type": "java.lang.String",
+      "description": "yapi分组id",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.yapi.client.api-server",
+      "type": "java.lang.String",
+      "description": "yapi-server 配置",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.yapi.client.api-token",
+      "type": "java.lang.String",
+      "description": "yapi-server token",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.yapi.client.api-user-name",
+      "type": "java.lang.String",
+      "description": "yapi-server 用户名",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.yapi.client.api-user-password",
+      "type": "java.lang.String",
+      "description": "yapi-server 密码",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.yapi.client.controller-base-package",
+      "type": "java.lang.String",
+      "description": "扫描的controller包",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties"
+    },
+    {
+      "name": "cn.exceptioncode.yapi.client.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties",
+      "defaultValue": true
+    }
+  ],
+  "hints": []
+}
