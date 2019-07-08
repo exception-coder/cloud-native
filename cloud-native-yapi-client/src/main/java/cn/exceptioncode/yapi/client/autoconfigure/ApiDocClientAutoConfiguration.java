@@ -4,6 +4,7 @@ import cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientPropert
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @ConditionalOnWebApplication
         //(type = ConditionalOnWebApplication.Type.REACTIVE)
 // TODO: 19-6-28
-/**
- *
- * 不够优雅 用户习惯于pom文件添加依赖后即代表用户默许开启组件 不习惯于显性配置属性开启
- * 使用依赖配置对象 `ApiDocClientProperties` 申明关闭组件
- *
- */
-//@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable")
+@ConditionalOnProperty(prefix = "cn.exceptioncode.api.code.doc",name = "enable",matchIfMissing = true)
 public class ApiDocClientAutoConfiguration {
 
     @Autowired

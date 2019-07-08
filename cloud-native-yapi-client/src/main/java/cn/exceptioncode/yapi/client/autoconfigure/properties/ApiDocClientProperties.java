@@ -57,5 +57,5 @@ public class ApiDocClientProperties {
      */
     private String apiUserPassword;
 
-    private Boolean enable = true;
+    private Boolean enable = false;
 }
