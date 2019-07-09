@@ -40,9 +40,4 @@ public class CloudNativeApiClientApplicationTests {
 //		System.out.println(yapiClient.interfaceSave(apiDTO,yapiService.loginCookie()));
 	}
 
-
-	public static void main(String[] args) {
-		String[] arr = new String[]{};
-		System.out.println(arr.length);
-	}
 }
