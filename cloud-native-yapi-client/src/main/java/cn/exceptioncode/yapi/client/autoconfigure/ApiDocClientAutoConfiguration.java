@@ -31,8 +31,6 @@ public class ApiDocClientAutoConfiguration {
     RestTemplate apiClientRestTemplate;
 
 
-
-
     @Bean(name = "apiDocClientService")
     @ConditionalOnMissingBean(ApiDocClientService.class)
     public ApiDocClientService apiDocClientService(){
