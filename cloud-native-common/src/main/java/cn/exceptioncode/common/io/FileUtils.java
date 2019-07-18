@@ -1,6 +1,7 @@
 package cn.exceptioncode.common.io;
 
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
@@ -11,32 +12,52 @@ import java.util.List;
 
 public class FileUtils extends org.apache.commons.io.FileUtils {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
+    }
+
+
+    /**
+     *
+     * m3u8w文件合并
+     *
+     * @throws IOException
+     */
+    private void m3u8Merge()throws IOException {
         File m3u8Path = new File("D:\\m3u8");
         Collection<File> m3u8FileList = listFiles(m3u8Path,new String[]{"m3u8"},false);
 
         for (File file : m3u8FileList) {
             String m3u8FilePath = file.getPath();
             List<File> contentFileList =  getContentFileCollectionBym3u8(new File(m3u8FilePath));
-            byte[] bytes = null ;
-            for (File contentFile : contentFileList) {
-                if(!contentFile.exists()){
-                    System.err.println("m3u8内容文件不存在["+contentFile.getPath()+"]");
-                }else {
-                    if(bytes==null){
-                        bytes = readFileToByteArray(contentFile);
-                    }
-                    bytes =  ArrayUtils.addAll(bytes,readFileToByteArray(contentFile));
-                }
-            }
-            File m3u8File = new File(m3u8FilePath+".ts");
-            if(m3u8File.exists()){
-                m3u8File.delete();
-            }
-            writeByteArrayToFile(m3u8File,bytes);
+            mergeFile(contentFileList,m3u8FilePath+".ts");
         }
+    }
 
-
+    /**
+     *
+     * 文件合并
+     *
+     * @param contentFileList
+     * @param fileName
+     * @throws IOException
+     */
+    private static void mergeFile(Collection<File> contentFileList,String fileName) throws IOException{
+        byte[] bytes = null ;
+        for (File contentFile : contentFileList) {
+            if(!contentFile.exists()){
+                System.err.println("m3u8内容文件不存在["+contentFile.getPath()+"]");
+            }else {
+                if(bytes==null){
+                    bytes = readFileToByteArray(contentFile);
+                }
+                bytes =  ArrayUtils.addAll(bytes,readFileToByteArray(contentFile));
+            }
+        }
+        File m3u8File = new File(fileName);
+        if(m3u8File.exists()){
+            m3u8File.delete();
+        }
+        writeByteArrayToFile(m3u8File,bytes);
     }
 
 
