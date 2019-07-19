@@ -34,11 +34,11 @@
         </dependency>
 
         <!-- Fastjson is a JSON processor (JSON parser + JSON generator) written in Java -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.58</version>
-        </dependency>
+        </dependency>-->
 
         <!-- Guava is a suite of core and expanded libraries that include utility classes, google's collections, io classes, and much much more. -->
         <dependency>

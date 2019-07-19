@@ -1,8 +1,11 @@
 package cn.exceptioncode.yapi.client.dto;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class ApiDTO {
 
 
@@ -104,155 +107,4 @@ public class ApiDTO {
      */
     private List<?> req_params = new ArrayList<>(3);
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCatid() {
-        return catid;
-    }
-
-    public void setCatid(String catid) {
-        this.catid = catid;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getRes_body_type() {
-        return res_body_type;
-    }
-
-    public void setRes_body_type(String res_body_type) {
-        this.res_body_type = res_body_type;
-    }
-
-    public String getRes_body() {
-        return res_body;
-    }
-
-    public void setRes_body(String res_body) {
-        this.res_body = res_body;
-    }
-
-    public boolean isSwitch_notice() {
-        return switch_notice;
-    }
-
-    public void setSwitch_notice(boolean switch_notice) {
-        this.switch_notice = switch_notice;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public List<?> getReq_query() {
-        return req_query;
-    }
-
-    public void setReq_query(List<?> req_query) {
-        this.req_query = req_query;
-    }
-
-    public List<?> getReq_headers() {
-        return req_headers;
-    }
-
-    public void setReq_headers(List<?> req_headers) {
-        this.req_headers = req_headers;
-    }
-
-    public List<?> getReq_body_form() {
-        return req_body_form;
-    }
-
-    public void setReq_body_form(List<?> req_body_form) {
-        this.req_body_form = req_body_form;
-    }
-
-    public List<?> getReq_params() {
-        return req_params;
-    }
-
-    public void setReq_params(List<?> req_params) {
-        this.req_params = req_params;
-    }
-
-    public boolean getReq_body_is_json_schema() {
-        return req_body_is_json_schema;
-    }
-
-    public void setReq_body_is_json_schema(Boolean req_body_is_json_schema) {
-        this.req_body_is_json_schema = req_body_is_json_schema;
-    }
-
-    public String getReq_body_other() {
-        return req_body_other;
-    }
-
-    public void setReq_body_other(String req_body_other) {
-        this.req_body_other = req_body_other;
-    }
-
-    public boolean isRes_body_is_json_schema() {
-        return res_body_is_json_schema;
-    }
-
-    public void setRes_body_is_json_schema(boolean res_body_is_json_schema) {
-        this.res_body_is_json_schema = res_body_is_json_schema;
-    }
-
-    public boolean isReq_body_is_json_schema() {
-        return req_body_is_json_schema;
-    }
-
-    public void setReq_body_is_json_schema(boolean req_body_is_json_schema) {
-        this.req_body_is_json_schema = req_body_is_json_schema;
-    }
 }

@@ -233,8 +233,8 @@ public class ApiDocClientService {
         final String LOGIN_URL = YAPI_URL + "/user/login";
         final String SAVE_API_URL = YAPI_URL + "/interface/save";
         Map<String, String> map = new HashMap<>(2);
-        map.put("email", "425485346@qq.com");
-        map.put("password", "ymfe.org");
+        map.put("email", apiDocClientProperties.getApiUserName());
+        map.put("password", apiDocClientProperties.getApiUserPassword());
         ResponseEntity<Map> responseEntity = restTemplate.postForEntity(LOGIN_URL, map, Map.class);
 
         List<String> headers = responseEntity.getHeaders().get("set-cookie");

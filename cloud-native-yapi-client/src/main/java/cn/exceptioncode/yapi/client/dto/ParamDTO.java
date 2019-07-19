@@ -22,10 +22,6 @@ public class ParamDTO {
         this.required = required;
     }
 
-    public  ParamDTO(String name,String value){
-        this.name = name;
-        this.value = value;
-    }
     private String name;
 
     private String type;

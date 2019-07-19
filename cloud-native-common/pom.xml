@@ -55,6 +55,14 @@
         </dependency>
 
 
+        <!-- Commons-IO contains utility classes, stream implementations, file filters, and endian classes. -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+
         <!-- Apache Commons Lang, a package of Java utility classes for the classes that are in java.lang's hierarchy, or are considered to be so standard as to justify existence in java.lang. -->
         <dependency>
             <groupId>org.apache.commons</groupId>
