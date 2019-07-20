@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @EnableConfigurationProperties(ApiDocClientProperties.class)
+@ConditionalOnClass(RestTemplate.class)
 @ConditionalOnWebApplication
         //(type = ConditionalOnWebApplication.Type.REACTIVE)
 // TODO: 19-6-28
@@ -38,7 +39,6 @@ public class ApiDocClientAutoConfiguration {
 
 
     @Bean
-    @ConditionalOnClass(RestTemplate.class)
     @ConditionalOnMissingBean(RestTemplate.class)
     RestTemplate apiClientRestTemplate(){
         return new RestTemplate();
