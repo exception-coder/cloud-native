@@ -46,6 +46,7 @@ public class ApiDocClientService {
      */
     @EventListener
     public void applicationRunListener(ApplicationStartedEvent event) {
+
         Boolean enable = apiDocClientProperties.getEnable();
         if (enable == true) {
             // 从 `ApplicationContext` 获取所有包含 `Controller` 注解的类
