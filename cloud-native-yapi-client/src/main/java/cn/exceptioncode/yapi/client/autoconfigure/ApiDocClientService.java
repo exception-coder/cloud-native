@@ -76,7 +76,8 @@ public class ApiDocClientService {
 
                             for (Method method : methods) {
                                 ApiDTO apiDTO = new ApiDTO();
-                                RequestMapping methodRequestMapping = YapiUtils.getRequestMapping(pathPrefix, apiDTO, method);
+                                // 获取方法上的 `RequestMapping` 并赋值请求方法及请求路径
+                                RequestMapping methodRequestMapping = YapiUtils.getRequestMappingAndBindingMethodPath(pathPrefix, apiDTO, method);
 
                                 // 只解析 `RequestMapping`及其派生注解申明的方法
                                 if (methodRequestMapping != null) {
@@ -87,14 +88,13 @@ public class ApiDocClientService {
                                      *
                                      * 绑定 yapi 请求参数
                                      */
-
                                     YapiUtils.bindingParameter(method, apiDTO);
 
 
                                     /**
                                      *
                                      *
-                                     * yapi响应参数绑定
+                                     * 绑定 yapi 响应参数
                                      *
                                      */
                                     Map<Class, Class> classMap = YapiClassUtils.getResponseReturnType(method);
