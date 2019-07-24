@@ -40,4 +40,33 @@ public class CloudNativeApiClientApplicationTests {
 //		System.out.println(yapiClient.interfaceSave(apiDTO,yapiService.loginCookie()));
 	}
 
+
+	@Test
+    public void test(){
+        System.out.println( isInPackage("cn.exceptioncode.*.client",this.getClass().getPackage().getName()));
+        System.out.println( isInPackage("cn.exceptioncode.**.client",this.getClass().getPackage().getName()));
+        System.out.println( isInPackage("cn.exceptioncode.yapii.**",this.getClass().getPackage().getName()));
+
+    }
+
+    private boolean isInPackage(String basePackage,String classPackage){
+        String[] strArr1 = basePackage.split("\\.");
+        String[] strArr2 = classPackage.split("\\.");
+        boolean flag = true;
+        for (int i = 0; i < strArr1.length; i++) {
+            if("**".equals(strArr1[i])){
+                break;
+            }
+            if(!"*".equals(strArr1[i])){
+                if(!strArr1[i].equals(strArr2[i])){
+                    flag = false;
+                    break;
+                }
+            }
+
+        }
+        return flag;
+    }
+
+
 }

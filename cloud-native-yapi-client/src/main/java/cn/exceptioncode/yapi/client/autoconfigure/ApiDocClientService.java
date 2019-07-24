@@ -54,8 +54,11 @@ public class ApiDocClientService {
             // `Controller` 对象集合
             List<Object> list = Lists.newArrayList();
             controllers.forEach((controllerKey, controller) -> {
-                        // 集合中存在 `Controller` 则表示已经处理 不再进行处理
-                        if (!list.contains(controller)) {
+
+                        // 判断当前`controller`是否存在`Controller`集合中 存在则表示已经处理 不再进行处理
+                        // 判断 `controller` 是否在申明的包下 不在则不进行处理
+                        if (!list.contains(controller) &&
+                                controllerIsInPackage(apiDocClientProperties, controller)) {
                             list.add(controller);
 
                             RequestMapping requestMapping = controller.getClass().getAnnotation(RequestMapping.class);
@@ -161,6 +164,50 @@ public class ApiDocClientService {
         httpHeaders.add("Cookie", cookie);
         HttpEntity<ApiDTO> httpEntity = new HttpEntity<>(apiDTO, httpHeaders);
         return restTemplate.postForEntity(SAVE_API_URL, httpEntity, String.class).getBody();
+    }
+
+    private boolean isInPackage(String basePackage, Object object) {
+        String classPackage = object.getClass().getPackage().getName();
+        String[] strArr1 = basePackage.split(".");
+        String[] strArr2 = classPackage.split(".");
+        boolean flag = true;
+        for (int i = 0; i < strArr1.length; i++) {
+            if ("**".equals(strArr1[i])) {
+                break;
+            }
+            if (!"*".equals(strArr1[i])) {
+                if (!strArr1[i].equals(strArr2[i])) {
+                    flag = false;
+                    break;
+                }
+            }
+
+        }
+        return flag;
+    }
+
+
+    /**
+     * 判断 `controller` 实例是否在申明的包下
+     *
+     * @param apiDocClientProperties
+     * @param controller
+     * @return
+     */
+    private boolean controllerIsInPackage(ApiDocClientProperties apiDocClientProperties, Object controller) {
+        String basePackageStr = apiDocClientProperties.getControllerBasePackage();
+        if (StringUtils.isEmpty(basePackageStr)) {
+            return true;
+        }
+        String[] basePackageArr = basePackageStr.split(",");
+        boolean flag = false;
+        for (String basePackage : basePackageArr) {
+            flag = isInPackage(basePackage, controller);
+            if (flag) {
+                break;
+            }
+        }
+        return flag;
     }
 
 

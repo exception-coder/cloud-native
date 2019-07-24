@@ -2,7 +2,6 @@ package cn.exceptioncode.yapi.client.autoconfigure;
 
 import cn.exceptioncode.yapi.client.autoconfigure.properties.ApiDocClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

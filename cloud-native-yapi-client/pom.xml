@@ -24,6 +24,12 @@
             <groupId>cn.exception-code</groupId>
             <artifactId>cloud-native-common</artifactId>
             <version>1.0-SNAPSHOT</version>
+          <!--  <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+            </exclusions>-->
         </dependency>
 
 

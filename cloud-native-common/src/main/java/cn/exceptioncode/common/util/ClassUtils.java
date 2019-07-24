@@ -47,7 +47,9 @@ public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
     }
 
     /**
-     * isAssignableFromCollection
+     *
+     *
+     * Determines if the collection represented by this
      *
      * @param field
      * @return
