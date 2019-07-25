@@ -106,7 +106,7 @@ public class YapiUtils {
      * @param method
      * @return
      */
-    public static RequestMapping getRequestMapping(String pathPrefix, ApiDTO apiDTO, Method method) {
+    public static RequestMapping getRequestMappingAndBindingMethodPath(String pathPrefix, ApiDTO apiDTO, Method method) {
         if (pathPrefix == null) {
             pathPrefix = "";
         }
