@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpEntity;
@@ -46,6 +47,7 @@ public class ApiDocClientService {
      */
     @EventListener
     public void applicationRunListener(ApplicationStartedEvent event) {
+
 
         Boolean enable = apiDocClientProperties.getEnable();
         if (enable == true) {
