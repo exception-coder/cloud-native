@@ -56,5 +56,10 @@ public class WebController {
 
     }
 
+    @GetMapping("/test")
+    public String test(){
+        return "hello world";
+    }
+
 
 }

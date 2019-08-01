@@ -24,7 +24,6 @@ import java.util.List;
  * @author zhangkai
  */
 @Slf4j
-@EnableDiscoveryClient
 @SpringBootApplication
 public class CloudNativeWebApplication{
 

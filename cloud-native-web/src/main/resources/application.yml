@@ -9,7 +9,6 @@ logging:
   level:
     root: info
 
-
 ---
 # company
 
@@ -57,4 +56,4 @@ cn:
         api-token: 0f871d650ec3170e894f4c48bfc625c87734ddb6cfe64ee53105de63c230e296
         api-user-name: 425485346@qq.com
         api-user-password: ymfe.org
-        enable: true
+        enable: false
