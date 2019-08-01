@@ -1,14 +1,42 @@
 package cn.exceptioncode.common.util;
 
+import cn.exceptioncode.common.dto.BaseResponse;
 import lombok.Data;
+import lombok.SneakyThrows;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.*;
 
 public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
 
 
+    public BaseResponse<BaseResponse<String>> baseResponse() {
+        return null;
+    }
+
+
+    @SneakyThrows
     public static void main(String[] args) {
+        Method method = ClassUtils.class.getMethod("baseResponse");
+        Class returnType = method.getReturnType();
+        TypeVariable[] typeVariables = returnType.getTypeParameters();
+        for (TypeVariable typeVariable : typeVariables) {
+            System.out.println(typeVariable.getName());
+            Type type = method.getGenericReturnType();
+            if (type instanceof ParameterizedType) {
+                // 泛型类
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+                    if(actualTypeArgument instanceof ParameterizedType){
+                        System.out.println(actualTypeArgument.getTypeName());
+                        System.out.println(((ParameterizedType) actualTypeArgument).getRawType());
+                    }
+
+                }
+            }
+        }
+
+
         List<String> stringList = new ArrayList();
 
         List<String> linkedList = new LinkedList();
@@ -43,12 +71,10 @@ public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
 
         private LinkedList<String> linkedList;
 
-        private Map<String,String> stringStringMap;
+        private Map<String, String> stringStringMap;
     }
 
     /**
-     *
-     *
      * Determines if the collection represented by this
      *
      * @param field
@@ -58,4 +84,6 @@ public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
         Class clazz = field.getType();
         return Collection.class.isAssignableFrom(clazz);
     }
+
+
 }

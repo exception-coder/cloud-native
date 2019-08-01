@@ -181,24 +181,6 @@ public class YapiClassUtils {
     }
 
 
-//    Mono reactor1() {
-//        return Mono.just(new DogDTO());
-//    }
-//
-//
-//    @SneakyThrows
-//    public static void main(String[] args) {
-//        Method method = YapiClassUtils.class.getDeclaredMethod("reactor1");
-//        Type genericReturnType = method.getGenericReturnType();
-//        Type returnType = method.getReturnType();
-//        String genericReturnTypeName = genericReturnType.getTypeName();
-//        String returnTypeName = returnType.getTypeName();
-//        System.out.println(genericReturnTypeName);
-//        System.out.println(returnTypeName);
-//        System.out.println(getClassByGenericTypeName(genericReturnTypeName));
-//        System.out.println(getClassByGenericTypeName(returnTypeName));
-//
-//    }
 
 
 }

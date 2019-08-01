@@ -256,15 +256,15 @@ public class YapiUtils {
 
     }
 
-
-
-
     /**
-     * @param object        Class 或 Field
+     *
+     *
+     * @param object Class 或 Field
      * @param propertiesMap 对象子节点
+     * @param actualTypeArgumentClass 泛型申明类型
      * @return
      */
-    public static Map<String, Object> yapiJsonProperties(Object object, Map<String, Object> propertiesMap, Class genericSuperclass) {
+    public static Map<String, Object> yapiJsonProperties(Object object, Map<String, Object> propertiesMap, Class actualTypeArgumentClass) {
         List<Field> fields = Lists.newArrayList();
         Class clazz = null;
         Field field = null;
@@ -354,13 +354,13 @@ public class YapiUtils {
                         required.add(field1.getName());
                     }
                     // 递归构建 properties 节点，子节点泛型不再捕获替换
-                    if (genericSuperclass != null) {
+                    if (actualTypeArgumentClass != null) {
                         Type genericType = field1.getGenericType();
                         String typeName = genericType.getTypeName();
                         if ("T".equals(typeName)) {
-                            if (genericSuperclass != null) {
+                            if (actualTypeArgumentClass != null) {
                                 // 将泛型 T 转换为具体申明的类型
-                                yapiJsonProperties(genericSuperclass, mapp, genericSuperclass);
+                                yapiJsonProperties(actualTypeArgumentClass, mapp, actualTypeArgumentClass);
                             }
                         } else {
                             yapiJsonProperties(field1, mapp, null);
