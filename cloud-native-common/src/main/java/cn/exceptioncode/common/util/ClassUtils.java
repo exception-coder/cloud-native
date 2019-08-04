@@ -10,56 +10,73 @@ import java.util.*;
 public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
 
 
-    public BaseResponse<BaseResponse<String>> baseResponse() {
+    public BaseResponse<List<String>> baseResponse() {
         return null;
     }
 
 
     @SneakyThrows
     public static void main(String[] args) {
+        LinkedHashMap<String, LinkedHashMap<String, String>> map = new LinkedHashMap<>();
         Method method = ClassUtils.class.getMethod("baseResponse");
-        Class returnType = method.getReturnType();
-        TypeVariable[] typeVariables = returnType.getTypeParameters();
-        for (TypeVariable typeVariable : typeVariables) {
-            System.out.println(typeVariable.getName());
-            Type type = method.getGenericReturnType();
-            if (type instanceof ParameterizedType) {
-                // 泛型类
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
-                    if(actualTypeArgument instanceof ParameterizedType){
-                        System.out.println(actualTypeArgument.getTypeName());
-                        System.out.println(((ParameterizedType) actualTypeArgument).getRawType());
-                    }
+        Type type = method.getGenericReturnType();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            map = getTypeVariableWithParamType(parameterizedType, map);
+        }
+        System.out.println(map);
 
+
+//        List<String> stringList = new ArrayList();
+//
+//        List<String> linkedList = new LinkedList();
+//
+//        if (stringList instanceof Collection) {
+//            System.out.println("stringList instanceof Collection");
+//        }
+//
+//        if (linkedList instanceof Collection) {
+//            System.out.println("linkedList instanceof Collection");
+//        }
+//
+//        if (Collection.class.isAssignableFrom(stringList.getClass())) {
+//            System.out.println("Collection.class.isAssignableFrom(stringList.getClass())");
+//        }
+//
+//        Field[] fields = DemoClass.class.getDeclaredFields();
+//        for (Field field : fields) {
+//            if (isAssignableFromCollection(field)) {
+//                System.out.println(field.getType().getName());
+//            }
+//
+//        }
+    }
+
+
+    public static LinkedHashMap<String, LinkedHashMap<String, String>> getTypeVariableWithParamType(ParameterizedType parameterizedType, LinkedHashMap<String, LinkedHashMap<String, String>> map) throws ClassNotFoundException {
+        String parameterizedTypeName = parameterizedType.getRawType().getTypeName();
+        Class clazz = Class.forName(parameterizedTypeName);
+        TypeVariable[] typeVariables = clazz.getTypeParameters();
+        for (TypeVariable typeVariable : typeVariables) {
+            String typeVariableName = typeVariable.getName();
+            LinkedHashMap<String, String> typeVariableNameWithParameterizedTypeName;
+            typeVariableNameWithParameterizedTypeName = map.get(typeVariableName);
+            if (typeVariableNameWithParameterizedTypeName == null) {
+                typeVariableNameWithParameterizedTypeName = new LinkedHashMap<>();
+            }
+            map.put(parameterizedTypeName, typeVariableNameWithParameterizedTypeName);
+            // 泛型类
+            for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+                String actualTypeArgumentTypeName = actualTypeArgument.getTypeName();
+                typeVariableNameWithParameterizedTypeName.put(typeVariableName, actualTypeArgumentTypeName);
+                if (actualTypeArgument instanceof ParameterizedType) {
+                    actualTypeArgumentTypeName = ((ParameterizedType) actualTypeArgument).getRawType().getTypeName();
+                    typeVariableNameWithParameterizedTypeName.put(typeVariableName, actualTypeArgumentTypeName);
+                        getTypeVariableWithParamType((ParameterizedType) actualTypeArgument, map);
                 }
             }
         }
-
-
-        List<String> stringList = new ArrayList();
-
-        List<String> linkedList = new LinkedList();
-
-        if (stringList instanceof Collection) {
-            System.out.println("stringList instanceof Collection");
-        }
-
-        if (linkedList instanceof Collection) {
-            System.out.println("linkedList instanceof Collection");
-        }
-
-        if (Collection.class.isAssignableFrom(stringList.getClass())) {
-            System.out.println("Collection.class.isAssignableFrom(stringList.getClass())");
-        }
-
-        Field[] fields = DemoClass.class.getDeclaredFields();
-        for (Field field : fields) {
-            if (isAssignableFromCollection(field)) {
-                System.out.println(field.getType().getName());
-            }
-
-        }
+        return map;
     }
 
     @Data

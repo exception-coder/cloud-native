@@ -9,15 +9,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class JsoupUtil {
 
-    static Map<String, String> userIdMap = new HashMap<>(10);
+    static LinkedHashMap<String, String> userIdMap = new LinkedHashMap<>(10);
 
     static {
         userIdMap.put("丿★阿英ㄨ", "455969164");
@@ -28,7 +25,7 @@ public class JsoupUtil {
     public static void main(String[] args) {
 
         Map<String, String> headers = new HashMap<>(1);
-        String Cookie = "JSESSIONID=37A3444B400D743C10A25AC2F4B63681; ied_rf=--; pgv_pvid=737741427; pgv_info=pgvReferrer=&ssid=s3184925675; eas_sid=31e53614i5X9I1S0r4Y4n3C5k7; _qpsvr_localtk=0.7660243732587733; uin=o0425485346; skey=@g4CWK75pq; ptisp=ctc; RK=SExYg5NpYq; ptcz=a26aceb58b7e96faf061570103a3bbfd9a9efd8ba51c011b06682c600889e872; IED_LOG_INFO2=userUin%3D425485346%26nickName%3D%2525E5%252587%2525AF%26userLoginTime%3D1564591046; sl_login=425485346%7C113%2E119%2E28%2E164%7C1564591050%7C0%7C1%7C2%5F8%7C0%5F0%7C1%5F5%7C0%5F0%7C8EF03186EB16A26CE13964EC8C14AD8B; sFrom=website; user_requests=535f59e6ac47fd7a2953a5ba49c06a47eec9d79f627db5236ff99ca206820924a2e48f7857ec9839f4cfe0fadaa1c3cd8aba69e3100569181aec87d739e1ddb3457d5923d9972418; first_login=f8c29e64a1d51f784d25d5809880a15a; user_info=\"%E4%B8%BF%E5%87%89%E4%B8%B6%E2%97%87%E9%A3%8E/%E5%B9%BF%E5%B7%9E%E8%81%94%E7%9B%9F/31195783/2/4317/69873/23/%E8%AF%B8%E4%BE%AF%E7%8E%8B/425485346/1244254858510599/1/1\"; building002=view_union_info.alc; building003=\"425485346,767076,120,building10\"; building007=\"list_trade.alc?cid=767076\"; onlinetime=\"2019-08-01 00:37:35\"; user_hero=\"1302095433049915/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A2/190/1/2/1/767076/0/g9#1302016221118280/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A1/177/1/2/1/767076/0/g12#1289924374531220/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A0/154/1/2/1/767076/0/m6#1302093755321980/%E9%98%B2%E5%BE%A1%E4%B8%80/129/2/1/1/6/1/m2#1315003310221209/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A4/121/1/1/1/6/1/m7#\"; user_game_info=b1287f78e9269b04dce0e5bb034a67351fc0d7e491b1c3d08f425622f29724dfc03c9577b94d1cc5e8200d9e473c6eb37c92d4a38142f40b15bcb1d76cc680e7a3999533cf63aa36e072abf7415c46e1bd46c00d479dbec55c94f39e31a424a0f24c7d1cf3853a5e476b496bb2b7f2e97a2171225962326aca097ba71d52c5720994d731e6c641acba6d6cb2c0b062413eb53bcdcb5e0a79b74ccb758d268d8d4bf275077d200b3364d8014b41e28df9e7dfd75627a981dae1822320965406862b1a2ad1f3cd3f7821fadc5cb429ea65988939812c76f6e5dc0dc3399e6a6bbd417b0687111bda978b121c4b14a959c70a9e227ea2f926382663be532a61d24a3f823c407dfa7aa9f018fbe3054f23cfedbe7649db250deba35c48f80f5c4681c8b3ec71a8b1e29ef4a5608b70ba32b512f5a3127e42a33c74369a58f2ce270077808e243739c407e0c9e0414ddc720c7aaf1b700ca8d0d911301a53c2b8f94fa9a91ea68584028e4d1546c55081072134a5cb4a63bfafb18f4cdcf8ea015dac9ce712dbe1904b142c425222ab416fa891335b175f44f2aaea5784b46c15bed572c100bde396e090eedce319776ccfcebebd9dad6e373cbb8896c22042e50af00276d86d054c53bccb84bbd5500e4b26; user_army=\"1/13504413/pudaobing/1#2/0/tieqiangbing/1#3/408000/jinweijun/1#4/7287117/jinjiawushi/1#5/13132078/duangongbing/2#6/0/changgongbing/2#7/0/shengongbing/2#8/6658563/shenhuochongbing/2#9/13466219/qingqibing/3#10/0/qishebing/3#11/776216/zhongqibing/3#12/8185618/hubenqishi/3#19/4375/fangshi/4#33/549398/tongshenyuzhe/4#20/646894/shensuanxingguan/4#21/90192/bingyinyangjia/4#\"";
+        String Cookie = "JSESSIONID=212393610725FF325134F91F450BDEC0; ied_rf=--; pgv_pvid=8132209856; pgv_info=pgvReferrer=&ssid=s1121101888; eas_sid=F1L5o6d4E933O5213324Y0l9J8; _qpsvr_localtk=0.3468345091520648; ptisp=ctc; ptui_loginuin=425485346; uin=o0425485346; skey=@4UsCe83QN; RK=JMwY17NJaq; ptcz=4cc6c9b4cb7dc52c2b1c02905ac71c93538eeb384b0837ae1cbecbf0d2de03e6; IED_LOG_INFO2=userUin%3D425485346%26nickName%3D%2525E5%252587%2525AF%26userLoginTime%3D1564935140; sl_login=425485346%7C61%2E140%2E246%2E254%7C1564935143%7C0%7C1%7C2%5F8%7C0%5F0%7C1%5F5%7C0%5F0%7C2EA376627874FAC2FA2FF427858973B5; sFrom=website; user_requests=a56037e44b3d163900b6ea12b9c538b112f538285f17f1f045e37ed814d592d3e816657b6baef2f4a7bcf6272d9706eefca0b66a1f9a0461ffbc59ec1e11841a0ebe3c7990cdf34a; first_login=f8c29e64a1d51f784d25d5809880a15a; user_hero=\"1302095433049915/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A2/190/1/1/1/6/0/g9#1302016221118280/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A1/177/1/1/1/6/0/g12#1289924374531220/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A0/154/1/1/1/6/0/m6#1302093755321980/%E9%98%B2%E5%BE%A1%E4%B8%80/130/2/1/1/6/0/m2#1315003310221209/%E6%94%BB%E5%87%BB%E6%89%8B%E2%91%A4/121/1/1/1/6/0/m7#\"; user_game_info=58bd3c0e390b4db52759993096319effd4447915f31948ac0bb1689c6f8e42bf1fd88dd53247cc37e62895733980c0f8e5b3911ab4988ce97ec75fe6103823f592b9b428ba1e30bd5298ae7f4cf37df24854e60313feeedae08e4a2b106744060a43448a0760aa0b2188c090a52fe72509a66d5a73a3d8d941ee70db33a7a7e50bb8308c53e40b181136f1ce627b87ca5a2d2a92761f71572b0d1722f6852d16ac3d2857933afe77d2b8416873d5f0c6d3e0c6d3a740a387d36b6cadf94129ba8c55839cffbdce847bb6f07d98b31d4e57c700f420cd5594076623bdd1cf89ebca16cd8b0ad181053a9105ee54475b51f45cc17927db025beb1b1f60bdbff59c0c29046027f1b11aeed73924efc6d7df0eb41dba67cf1711941d25f585f23e59acb558eec92076885ce3a3b44f22bd1a6ce596196f2b382d95d5266545e27f66922d756d1bf67eece366785a2b0da073c4bdb2cbb97dde33464457870bdf3fd1ac33bef0c71974a6cb8bff0923c1c962536af55943465beccd267ec1f9d238f0e05582407cfe540d896f773f8336aa3bbc65bbb38a34c852d17cff337d2d5e4b157a8960921b508dab36e36a85a8f736ac85439cb326b82cab85e8cddab8b5a096f2cf53c82b28c67247555101d7e46b; user_info=\"%E4%B8%BF%E5%87%89%E4%B8%B6%E2%97%87%E9%A3%8E/%E5%B9%BF%E5%B7%9E%E8%81%94%E7%9B%9F/31710903/2/4317/70292/23/%E8%AF%B8%E4%BE%AF%E7%8E%8B/425485346/1244254858510599/1/1\"; user_army=\"1/13614403/pudaobing/1#2/0/tieqiangbing/1#3/456000/jinweijun/1#4/7666049/jinjiawushi/1#5/13254465/duangongbing/2#6/0/changgongbing/2#7/0/shengongbing/2#8/6700893/shenhuochongbing/2#9/13682702/qingqibing/3#10/0/qishebing/3#11/824216/zhongqibing/3#12/8874876/hubenqishi/3#19/4375/fangshi/4#33/549398/tongshenyuzhe/4#20/677684/shensuanxingguan/4#21/90192/bingyinyangjia/4#\"; building002=view_union_info.alc; building003=\"425485346,767076,120,building10\"; building007=\"list_trade.alc?cid=767076\"; onlinetime=\"2019-08-05 00:12:24\"";
         // 天涯
         String cid = "140183";
         // 凉风
@@ -36,7 +33,7 @@ public class JsoupUtil {
         // 寒风
 //        cid = "848100";
         headers.put("Cookie", Cookie);
-//        zhenChaUser(headers,"382649535","135","103",cid);
+//        zhenChaUser(headers,"920419363","6","-493",cid);
 //        paiQianZiYuan(headers,"425485346","-379","284",cid);
         boolean continue_ = true;
         if(continue_){
