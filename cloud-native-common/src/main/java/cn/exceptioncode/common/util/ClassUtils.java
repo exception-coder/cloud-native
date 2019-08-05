@@ -53,6 +53,15 @@ public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
     }
 
 
+    /**
+     *
+     * 获取类泛型申明与具体泛型参数映射关系集合
+     *
+     * @param parameterizedType
+     * @param map
+     * @return
+     * @throws ClassNotFoundException
+     */
     public static LinkedHashMap<String, LinkedHashMap<String, String>> getTypeVariableWithParamType(ParameterizedType parameterizedType, LinkedHashMap<String, LinkedHashMap<String, String>> map) throws ClassNotFoundException {
         String parameterizedTypeName = parameterizedType.getRawType().getTypeName();
         Class clazz = Class.forName(parameterizedTypeName);
