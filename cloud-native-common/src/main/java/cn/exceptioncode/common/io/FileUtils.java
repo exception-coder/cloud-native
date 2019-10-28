@@ -1,7 +1,6 @@
 package cn.exceptioncode.common.io;
 
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
@@ -12,7 +11,8 @@ import java.util.List;
 
 public class FileUtils extends org.apache.commons.io.FileUtils {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
+        new FileUtils().m3u8Merge();
     }
 
 
@@ -23,7 +23,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      * @throws IOException
      */
     private void m3u8Merge()throws IOException {
-        File m3u8Path = new File("D:\\m3u8");
+        File m3u8Path = new File("C:\\Users\\zhangkai\\Desktop\\华为手机视频");
         Collection<File> m3u8FileList = listFiles(m3u8Path,new String[]{"m3u8"},false);
 
         for (File file : m3u8FileList) {
@@ -63,17 +63,17 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     private static List<File> getContentFileCollectionBym3u8(File file) throws IOException {
         File parentFile = file.getParentFile();
-        List<File> contentfileList = new ArrayList();
+        List<File> contentFileList = new ArrayList();
         List<String> lines = readLines(file);
         for (String line : lines) {
             if (line.startsWith("file:///")) {
                 String[] strArr = line.split("/");
                 String contentPath = parentFile.getPath() + "\\" + strArr[strArr.length - 2] + "\\" + strArr[strArr.length - 1];
                 System.out.println(contentPath);
-                contentfileList.add(new File(contentPath));
+                contentFileList.add(new File(contentPath));
             }
         }
-        return contentfileList;
+        return contentFileList;
     }
 
 }

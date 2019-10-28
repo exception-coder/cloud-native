@@ -3,6 +3,7 @@ package cn.exceptioncode.common.util;
 import cn.exceptioncode.common.dto.BaseResponse;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.reflect.TypeUtils;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -15,13 +16,32 @@ public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
     }
 
 
+    public static List<Map<TypeVariable<?>, Type>> tmp(ParameterizedType parameterizedType ,List<Map<TypeVariable<?>, Type>> typeArgumentsList){
+        Map<TypeVariable<?>, Type> typeVariableTypeMap = TypeUtils.getTypeArguments(parameterizedType);
+        typeArgumentsList.add(typeVariableTypeMap);
+        for (Map.Entry<TypeVariable<?>, Type> typeVariableTypeEntry : typeVariableTypeMap.entrySet()) {
+            if( typeVariableTypeEntry.getValue() instanceof  ParameterizedType){
+                tmp((ParameterizedType)  typeVariableTypeEntry.getValue(),typeArgumentsList);
+            }
+        }
+        return typeArgumentsList;
+    }
+
     @SneakyThrows
     public static void main(String[] args) {
+
+
+
         LinkedHashMap<String, LinkedHashMap<String, String>> map = new LinkedHashMap<>();
         Method method = ClassUtils.class.getMethod("baseResponse");
         Type type = method.getGenericReturnType();
+
+        List<Map<TypeVariable<?>, Type>> typeArgumentsList = new ArrayList<>(10);
+
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
+
+            System.out.println(tmp(parameterizedType,typeArgumentsList));
             map = getTypeVariableWithParamType(parameterizedType, map);
         }
         System.out.println(map);
