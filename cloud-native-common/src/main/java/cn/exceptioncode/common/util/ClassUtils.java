@@ -75,7 +75,7 @@ public class ClassUtils extends org.apache.commons.lang3.ClassUtils {
 
     /**
      *
-     * 获取类泛型申明与具体泛型参数映射关系集合
+     * 获取类泛型标识符与具体泛型参数映射关系集合
      *
      * @param parameterizedType
      * @param map
