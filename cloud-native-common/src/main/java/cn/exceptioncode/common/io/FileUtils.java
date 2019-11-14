@@ -23,7 +23,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      * @throws IOException
      */
     private void m3u8Merge()throws IOException {
-        File m3u8Path = new File("C:\\Users\\zhangkai\\Desktop\\华为手机视频");
+        File m3u8Path = new File("C:\\Users\\zhangkai\\Desktop\\新建文件夹");
         Collection<File> m3u8FileList = listFiles(m3u8Path,new String[]{"m3u8"},false);
 
         for (File file : m3u8FileList) {
