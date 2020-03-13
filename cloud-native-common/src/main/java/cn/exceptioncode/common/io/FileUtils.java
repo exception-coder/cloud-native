@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author zhangkai
+ */
 public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static void main(String[] args) throws IOException{
