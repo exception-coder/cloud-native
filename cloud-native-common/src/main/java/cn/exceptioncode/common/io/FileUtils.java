@@ -26,7 +26,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      * @throws IOException
      */
     private void m3u8Merge()throws IOException {
-        File m3u8Path = new File("C:\\Users\\zhangkai\\Desktop\\新建文件夹");
+        File m3u8Path = new File("F:\\UCDownloads");
         Collection<File> m3u8FileList = listFiles(m3u8Path,new String[]{"m3u8"},false);
 
         for (File file : m3u8FileList) {
@@ -60,7 +60,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         if(m3u8File.exists()){
             m3u8File.delete();
         }
-        writeByteArrayToFile(m3u8File,bytes);
+        if(bytes!=null){
+            writeByteArrayToFile(m3u8File,bytes);
+        }
     }
 
 
