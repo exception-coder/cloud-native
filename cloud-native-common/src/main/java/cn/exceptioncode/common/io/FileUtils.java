@@ -26,13 +26,13 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      * @throws IOException
      */
     private void m3u8Merge()throws IOException {
-        File m3u8Path = new File("F:\\UCDownloads");
-        Collection<File> m3u8FileList = listFiles(m3u8Path,new String[]{"m3u8"},false);
+        File m3u8Path = new File("E:\\VPN");
+        Collection<File> m3u8FileList = listFiles(m3u8Path,new String[]{"mp4"},false);
 
         for (File file : m3u8FileList) {
             String m3u8FilePath = file.getPath();
             List<File> contentFileList =  getContentFileCollectionBym3u8(new File(m3u8FilePath));
-            mergeFile(contentFileList,m3u8FilePath+".ts");
+            mergeFile(contentFileList,m3u8FilePath+System.currentTimeMillis()+".ts");
         }
     }
 

@@ -1,18 +1,17 @@
 package cn.exceptioncode.common;
 
-import cn.exceptioncode.common.dto.DogDTO;
+import cn.exceptioncode.common.io.FileUtils;
 import cn.exceptioncode.common.security.CodecUtil;
 import cn.exceptioncode.common.security.EncryptUtil;
 import cn.exceptioncode.common.security.SignUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ClassUtils;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
+import java.io.File;
 import java.security.KeyPair;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +24,15 @@ public class UtilTest {
 
     @Test
     public void test() throws Exception {
+        File path = new File("E:\\VPN");
+        Collection<File> fileCollection = FileUtils.listFiles(path,new String[]{"ts"},false);
+        fileCollection.forEach(file -> {
+            String s = file.getAbsolutePath();
+            int index = s.indexOf(".mp4");
+            s = s.substring(0, index + ".mp4".length());
+            file.renameTo(new File(s));
+        });
+        System.exit(0);
         String message = "zhangkai2019张凯";
         KeyPair keyPair = EncryptUtil.buildKeyPairByRSA2();
 
